@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_Layout :: header"></head>
+<body>
+<h2>Add Customer</h2>
+<form th:action="@{/customers/add}" th:object="${customer}" method="post">
+    <div>
+        Username: <input type="text" th:field="*{username}" /> <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+    </div>
+    <div>
+        Password: <input type="password" th:field="*{password}" /> <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+    </div>
+    <div>
+        Full Name: <input type="text" th:field="*{fullName}" /> <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+    </div>
+    <div>
+        Email: <input type="text" th:field="*{email}" /> <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+    </div>
+    <div>
+        Phone: <input type="text" th:field="*{phone}" /> <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+    </div>
+    <div>
+        Address: <input type="text" th:field="*{address}" />
+    </div>
+    <div>
+        BirthDay: <input type="date" th:field="*{birthDay}" /> <span th:if="${#fields.hasErrors('birthDay')}" th:errors="*{birthDay}"></span>
+    </div>
+    <div>
+        Active: <input type="checkbox" th:field="*{active}" />
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+<a href="/customers">Back to list</a>
+<div th:replace="fragments/_Layout :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="Fragments/_Layout :: head('Trang chủ')"></head>
+<body>
+<div th:replace="Fragments/_Layout :: header"></div>
+
+<main class="container bg-white p-4 rounded shadow-sm">
+    <h3 th:text="${@environment.getProperty('app.welcome.message')}">Welcome message</h3>
+    <a th:href="@{/home}" class="btn btn-primary mt-3">Hiển thị danh sách</a>
+</main>
+
+<div th:replace="Fragments/_Layout :: footer"></div>
+</body>
+</html>

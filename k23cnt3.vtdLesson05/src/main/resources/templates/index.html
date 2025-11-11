@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_layout::head(${title})">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Giới thiệu Thymeleaf</title>
+
+
+</head>
+<body>
+<header th:replace="fragments/_layout :: header"></header>
+
+<section class="container mt-4">
+    <a th:href="@{/profile}" class="btn btn-success"> Vu Tien Duc - Profile</a>
+</section>
+
+<!-- Nội dung chính cuả trang chủ -->
+<section class="container" style="min-height: 268px">
+    <div class="row">
+        <h1>Đây là trang chủ</h1>
+    </div>
+    <!-- Sử dụng Menu Fragment / Chèn menu -->
+    <nav th:insert="fragments/_layout::menu"></nav>
+</section>
+<!-- Sử dụng Footer Fragment -->
+<footer th:replace="fragments/_layout ::footer"></footer>
+</body>
+</html>

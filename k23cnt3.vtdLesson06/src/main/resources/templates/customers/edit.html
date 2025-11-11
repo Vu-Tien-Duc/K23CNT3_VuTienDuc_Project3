@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_Layout :: header"></head>
+<body>
+<h2>Edit Customer</h2>
+<form th:action="@{/customers/edit}" th:object="${customer}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    <div>
+        Username: <input type="text" th:field="*{username}" />
+    </div>
+    <div>
+        Password: <input type="password" th:field="*{password}" /> (Để trống nếu không đổi)
+    </div>
+    <div>
+        Full Name: <input type="text" th:field="*{fullName}" />
+    </div>
+    <div>
+        Email: <input type="text" th:field="*{email}" />
+    </div>
+    <div>
+        Phone: <input type="text" th:field="*{phone}" />
+    </div>
+    <div>
+        Address: <input type="text" th:field="*{address}" />
+    </div>
+    <div>
+        BirthDay: <input type="date" th:field="*{birthDay}" />
+    </div>
+    <div>
+        Active: <input type="checkbox" th:field="*{active}" />
+    </div>
+    <div>
+        <button type="submit">Update</button>
+    </div>
+</form>
+<a href="/customers">Back to list</a>
+<div th:replace="fragments/_Layout :: footer"></div>
+</body>
+</html>
