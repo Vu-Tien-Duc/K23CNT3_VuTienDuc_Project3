@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Tác giả</title>
+</head>
+<body>
+
+<h2>Danh sách Tác giả</h2>
+<a href="/authors/create">➕ Thêm tác giả</a>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Mã</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Active</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.id}"></td>
+        <td th:text="${author.code}"></td>
+        <td th:text="${author.name}"></td>
+        <td th:text="${author.email}"></td>
+        <td th:text="${author.phone}"></td>
+        <td th:text="${author.isActive ? '✔' : '✘'}"></td>
+        <td>
+            <a th:href="@{'/authors/edit/' + ${author.id}}">✏ Sửa</a>
+            |
+            <a th:href="@{'/authors/delete/' + ${author.id}}"
+               onclick="return confirm('Bạn có chắc muốn xóa?');">🗑 Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
