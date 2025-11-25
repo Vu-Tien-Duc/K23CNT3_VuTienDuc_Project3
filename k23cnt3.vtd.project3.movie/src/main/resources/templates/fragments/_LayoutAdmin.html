@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { display: flex; min-height: 100vh; }
+        #sidebar { width: 220px; background: #343a40; color: white; padding: 20px; }
+        #sidebar a { color: white; text-decoration: none; display: block; padding: 8px 0; }
+        #sidebar a:hover { background: #495057; border-radius: 4px; }
+        #content { flex-grow: 1; padding: 20px; }
+        .navbar { background: #f8f9fa; padding: 10px 20px; margin-bottom: 20px; display: flex; justify-content: flex-end; }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar">
+    <h5>Chào, Admin</h5>
+    <hr>
+    <a th:href="@{/admin}">Dashboard</a>
+    <a th:href="@{/admin/phim}">Phim</a>
+    <a th:href="@{/admin/the-loai}">Thể Loại</a>
+    <a th:href="@{/admin/nguoi-dung}">Người Dùng</a>
+    <a th:href="@{/admin/binh-luan}">Bình Luận</a>
+</div>
+
+<!-- Main Content -->
+<div id="content">
+    <!-- Navbar -->
+    <div class="navbar">
+        <a th:href="@{/}" class="btn btn-sm btn-secondary me-2">Trang chủ User</a>
+        <a th:href="@{/logout}" class="btn btn-sm btn-danger">Đăng xuất</a>
+    </div>
+
+    <!-- Inject Content -->
+    <div th:fragment="layout (content)">
+        <div th:replace="${content}"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-4">
+        <hr>
+        <p class="text-center">&copy; 2025 Admin Panel</p>
+    </footer>
+</div>
+
+</body>
+</html>
