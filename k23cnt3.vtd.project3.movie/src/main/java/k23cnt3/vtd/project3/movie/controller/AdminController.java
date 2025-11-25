@@ -24,83 +24,124 @@ public class AdminController {
     private final NguoiDungService nguoiDungService;
     private final BinhLuanService binhLuanService;
 
-    // Dashboard
+    // ===== Dashboard =====
     @GetMapping
     public String dashboard(Model model) {
-        model.addAttribute("adminName", "Admin"); // Lấy từ SecurityContext nếu muốn
+        model.addAttribute("adminName", "Admin");
         model.addAttribute("phimCount", phimService.findAll().size());
         model.addAttribute("theLoaiCount", theLoaiService.findAll().size());
         model.addAttribute("nguoiDungCount", nguoiDungService.findAll().size());
         model.addAttribute("binhLuanCount", binhLuanService.findAll().size());
-        return "admin/dashboard";
+        return "admin/index";
     }
 
-    // ===== Quản lý Phim =====
+    // ========================================================================
+// ============================== PHIM ===================================
+// ========================================================================
+
+    @GetMapping("/phim")
+    public String listPhim(Model model) {
+        model.addAttribute("phimList", phimService.findAll());
+        // trả về template admin/phim/phim_list.html
+        return "admin/phim/phim_list";
+    }
+
     @GetMapping("/phim/new")
     public String addPhimForm(Model model) {
         model.addAttribute("phim", new Phim());
         model.addAttribute("theLoais", theLoaiService.findAll());
-        return "admin/phim_form";
+        return "admin/phim/phim_form";
     }
 
     @PostMapping("/phim/save")
     public String savePhim(@ModelAttribute Phim phim,
                            @RequestParam(required = false) List<Long> theLoaiIds) {
+
         if (theLoaiIds != null && !theLoaiIds.isEmpty()) {
             List<TheLoai> selected = theLoaiService.findAll().stream()
                     .filter(t -> theLoaiIds.contains(t.getId()))
                     .toList();
             phim.setTheLoais(new HashSet<>(selected));
         }
+
         phimService.save(phim);
-        return "redirect:/admin";
+        return "redirect:/admin/phim"; // giữ redirect về list phim
     }
 
     @GetMapping("/phim/edit/{id}")
     public String editPhimForm(@PathVariable Long id, Model model) {
         Phim phim = phimService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Phim không tồn tại"));
+
         model.addAttribute("phim", phim);
         model.addAttribute("theLoais", theLoaiService.findAll());
-        return "admin/phim_form";
+        return "admin/phim/phim_form";
     }
 
     @GetMapping("/phim/delete/{id}")
     public String deletePhim(@PathVariable Long id) {
         phimService.delete(id);
-        return "redirect:/admin";
+        return "redirect:/admin/phim"; // giữ redirect về list phim
     }
 
-    // ===== Quản lý Thể Loại =====
-    @GetMapping("/the-loai/new")
+
+    // ========================================================================
+    // ============================== THỂ LOẠI ================================
+    // ========================================================================
+
+    @GetMapping("/theloai")
+    public String listTheLoai(Model model) {
+        model.addAttribute("theLoaiList", theLoaiService.findAll());
+        return "admin/theloai_list";
+    }
+
+    @GetMapping("/theloai/new")
     public String addTheLoaiForm(Model model) {
         model.addAttribute("theLoai", new TheLoai());
         return "admin/theloai_form";
     }
 
-    @PostMapping("/the-loai/save")
+    @PostMapping("/theloai/save")
     public String saveTheLoai(@ModelAttribute TheLoai theLoai) {
         theLoaiService.save(theLoai);
-        return "redirect:/admin";
+        return "redirect:/admin/theloai";
     }
 
-    @GetMapping("/the-loai/delete/{id}")
+    @GetMapping("/theloai/delete/{id}")
     public String deleteTheLoai(@PathVariable Long id) {
         theLoaiService.delete(id);
-        return "redirect:/admin";
+        return "redirect:/admin/theloai";
     }
 
-    // ===== Quản lý Người Dùng =====
-    @GetMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    // ========================================================================
+    // ============================== NGƯỜI DÙNG ==============================
+    // ========================================================================
+
+    @GetMapping("/nguoidung")
+    public String listNguoiDung(Model model) {
+        model.addAttribute("userList", nguoiDungService.findAll());
+        return "admin/nguoidung_list";
+    }
+
+    @GetMapping("/nguoidung/delete/{id}")
+    public String deleteNguoiDung(@PathVariable Long id) {
         nguoiDungService.delete(id);
-        return "redirect:/admin";
+        return "redirect:/admin/nguoidung";
     }
 
-    // ===== Quản lý Bình Luận =====
-    @GetMapping("/binh-luan/delete/{id}")
+    // ========================================================================
+    // ============================== BÌNH LUẬN ===============================
+    // ========================================================================
+
+    @GetMapping("/binhluan")
+    public String listBinhLuan(Model model) {
+        model.addAttribute("binhLuanList", binhLuanService.findAll());
+        return "admin/binhluan_list";
+    }
+
+    @GetMapping("/binhluan/delete/{id}")
     public String deleteBinhLuan(@PathVariable Long id) {
         binhLuanService.delete(id);
-        return "redirect:/admin";
+        return "redirect:/admin/binhluan";
     }
 }

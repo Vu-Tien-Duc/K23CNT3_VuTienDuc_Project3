@@ -1,0 +1,33 @@
+body {
+    background: #f4f4f4;
+}
+
+/* Sidebar đứng dọc */
+.sidebar {
+    width: 230px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+/* Nội dung chính dịch sang phải */
+main {
+    margin-left: 230px;
+}
+
+/* Sidebar menu */
+.sidebar .nav-link {
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tiêu đề */
+h2.page-title {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
