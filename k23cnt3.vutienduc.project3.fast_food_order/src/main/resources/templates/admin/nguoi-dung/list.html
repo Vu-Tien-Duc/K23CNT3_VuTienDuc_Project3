@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách người dùng</title>
+</head>
+<body>
+<h2>Người dùng</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Vai trò</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="nd : ${nguoiDungList}">
+        <td th:text="${nd.id}"></td>
+        <td th:text="${nd.ten}"></td>
+        <td th:text="${nd.email}"></td>
+        <td th:text="${nd.vaiTro.tenVaiTro}"></td>
+        <td>
+            <a th:href="@{/admin/nguoi-dung/delete/{id}(id=${nd.id})}">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

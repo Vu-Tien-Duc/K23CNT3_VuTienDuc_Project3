@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách món ăn</title>
+</head>
+<body>
+<h2>Danh sách món ăn</h2>
+<div th:each="mon : ${monAnList}">
+    <h3 th:text="${mon.ten}"></h3>
+    <p th:text="${mon.moTa}"></p>
+    <p>Giá: <span th:text="${mon.gia}"></span></p>
+    <a th:href="@{/mon-an/detail/{id}(id=${mon.id})}">Xem chi tiết</a>
+</div>
+</body>
+</html>

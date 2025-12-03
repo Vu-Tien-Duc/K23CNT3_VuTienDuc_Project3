@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết món ăn</title>
+</head>
+<body>
+<h2 th:text="${monAn.ten}"></h2>
+<p th:text="${monAn.moTa}"></p>
+<p>Giá: <span th:text="${monAn.gia}"></span> VND</p>
+
+<h3>Hình ảnh</h3>
+<div th:each="img : ${monAn.hinhAnh}">
+    <img th:src="${img}" alt="" width="200"/>
+</div>
+</body>
+</html>

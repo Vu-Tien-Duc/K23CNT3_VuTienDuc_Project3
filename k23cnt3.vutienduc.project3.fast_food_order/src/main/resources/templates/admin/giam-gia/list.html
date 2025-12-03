@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Mã giảm giá</title>
+</head>
+<body>
+<h2>Danh sách mã giảm giá</h2>
+<a th:href="@{/admin/giam-gia/form}">Thêm mới</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Mã</th>
+        <th>Giá trị</th>
+        <th>Phần trăm</th>
+        <th>Ngày bắt đầu</th>
+        <th>Ngày kết thúc</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="gg : ${giamGiaList}">
+        <td th:text="${gg.id}"></td>
+        <td th:text="${gg.maGiamGia}"></td>
+        <td th:text="${gg.giaTri}"></td>
+        <td th:text="${gg.laPhanTram}"></td>
+        <td th:text="${gg.ngayBatDau}"></td>
+        <td th:text="${gg.ngayKetThuc}"></td>
+        <td>
+            <a th:href="@{/admin/giam-gia/form/{id}(id=${gg.id})}">Sửa</a> |
+            <a th:href="@{/admin/giam-gia/delete/{id}(id=${g

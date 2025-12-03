@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng của tôi</title>
+</head>
+<body>
+<h2>Đơn hàng của tôi</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Ngày đặt</th>
+        <th>Trạng thái</th>
+        <th>Chi tiết</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dh : ${donHangList}">
+        <td th:text="${dh.id}"></td>
+        <td th:text="${dh.ngayDat}"></td>
+        <td th:text="${dh.trangThai}"></td>
+        <td><a th:href="@{/don-hang/detail/{id}(id=${dh.id})}">Xem</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Thể loại món ăn</title>
+</head>
+<body>
+<h2>Thể loại</h2>
+<ul>
+    <li th:each="tl : ${theLoaiList}">
+        <a th:href="@{/the-loai/{id}(id=${tl.id})}" th:text="${tl.tenTheLoai}"></a>
+    </li>
+</ul>
+</body>
+</html>

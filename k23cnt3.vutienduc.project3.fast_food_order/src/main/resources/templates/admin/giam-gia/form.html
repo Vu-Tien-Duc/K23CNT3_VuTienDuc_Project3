@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm/Sửa mã giảm giá</title>
+</head>
+<body>
+<h2 th:text="${giamGia.id != null} ? 'Sửa mã giảm giá' : 'Thêm mã giảm giá'"></h2>
+<form th:action="@{/admin/giam-gia/save}" th:object="${giamGia}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <label>Mã giảm giá:</label>
+    <input type="text" th:field="*{maGiamGia}" required/>
+    <label>Giá trị:</label>
+    <input type="number" th:field="*{giaT*

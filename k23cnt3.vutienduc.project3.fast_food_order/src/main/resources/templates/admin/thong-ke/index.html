@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê</title>
+</head>
+<body>
+<h2>Dashboard Thống kê</h2>
+<ul>
+    <li>Tổng đơn hàng: <span th:text="${tongDonHang}"></span></li>
+    <li>Chờ xử lý: <span th:text="${choXuLy}"></span></li>
+    <li>Đang xử lý: <span th:text="${dangXuLy}"></span></li>
+    <li>Đang giao: <span th:text="${dangGiao}"></span></li>
+    <li>Đã giao: <span th:text="${daGiao}"></span></li>
+    <li>Tổng doanh thu: <span th:text="${tongDoanhThu}"></span> VND</li>
+    <li>Tổng người dùng: <span th:text="${tongNguoiDung}"></span></li>
+    <li>Tổng món ăn: <span th:text="${tongMonAn}"></span></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng</title>
+</head>
+<body>
+<h2>Đơn hàng #<span th:text="${donHang.id}"></span></h2>
+<p>Ngày đặt: <span th:text="${donHang.ngayDat}"></span></p>
+<p>Trạng thái: <span th:text="${donHang.trangThai}"></span></p>
+
+<h3>Chi tiết món ăn</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Tên món</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ct : ${donHang.chiTietDonHangList}">
+        <td th:text="${ct.monAn.ten}"></td>
+        <td th:text="${ct.monAn.gia}"></td>
+        <td th:text="${ct.soLuong}"></td>
+    </tr>
+    </tbody>
+</table>
+<p>Tổng thanh toán: <span th:text="${donHang.thanhToan.soTien}"></span> VND</p>
+</body>
+</html>

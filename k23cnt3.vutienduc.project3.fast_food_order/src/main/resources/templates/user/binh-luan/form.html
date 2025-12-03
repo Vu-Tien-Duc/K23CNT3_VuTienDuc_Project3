@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Viết bình luận</title>
+</head>
+<body>
+<h2>Viết bình luận</h2>
+<form th:action="@{/binh-luan/create}" th:object="${binhLuan}" method="post">
+    <label>Nội dung:</label>
+    <textarea th:field="*{noiDung}" required></textarea>
+    <button type="submit">Gửi</button>
+</form>
+</body>
+</html>

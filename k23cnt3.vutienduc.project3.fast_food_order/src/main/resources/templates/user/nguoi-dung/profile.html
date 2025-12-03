@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+<h2>Profile</h2>
+<form th:action="@{/nguoi-dung/profile/save}" th:object="${nguoiDung}" method="post">
+    <label>Tên:</label>
+    <input type="text" th:field="*{ten}" required/>
+    <label>Email:</label>
+    <input type="email" th:field="*{email}" readonly/>
+    <label>SĐT:</label>
+    <input type="text" th:field="*{sdt}" required/>
+    <label>Địa chỉ:</label>
+    <input type="text" th:field="*{diaChi}" required/>
+    <button type="submit">Cập nhật</button>
+</form>
+<a th:href="@{/nguoi-dung/change-password}">Đổi mật khẩu</a>
+</body>
+</html>

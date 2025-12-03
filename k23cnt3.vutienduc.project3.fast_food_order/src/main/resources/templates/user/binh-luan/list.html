@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
+<head>
+    <meta charset="UTF-8">
+    <title>Bình luận</title>
+</head>
+<body>
+<h2>Bình luận</h2>
+<div th:each="bl : ${binhLuanList}">
+    <p><strong th:text="${bl.nguoiDung.ten}"></strong>: <span th:text="${bl.noiDung}"></span></p>
+    <p>Ngày tạo: <span th:text="${bl.ngayTao}"></span></p>
+</div>
+</body>
+</html>
