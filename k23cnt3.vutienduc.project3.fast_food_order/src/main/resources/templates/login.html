@@ -1,26 +1,168 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Đăng nhập</title>
-    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* Tổng thể */
+        body {
+            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Khung đăng nhập */
+        .login-card {
+            background: #ffffff;
+            padding: 35px 40px;
+            width: 360px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        /* Input */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 6px rgba(78,115,223,0.4);
+            outline: none;
+        }
+
+        /* Nút đăng nhập */
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #4e73df;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: #2e59d9;
+        }
+
+        /* Thông báo */
+        .error-msg, .success-msg {
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .error-msg {
+            background: #ffdddd;
+            color: #d8000c;
+        }
+
+        .success-msg {
+            background: #ddffdd;
+            color: #006400;
+        }
+
+        /* Link đăng ký */
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-register {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #1cc88a;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-register:hover {
+            background: #17a673;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+
 </head>
+
 <body>
-<div class="login-container">
-    <h2>Đăng nhập</h2>
+
+<div class="login-card">
+    <h2 class="login-title">Đăng nhập</h2>
+
     <form method="post" th:action="@{/login}">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Đăng nhập</button>
+        <div class="input-group">
+            <label for="username">Email</label>
+            <input type="text" id="username" name="username" placeholder="Nhập email..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu..." required>
+        </div>
+
+        <button class="btn-login" type="submit">Đăng nhập</button>
     </form>
-    <div th:if="${param.error}">
-        <p style="color:red">Email hoặc mật khẩu không đúng!</p>
+
+    <div th:if="${param.error}" class="error-msg">
+        Email hoặc mật khẩu không đúng!
     </div>
-    <div th:if="${param.logout}">
-        <p style="color:green">Đăng xuất thành công!</p>
+
+    <div th:if="${param.logout}" class="success-msg">
+        Đăng xuất thành công!
+    </div>
+
+    <div class="register-link">
+        <p>Bạn chưa có tài khoản?</p>
+        <a th:href="@{/register}" class="btn-register">Đăng ký ngay</a>
     </div>
 </div>
+
 </body>
 </html>

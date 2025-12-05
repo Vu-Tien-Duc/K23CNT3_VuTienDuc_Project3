@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title='Thể loại',
+            headerTitle='Quản lý thể loại',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
+      )}">
+
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            table {
+                background: white;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+
+<section th:fragment="content">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Danh sách thể loại</h5>
+                <a href="/admin/the-loai/create" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Thêm mới
+                </a>
+            </div>
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên thể loại</th>
+                    <th>Số món ăn</th>
+                    <th style="width: 150px">Hành động</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="t : ${list}">
+                    <td th:text="${t.id}"></td>
+                    <td th:text="${t.tenTheLoai}"></td>
+                    <td th:text="${#lists.size(t.monAns)}"></td>
+
+                    <td>
+
+                        <a th:href="@{'/admin/the-loai/edit/' + ${t.id}}"
+                           class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <form th:action="@{'/admin/the-loai/delete/' + ${t.id}}"
+                              method="post" class="d-inline"
+                              onsubmit="return confirm('Bạn có chắc muốn xóa?')">
+
+                            <button class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </form>
+
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</section>
+
+<th:block th:fragment="scripts">
+    <script>
+        console.log("Loaded list thể loại");
+    </script>
+</th:block>
+
+</body>
+</html>

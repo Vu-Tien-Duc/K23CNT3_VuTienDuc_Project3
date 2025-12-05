@@ -51,40 +51,58 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public pages
-                        .requestMatchers("/", "/index", "/login", "/the-loai/**", "/mon-an/**", "/binh-luan/mon-an/**").permitAll()
+
+                        // --- PUBLIC ---
+                        .requestMatchers(
+                                "/", "/index",
+                                "/login", "/register", "/register/save",
+                                "/the-loai/**",
+                                "/mon-an/**",
+                                "/binh-luan/mon-an/**",
+                                "/css/**", "/js/**", "/images/**"
+                        ).permitAll()
+
                         .requestMatchers("/admin/login").permitAll()
 
-                        // User pages
-                        .requestMatchers("/nguoi-dung/profile/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/don-hang/my-orders/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/don-hang/create").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/binh-luan/create").hasAnyRole("USER", "ADMIN")
+                        // --- USER ---
+                        .requestMatchers(
+                                "/nguoi-dung/**",
+                                "/don-hang/**",
+                                "/gio-hang/**",
+                                "/binh-luan/create"
+                        ).hasAnyRole("USER", "ADMIN")
 
-                        // Admin pages
+                        // --- ADMIN ---
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                        // --- TẤT CẢ CÒN LẠI CHO PHÉP ---
+                        .anyRequest().permitAll()
                 )
+
+                // --- LOGIN ---
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler((request, response, authentication) -> {
+
                             boolean isAdmin = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
                             if (isAdmin) {
                                 response.sendRedirect("/admin/index");
                             } else {
-                                response.sendRedirect("/index"); // qua controller để populate model
+                                response.sendRedirect("/index");
                             }
                         })
                         .permitAll()
                 )
+
+                // --- LOGOUT ---
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/index")
                         .permitAll()
                 )
+
                 .authenticationProvider(authenticationProvider());
 
         return http.build();

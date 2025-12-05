@@ -1,31 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title='Đơn hàng',
+            headerTitle='Quản lý đơn hàng',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
+      )}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Quản lý đơn hàng</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <th:block th:fragment="styles">
+        <style>
+            table {
+                background: white;
+            }
+        </style>
+    </th:block>
 </head>
+
 <body>
-<h2>Danh sách đơn hàng</h2>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Người đặt</th>
-        <th>Ngày đặt</th>
-        <th>Trạng thái</th>
-        <th>Chi tiết</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="dh : ${donHangList}">
-        <td th:text="${dh.id}"></td>
-        <td th:text="${dh.nguoiDung.ten}"></td>
-        <td th:text="${dh.ngayDat}"></td>
-        <td th:text="${dh.trangThai}"></td>
-        <td><a th:href="@{/admin/don-hang/detail/{id}(id=${dh.id})}">Xem</a></td>
-    </tr>
-    </tbody>
-</table>
+
+<section th:fragment="content">
+
+    <div class="card">
+        <div class="card-body">
+
+            <h5 class="mb-3">Danh sách đơn hàng</h5>
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Khách</th>
+                    <th>Ngày</th>
+                    <th>Trạng thái</th>
+                    <th>Chi tiết</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="d : ${list}">
+                    <td th:text="${d.id}"></td>
+                    <td th:text="${d.nguoiDung.ten}"></td>
+                    <td th:text="${d.ngayDat}"></td>
+                    <td th:text="${d.trangThai}"></td>
+                    <td><a th:href="@{'/admin/don-hang/' + ${d.id}}" class="btn btn-primary btn-sm">Xem</a></td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</section>
+
+<th:block th:fragment="scripts">
+    <script>
+        console.log("Loaded list đơn hàng");
+    </script>
+</th:block>
+
 </body>
 </html>

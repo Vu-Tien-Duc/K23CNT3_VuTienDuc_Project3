@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản</title>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #36b9cc, #4e73df);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .register-card {
+            background: #ffffff;
+            padding: 35px 40px;
+            width: 420px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .register-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #36b9cc;
+            box-shadow: 0 0 6px rgba(54,185,204,0.4);
+            outline: none;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: #36b9cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background: #2c9faf;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="register-card">
+
+    <h2 class="register-title">Đăng ký tài khoản</h2>
+
+    <form th:action="@{/register/save}" method="post">
+
+
+    <div class="input-group">
+            <label for="ten">Họ và tên</label>
+            <input type="text" id="ten" name="ten" placeholder="Nhập họ tên..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Nhập email..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="matKhau">Mật khẩu</label>
+            <input type="password" id="matKhau" name="matKhau" placeholder="Nhập mật khẩu..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="sdt">Số điện thoại</label>
+            <input type="text" id="sdt" name="sdt" placeholder="Nhập số điện thoại..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="diaChi">Địa chỉ</label>
+            <input type="text" id="diaChi" name="diaChi" placeholder="Nhập địa chỉ..." required>
+        </div>
+
+        <button class="btn-register" type="submit">Tạo tài khoản</button>
+    </form>
+
+    <div class="login-link">
+        <p>Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
+    </div>
+
+</div>
+
+</body>
+</html>

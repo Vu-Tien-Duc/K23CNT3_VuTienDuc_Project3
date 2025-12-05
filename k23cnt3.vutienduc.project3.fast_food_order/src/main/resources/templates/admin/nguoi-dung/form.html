@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+        title='Người dùng',
+        headerTitle=${formTitle},
+        content=~{::content}
+      )}">
+
+<body>
+
+<section th:fragment="content">
+
+    <div class="card p-4">
+
+        <form th:action="@{/admin/nguoi-dung/save}" th:object="${nguoiDung}" method="post">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="mb-3">
+                <label>Tên</label>
+                <input class="form-control" th:field="*{ten}">
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input class="form-control" th:field="*{email}">
+            </div>
+
+            <div class="mb-3">
+                <label>Số điện thoại</label>
+                <input class="form-control" th:field="*{sdt}">
+            </div>
+
+            <div class="mb-3">
+                <label>Địa chỉ</label>
+                <input class="form-control" th:field="*{diaChi}">
+            </div>
+
+            <div class="mb-3">
+                <label>Vai trò</label>
+                <select class="form-select" th:field="*{vaiTro}">
+                    <option th:each="r : ${vaiTros}"
+                            th:value="${r}"
+                            th:text="${r.tenVaiTro}"></option>
+                </select>
+            </div>
+
+            <button class="btn btn-success">Lưu</button>
+            <a href="/admin/nguoi-dung" class="btn btn-secondary ms-2">Hủy</a>
+        </form>
+
+    </div>
+
+</section>
+
+</body>
+</html>

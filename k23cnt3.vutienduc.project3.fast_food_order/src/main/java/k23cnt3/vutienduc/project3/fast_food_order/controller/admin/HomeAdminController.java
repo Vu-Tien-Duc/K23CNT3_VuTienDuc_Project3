@@ -14,12 +14,9 @@ public class HomeAdminController {
 
     @GetMapping("/admin/index")
     public String index(Model model) {
-        model.addAllAttributes(thongKeService.getDashboard());
-        return "admin/index"; // trả về view admin/index.html
+        return "admin/index";
     }
 
-    @GetMapping("/admin/login")
-    public String login() {
-        return "/login"; // trả về view login admin
-    }
+
+
 }

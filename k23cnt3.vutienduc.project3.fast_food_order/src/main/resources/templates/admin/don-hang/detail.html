@@ -1,32 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết đơn hàng</title>
-</head>
-<body>
-<h2>Đơn hàng #<span th:text="${donHang.id}"></span></h2>
-<p>Người đặt: <span th:text="${donHang.nguoiDung.ten}"></span></p>
-<p>Ngày đặt: <span th:text="${donHang.ngayDat}"></span></p>
-<p>Trạng thái: <span th:text="${donHang.trangThai}"></span></p>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+        title='Chi tiết đơn hàng',
+        headerTitle='Chi tiết đơn hàng #' + ${donHang.id},
+        content=~{::content}
+      )}">
 
-<h3>Chi tiết món ăn</h3>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Tên món</th>
-        <th>Giá</th>
-        <th>Số lượng</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ct : ${donHang.chiTietDonHangList}">
-        <td th:text="${ct.monAn.ten}"></td>
-        <td th:text="${ct.monAn.gia}"></td>
-        <td th:text="${ct.soLuong}"></td>
-    </tr>
-    </tbody>
-</table>
-<p>Tổng thanh toán: <span th:text="${donHang.thanhToan.soTien}"></span> VND</p>
+<body>
+
+<section th:fragment="content">
+
+    <div class="card p-4">
+
+        <h5 class="mb-3">Thông tin đơn hàng</h5>
+
+        <p><strong>Khách:</strong> <span th:text="${donHang.nguoiDung.ten}"></span></p>
+        <p><strong>Ngày đặt:</strong>
+            <span th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}"></span>
+        </p>
+        <p><strong>Trạng thái:</strong> <span th:text="${donHang.trangThai}"></span></p>
+
+        <hr>
+
+        <h5>Sản phẩm</h5>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Món ăn</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ct : ${donHang.chiTiet}">
+                <td th:text="${ct.monAn.ten}"></td>
+                <td th:text="${ct.soLuong}"></td>
+                <td th:text="${ct.tongTien}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <a href="/admin/don-hang" class="btn btn-secondary">Quay lại</a>
+    </div>
+
+</section>
+
 </body>
 </html>

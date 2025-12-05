@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="vi">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Trang chủ - FastFoodApp</title>
@@ -23,10 +23,15 @@
                     <p class="card-text">Giá: <span th:text="${monAn.gia}"></span>₫</p>
                     <p class="card-text">Loại: <span th:text="${monAn.theLoai.tenTheLoai}"></span></p>
                     <a th:href="@{/mon-an/{id}(id=${monAn.id})}" class="btn btn-primary mb-2">Xem chi tiết</a>
-                    <form th:action="@{/gio-hang/them}" method="post">
-                        <input type="hidden" name="monAnId" th:value="${monAn.id}"/>
+                    <form th:action="@{/gio-hang/them}" method="post" sec:authorize="isAuthenticated()">
+                        <input type="hidden" name="monAnId" th:value="${monAn.id}" />
                         <button type="submit" class="btn btn-success">Thêm vào giỏ</button>
                     </form>
+
+                    <a href="/login" class="btn btn-outline-secondary" sec:authorize="!isAuthenticated()">
+                        Đăng nhập để mua
+                    </a>
+
                 </div>
             </div>
         </div>

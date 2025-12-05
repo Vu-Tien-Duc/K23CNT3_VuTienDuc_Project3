@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
-<head>
-    <meta charset="UTF-8">
-    <title>Danh sách người dùng</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+        title='Người dùng',
+        headerTitle='Danh sách người dùng',
+        content=~{::content}
+      )}">
+
 <body>
-<h2>Người dùng</h2>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Tên</th>
-        <th>Email</th>
-        <th>Vai trò</th>
-        <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="nd : ${nguoiDungList}">
-        <td th:text="${nd.id}"></td>
-        <td th:text="${nd.ten}"></td>
-        <td th:text="${nd.email}"></td>
-        <td th:text="${nd.vaiTro.tenVaiTro}"></td>
-        <td>
-            <a th:href="@{/admin/nguoi-dung/delete/{id}(id=${nd.id})}">Xóa</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+<section th:fragment="content">
+
+    <div class="card p-3">
+
+        <table class="table table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Vai trò</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="u : ${list}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.ten}"></td>
+                <td th:text="${u.email}"></td>
+                <td th:text="${u.sdt}"></td>
+                <td th:text="${u.vaiTro.tenVaiTro}"></td>
+
+                <td>
+                    <a th:href="@{'/admin/nguoi-dung/edit/' + ${u.id}}"
+                       class="btn btn-warning btn-sm">Sửa</a>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
 </body>
 </html>

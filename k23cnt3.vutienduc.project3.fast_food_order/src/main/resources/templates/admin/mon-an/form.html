@@ -1,0 +1,92 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title=${monAn.id != null} ? 'Sửa Món Ăn' : 'Thêm Món Ăn',
+            headerTitle=${monAn.id != null} ? 'Sửa Món Ăn' : 'Thêm Món Ăn',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts})}">
+
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .img-preview {
+                max-width: 100px;
+                max-height: 100px;
+                margin-right: 5px;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+
+<section th:fragment="content">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form th:action="${monAn.id != null} ?
+                   @{/admin/mon-an/edit/{id}(id=${monAn.id})} :
+                   @{/admin/mon-an/create}"
+                  th:object="${monAn}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Tên món ăn</label>
+                    <input type="text" class="form-control" th:field="*{ten}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mô tả</label>
+                    <textarea class="form-control" th:field="*{moTa}" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Giá</label>
+                    <input type="number" class="form-control" th:field="*{gia}" required min="0">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Thể loại</label>
+                    <select class="form-select" name="theLoaiId" required>
+                        <option value="" disabled>-- Chọn thể loại --</option>
+                        <option th:each="tl : ${theLoaiList}"
+                                th:value="${tl.id}"
+                                th:text="${tl.tenTheLoai}"
+                                th:selected="${monAn.theLoai != null} ? ${tl.id} == ${monAn.theLoai.id} : false">
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh (URL, phân tách dấu ,)</label>
+                    <input type="text" class="form-control" name="hinhAnhStr"
+                           th:value="${monAn.hinhAnh != null} ? ${#strings.join(monAn.hinhAnh, ',')} : ''"
+                           placeholder="Nhập URL hình ảnh, cách nhau dấu ,">
+
+                </div>
+
+                <!-- Preview ảnh -->
+                <div class="mb-3">
+                    <div th:if="${monAn.hinhAnh != null}">
+                        <img th:each="url : ${monAn.hinhAnh}" th:src="${url}" class="img-preview"/>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <a href="/admin/mon-an" class="btn btn-secondary">Hủy</a>
+            </form>
+
+        </div>
+    </div>
+
+</section>
+
+<th:block th:fragment="scripts">
+    <script>
+        console.log("Form món ăn loaded");
+    </script>
+</th:block>
+
+</body>
+</html>

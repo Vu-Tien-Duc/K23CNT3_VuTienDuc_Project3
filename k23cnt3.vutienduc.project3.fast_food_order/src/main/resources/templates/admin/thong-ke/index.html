@@ -1,20 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
-<head>
-    <meta charset="UTF-8">
-    <title>Thống kê</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+        title='Thống kê',
+        headerTitle='Thống kê hệ thống',
+        content=~{::content}
+      )}">
+
 <body>
-<h2>Dashboard Thống kê</h2>
-<ul>
-    <li>Tổng đơn hàng: <span th:text="${tongDonHang}"></span></li>
-    <li>Chờ xử lý: <span th:text="${choXuLy}"></span></li>
-    <li>Đang xử lý: <span th:text="${dangXuLy}"></span></li>
-    <li>Đang giao: <span th:text="${dangGiao}"></span></li>
-    <li>Đã giao: <span th:text="${daGiao}"></span></li>
-    <li>Tổng doanh thu: <span th:text="${tongDoanhThu}"></span> VND</li>
-    <li>Tổng người dùng: <span th:text="${tongNguoiDung}"></span></li>
-    <li>Tổng món ăn: <span th:text="${tongMonAn}"></span></li>
-</ul>
+
+<section th:fragment="content">
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <h6>Tổng đơn hàng</h6>
+                <div class="stats-value" th:text="${tongDonHang}">0</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <h6>Tổng người dùng</h6>
+                <div class="stats-value" th:text="${tongNguoiDung}">0</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <h6>Tổng món ăn</h6>
+                <div class="stats-value" th:text="${tongMonAn}">0</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <h6>Doanh thu</h6>
+                <div class="stats-value" th:text="${tongDoanhThu}">0</div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
 </body>
 </html>

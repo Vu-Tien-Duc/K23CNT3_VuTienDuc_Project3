@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutAdmin :: content">
-<head>
-    <meta charset="UTF-8">
-    <title>Mã giảm giá</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+        title='Quản lý giảm giá',
+        headerTitle='Mã giảm giá',
+        content=~{::content}
+      )}">
+
 <body>
-<h2>Danh sách mã giảm giá</h2>
-<a th:href="@{/admin/giam-gia/form}">Thêm mới</a>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Mã</th>
-        <th>Giá trị</th>
-        <th>Phần trăm</th>
-        <th>Ngày bắt đầu</th>
-        <th>Ngày kết thúc</th>
-        <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="gg : ${giamGiaList}">
-        <td th:text="${gg.id}"></td>
-        <td th:text="${gg.maGiamGia}"></td>
-        <td th:text="${gg.giaTri}"></td>
-        <td th:text="${gg.laPhanTram}"></td>
-        <td th:text="${gg.ngayBatDau}"></td>
-        <td th:text="${gg.ngayKetThuc}"></td>
-        <td>
-            <a th:href="@{/admin/giam-gia/form/{id}(id=${gg.id})}">Sửa</a> |
-            <a th:href="@{/admin/giam-gia/delete/{id}(id=${g
+
+<section th:fragment="content">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h5>Danh sách mã giảm giá</h5>
+        <a href="/admin/giam-gia/create" class="btn btn-primary">+ Thêm mới</a>
+    </div>
+
+    <div class="card p-3">
+        <table class="table table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Mã</th>
+                <th>Tên</th>
+                <th>Giảm (%)</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="g : ${list}">
+                <td th:text="${g.id}"></td>
+                <td th:text="${g.ten}"></td>
+                <td th:text="${g.phanTram}"></td>
+                <td>
+                    <a th:href="@{'/admin/giam-gia/edit/' + ${g.id}}" class="btn btn-warning btn-sm">Sửa</a>
+                    <a th:href="@{'/admin/giam-gia/delete/' + ${g.id}}"
+                       onclick="return confirm('Xóa?')"
+                       class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</section>
+
+</body>
+</html>
