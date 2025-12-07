@@ -30,6 +30,6 @@ public class MonAnController {
     public String detail(@PathVariable Long id, Model model) {
         MonAn monAn = monAnService.getById(id);
         model.addAttribute("monAn", monAn);
-        return "user/mon-an/detail";
+        return "user/mon-an/detail.html";
     }
 }

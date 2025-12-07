@@ -1,57 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-        title='Người dùng',
-        headerTitle=${formTitle},
-        content=~{::content}
-      )}">
+            title='Người dùng',
+            headerTitle='Quản lý Người dùng',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts})}">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body { background-color: #fff7ed; color: #333; }
+            .card { border-radius: 16px; border: none; background: #fff8f1; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+            .card-body { padding: 32px; }
+            h5 { color: #f97316; font-weight: 700; }
+            .form-label { font-weight: 600; color: #333; }
+            .form-control, .form-select { border-radius: 12px !important; padding: 12px 16px; border: 1px solid #f97316; background-color: #fff3e0; }
+            .form-control:focus, .form-select:focus { border-color: #ea580c; box-shadow: 0 0 0 0.2rem rgba(249,115,22,0.25); }
+            .btn { border-radius: 12px !important; font-weight: 600; min-width: 120px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .btn-success { background: linear-gradient(to right, #0d6efd, #3b82f6); color: white; }
+            .btn-success:hover { background: linear-gradient(to right, #0b5ed7, #2563eb); }
+            .btn-cancel { background-color: #6c757d; color: white; }
+            .btn-cancel:hover { background-color: #5a6268; }
+            .d-flex.gap-2 { justify-content: flex-end; margin-top: 24px; }
+        </style>
+    </th:block>
+</head>
 
 <body>
-
 <section th:fragment="content">
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:600px;">
+        <div class="card-body">
+            <h5 class="mb-4" th:text="${user.id != null ? 'Sửa người dùng' : 'Thêm người dùng'}"></h5>
 
-    <div class="card p-4">
+            <form th:action="@{${user.id != null ? '/admin/nguoi-dung/edit' : '/admin/nguoi-dung/create'}}"
+                  th:object="${user}" method="post">
 
-        <form th:action="@{/admin/nguoi-dung/save}" th:object="${nguoiDung}" method="post">
+                <input type="hidden" th:if="${user.id != null}" th:field="*{id}"/>
 
-            <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label class="form-label">Tên</label>
+                    <input type="text" class="form-control" th:field="*{ten}" placeholder="Nhập tên" required>
+                </div>
 
-            <div class="mb-3">
-                <label>Tên</label>
-                <input class="form-control" th:field="*{ten}">
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" placeholder="Nhập email" required>
+                </div>
 
-            <div class="mb-3">
-                <label>Email</label>
-                <input class="form-control" th:field="*{email}">
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" th:field="*{matKhau}" placeholder="Nhập mật khẩu" th:required="${user.id == null}">
+                    <small class="text-muted" th:if="${user.id != null}">Để trống nếu không muốn thay đổi mật khẩu</small>
+                </div>
 
-            <div class="mb-3">
-                <label>Số điện thoại</label>
-                <input class="form-control" th:field="*{sdt}">
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">SĐT</label>
+                    <input type="text" class="form-control" th:field="*{sdt}" placeholder="Nhập số điện thoại">
+                </div>
 
-            <div class="mb-3">
-                <label>Địa chỉ</label>
-                <input class="form-control" th:field="*{diaChi}">
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Địa chỉ</label>
+                    <input type="text" class="form-control" th:field="*{diaChi}" placeholder="Nhập địa chỉ">
+                </div>
 
-            <div class="mb-3">
-                <label>Vai trò</label>
-                <select class="form-select" th:field="*{vaiTro}">
-                    <option th:each="r : ${vaiTros}"
-                            th:value="${r}"
-                            th:text="${r.tenVaiTro}"></option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Vai trò</label>
+                    <select class="form-select" th:field="*{vaiTro.id}" required>
+                        <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.tenVaiTro}" th:selected="${user.vaiTro != null and user.vaiTro.id == r.id}"></option>
+                    </select>
+                </div>
 
-            <button class="btn btn-success">Lưu</button>
-            <a href="/admin/nguoi-dung" class="btn btn-secondary ms-2">Hủy</a>
-        </form>
-
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" th:text="${user.id != null ? 'Cập nhật' : 'Tạo mới'}"></button>
+                    <a href="/admin/nguoi-dung" class="btn btn-cancel">Hủy</a>
+                </div>
+            </form>
+        </div>
     </div>
-
 </section>
 
+<th:block th:fragment="scripts">
+    <script>console.log("Loaded form người dùng");</script>
+</th:block>
 </body>
 </html>

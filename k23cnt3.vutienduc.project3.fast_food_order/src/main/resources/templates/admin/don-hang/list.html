@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
             title='Đơn hàng',
-            headerTitle='Quản lý đơn hàng',
+            headerTitle='Quản lý Đơn hàng',
             content=~{::content},
             customStyles=~{::styles},
             customScripts=~{::scripts}
@@ -11,55 +11,421 @@
 <head>
     <th:block th:fragment="styles">
         <style>
-            table {
+            body {
+                background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+                color: #333;
+            }
+
+            /* Card Container */
+            .card {
+                border-radius: 20px;
+                border: none;
                 background: white;
+                box-shadow: 0 10px 40px rgba(255, 107, 53, 0.1);
+                overflow: hidden;
+            }
+
+            .card-body {
+                padding: 2rem;
+            }
+
+            /* Header Section */
+            .page-header {
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                padding: 1.5rem 2rem;
+                margin: -2rem -2rem 2rem -2rem;
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: white;
+            }
+
+            .page-header .stats {
+                font-size: 0.9rem;
+                opacity: 0.95;
+            }
+
+            /* Filter Section */
+            .filter-section {
+                background: #FFF7ED;
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                border: 2px solid #FFEDD5;
+            }
+
+            .filter-label {
+                font-weight: 600;
+                color: #FF6B35;
+                margin-bottom: 0.5rem;
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            /* Form Controls */
+            .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 2px solid #FFEDD5;
+                background-color: white;
+                font-weight: 500;
+                transition: all 0.3s;
+            }
+
+            .form-select:focus {
+                border-color: #FF6B35;
+                box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+                outline: none;
+            }
+
+            /* Table Styling */
+            .table-container {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            table.table {
+                background: white;
+                margin-bottom: 0;
+            }
+
+            table th {
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            table td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 0.95rem;
+            }
+
+            table tbody tr {
+                transition: all 0.3s;
+            }
+
+            table tbody tr:hover {
+                background-color: #FFF7ED;
+                transform: scale(1.01);
+            }
+
+            table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Status Badge */
+            .badge {
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .badge.bg-warning {
+                background: linear-gradient(135deg, #FFC107, #FFB300) !important;
+                color: #000;
+            }
+
+            .badge.bg-success {
+                background: linear-gradient(135deg, #10B981, #059669) !important;
+            }
+
+            .badge.bg-danger {
+                background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+            }
+
+            .badge.bg-info {
+                background: linear-gradient(135deg, #3B82F6, #2563EB) !important;
+            }
+
+            /* Action Buttons */
+            .btn {
+                border-radius: 10px !important;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s;
+                border: none;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .btn-detail {
+                background: linear-gradient(135deg, #3B82F6, #2563EB);
+                color: white;
+            }
+
+            .btn-detail:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+
+            .btn-edit {
+                background: linear-gradient(135deg, #F59E0B, #D97706);
+                color: white;
+            }
+
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            }
+
+            .btn-reset {
+                background: #6C757D;
+                color: white;
+            }
+
+            .btn-reset:hover {
+                background: #5A6268;
+                transform: translateY(-2px);
+            }
+
+            /* Order ID Badge */
+            .order-id {
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                color: white;
+                padding: 0.3rem 0.8rem;
+                border-radius: 8px;
+                font-weight: 700;
+                display: inline-block;
+                font-size: 0.9rem;
+            }
+
+            /* Customer Info */
+            .customer-name {
+                font-weight: 600;
+                color: #333;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .customer-name::before {
+                content: "👤";
+                font-size: 1.2rem;
+            }
+
+            /* Date styling */
+            .date-text {
+                color: #6C757D;
+                font-size: 0.9rem;
+            }
+
+            .date-text::before {
+                content: "📅 ";
+            }
+
+            /* Phone styling */
+            .phone-text::before {
+                content: "📱 ";
+            }
+
+            /* Address styling */
+            .address-text {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .address-text::before {
+                content: "📍 ";
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6C757D;
+            }
+
+            .empty-state::before {
+                content: "📦";
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            /* Action buttons container */
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .page-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                    text-align: center;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
+
+                table {
+                    font-size: 0.85rem;
+                }
+
+                .btn {
+                    font-size: 0.75rem;
+                    padding: 0.4rem 0.8rem;
+                }
             }
         </style>
     </th:block>
 </head>
 
 <body>
-
 <section th:fragment="content">
-
     <div class="card">
         <div class="card-body">
 
-            <h5 class="mb-3">Danh sách đơn hàng</h5>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h5>📦 Quản lý Đơn hàng</h5>
+                    <div class="stats">
+                        <small>Tổng số đơn: <strong th:text="${orders.size()}">0</strong></small>
+                    </div>
+                </div>
+            </div>
 
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Khách</th>
-                    <th>Ngày</th>
-                    <th>Trạng thái</th>
-                    <th>Chi tiết</th>
-                </tr>
-                </thead>
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="filter-label">🔍 Lọc theo trạng thái</label>
+                        <select name="trangThai" class="form-select" onchange="this.form.submit()">
+                            <option value="ALL" th:selected="${trangThai == 'ALL'}">Tất cả trạng thái</option>
+                            <option th:each="t : ${trangThais}" th:value="${t}" th:text="${t}" th:selected="${trangThai == t}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="/admin/don-hang" class="btn btn-reset w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
 
-                <tbody>
-                <tr th:each="d : ${list}">
-                    <td th:text="${d.id}"></td>
-                    <td th:text="${d.nguoiDung.ten}"></td>
-                    <td th:text="${d.ngayDat}"></td>
-                    <td th:text="${d.trangThai}"></td>
-                    <td><a th:href="@{'/admin/don-hang/' + ${d.id}}" class="btn btn-primary btn-sm">Xem</a></td>
-                </tr>
-                </tbody>
-
-            </table>
+            <!-- Table -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Mã ĐH</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Liên hệ</th>
+                        <th>Địa chỉ giao</th>
+                        <th>Trạng thái</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="o : ${orders}">
+                        <td>
+                            <span class="order-id" th:text="'#' + ${o.id}"></span>
+                        </td>
+                        <td>
+                            <div class="customer-name" th:text="${o.nguoiDung.ten}"></div>
+                        </td>
+                        <td>
+                            <span class="date-text" th:text="${o.ngayDat != null ? #temporals.format(o.ngayDat, 'dd/MM/yyyy HH:mm') : '-'}"></span>
+                        </td>
+                        <td>
+                            <span class="phone-text" th:text="${o.sdt}"></span>
+                        </td>
+                        <td>
+                            <span class="address-text" th:text="${o.diaChiGiao}" th:title="${o.diaChiGiao}"></span>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${o.trangThai == 'Đã giao' ? 'bg-success' : (o.trangThai == 'Đang giao' ? 'bg-info' : (o.trangThai == 'Đã hủy' ? 'bg-danger' : 'bg-warning'))}"
+                                  th:text="${o.trangThai}"></span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/don-hang/detail/' + ${o.id}}" class="btn btn-detail btn-sm">
+                                    <i class="bi bi-eye"></i> Chi tiết
+                                </a>
+                                <a th:href="@{'/admin/don-hang/edit/' + ${o.id}}" class="btn btn-edit btn-sm">
+                                    <i class="bi bi-pencil"></i> Sửa
+                                </a>
+                                <a th:href="@{'/admin/don-hang/delete/' + ${o.id}}" class="btn btn-delete btn-sm"
+                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa đơn hàng này?')">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${orders.size() == 0}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <strong>Không có đơn hàng nào</strong>
+                                <p>Chưa có đơn hàng nào trong hệ thống</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </div>
-
 </section>
 
 <th:block th:fragment="scripts">
     <script>
-        console.log("Loaded list đơn hàng");
+        console.log("🍔 Loaded: Quản lý đơn hàng");
+
+        // Animation khi load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
     </script>
 </th:block>
-
 </body>
 </html>

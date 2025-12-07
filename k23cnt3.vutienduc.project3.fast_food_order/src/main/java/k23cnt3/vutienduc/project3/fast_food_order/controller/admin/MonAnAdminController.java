@@ -22,15 +22,15 @@ public class MonAnAdminController {
     private final MonAnService monAnService;
     private final TheLoaiService theLoaiService;
 
-    // List món ăn có phân trang
+    // ========================= LIST ==============================
     @GetMapping
     public String list(
             Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Long theLoaiId
-    ) {
+            @RequestParam(required = false) Long theLoaiId) {
+
         Page<MonAn> monAnPage = monAnService.getAll(page, size, search, theLoaiId);
         List<TheLoai> theLoaiList = theLoaiService.getAll();
 
@@ -39,22 +39,34 @@ public class MonAnAdminController {
         model.addAttribute("search", search);
         model.addAttribute("theLoaiId", theLoaiId);
 
-        return "admin/mon-an/list";
+        return "admin/mon-an/list"; // ✅ list.html
     }
 
-    // Show form tạo món ăn mới
+    // ========================= CREATE ===========================
     @GetMapping("/create")
     public String showCreateForm(Model model) {
-        List<TheLoai> theLoaiList = theLoaiService.getAll();
         model.addAttribute("monAn", new MonAn());
-        model.addAttribute("theLoaiList", theLoaiList);
-        return "admin/mon-an/form";
+        model.addAttribute("theLoaiList", theLoaiService.getAll());
+        model.addAttribute("hinhAnhStr", "");
+        return "admin/mon-an/form"; // ✅ form.html
     }
 
-    // Xử lý tạo món ăn mới
     @PostMapping("/create")
-    public String createMonAn(@ModelAttribute MonAn monAn,
-                              @RequestParam(required = false) String hinhAnhStr) {
+    public String createMonAn(
+            @ModelAttribute MonAn monAn,
+            @RequestParam(required = false) String hinhAnhStr,
+            @RequestParam(required = false) Long theLoaiId,
+            Model model) {
+
+        if (theLoaiId == null) {
+            model.addAttribute("error", "Vui lòng chọn thể loại");
+            model.addAttribute("monAn", monAn);
+            model.addAttribute("theLoaiList", theLoaiService.getAll());
+            model.addAttribute("hinhAnhStr", hinhAnhStr == null ? "" : hinhAnhStr);
+            return "admin/mon-an/form"; // ✅ form.html
+        }
+
+        monAn.setTheLoai(theLoaiService.getById(theLoaiId));
 
         if (hinhAnhStr != null && !hinhAnhStr.isBlank()) {
             monAn.setHinhAnh(Arrays.asList(hinhAnhStr.split("\\s*,\\s*")));
@@ -66,25 +78,37 @@ public class MonAnAdminController {
         return "redirect:/admin/mon-an";
     }
 
-    // Show form chỉnh sửa
+    // ========================= EDIT =============================
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         MonAn monAn = monAnService.getById(id);
-        if (monAn.getHinhAnh() == null) {
-            monAn.setHinhAnh(new ArrayList<>());
-        }
-        List<TheLoai> theLoaiList = theLoaiService.getAll();
+
+        String hinhAnhStr = (monAn.getHinhAnh() != null && !monAn.getHinhAnh().isEmpty())
+                ? String.join(",", monAn.getHinhAnh())
+                : "";
+
         model.addAttribute("monAn", monAn);
-        model.addAttribute("theLoaiList", theLoaiList);
-        return "admin/mon-an/form";
+        model.addAttribute("theLoaiList", theLoaiService.getAll());
+        model.addAttribute("hinhAnhStr", hinhAnhStr);
+
+        return "admin/mon-an/form"; // ✅ form.html
     }
 
-    // Xử lý cập nhật
     @PostMapping("/edit/{id}")
-    public String updateMonAn(@PathVariable Long id,
-                              @ModelAttribute MonAn monAn,
-                              @RequestParam Long theLoaiId,
-                              @RequestParam(required = false) String hinhAnhStr) {
+    public String updateMonAn(
+            @PathVariable Long id,
+            @ModelAttribute MonAn monAn,
+            @RequestParam(required = false) Long theLoaiId,
+            @RequestParam(required = false) String hinhAnhStr,
+            Model model) {
+
+        if (theLoaiId == null) {
+            model.addAttribute("error", "Vui lòng chọn thể loại");
+            model.addAttribute("monAn", monAn);
+            model.addAttribute("theLoaiList", theLoaiService.getAll());
+            model.addAttribute("hinhAnhStr", hinhAnhStr == null ? "" : hinhAnhStr);
+            return "admin/mon-an/form"; // ✅ form.html
+        }
 
         monAn.setTheLoai(theLoaiService.getById(theLoaiId));
 
@@ -98,15 +122,16 @@ public class MonAnAdminController {
         return "redirect:/admin/mon-an";
     }
 
-
-    // Xóa món ăn
+    // ========================= DELETE ===========================
     @GetMapping("/delete/{id}")
     public String deleteMonAn(@PathVariable Long id, Model model) {
         try {
             monAnService.delete(id);
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "admin/mon-an/list";
+            model.addAttribute("monAnPage", monAnService.getAll(0, 5, null, null));
+            model.addAttribute("theLoaiList", theLoaiService.getAll());
+            return "admin/mon-an/list"; // ✅ list.html
         }
         return "redirect:/admin/mon-an";
     }

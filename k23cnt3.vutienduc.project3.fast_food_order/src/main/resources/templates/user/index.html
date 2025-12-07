@@ -1,47 +1,424 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${title}">Trang chủ - FastFoodApp</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Head với CSS từ Layout -->
+    <th:block th:replace="fragments/_LayoutUser :: head"></th:block>
+
+    <!-- CSS riêng cho trang Index -->
+    <style>
+        /* === HERO SECTION === */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-section::before {
+            content: '🍕🍔🍟🌮🍗';
+            position: absolute;
+            top: 20%;
+            right: -50px;
+            font-size: 8rem;
+            opacity: 0.1;
+            animation: float 8s infinite;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--bg-main);
+            clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: slideInDown 0.8s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === SECTION HEADER === */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 1rem;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        /* === FOOD CARD === */
+        .food-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .food-card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        }
+
+        .food-card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .food-card:hover .food-card-img-wrapper img {
+            transform: scale(1.15);
+        }
+
+        .food-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.8rem;
+            min-height: 60px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .info-item i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: auto;
+        }
+
+        /* === BUTTONS === */
+        .btn {
+            border-radius: 12px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-view:hover {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+            color: white;
+        }
+
+        .btn-add-cart {
+            background: linear-gradient(135deg, var(--success), #34D399);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-add-cart:hover {
+            background: linear-gradient(135deg, #059669, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--text-light);
+            opacity: 0.5;
+            margin-bottom: 2rem;
+        }
+
+        .empty-state h3 {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .food-card {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .food-card:nth-child(1) { animation-delay: 0.1s; }
+        .food-card:nth-child(2) { animation-delay: 0.2s; }
+        .food-card:nth-child(3) { animation-delay: 0.3s; }
+        .food-card:nth-child(4) { animation-delay: 0.4s; }
+        .food-card:nth-child(5) { animation-delay: 0.5s; }
+        .food-card:nth-child(6) { animation-delay: 0.6s; }
+        .food-card:nth-child(7) { animation-delay: 0.7s; }
+        .food-card:nth-child(8) { animation-delay: 0.8s; }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+            .food-card-img-wrapper {
+                height: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <!-- Header -->
 <div th:replace="fragments/_LayoutUser :: header"></div>
 
-<!-- Nội dung chính -->
-<div class="container my-4">
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>🍔 Chào mừng đến FastFoodApp! 🍕</h1>
+            <p>Thưởng thức món ăn nhanh ngon nhất, giao hàng tận nơi siêu tốc</p>
+        </div>
+    </div>
+</section>
 
-    <h2>Danh sách món ăn</h2>
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3" th:each="monAn : ${monAnList}">
-            <div class="card h-100">
-                <img th:src="@{${monAn.hinhAnh[0]}}" class="card-img-top" alt="Hình món ăn">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${monAn.ten}"></h5>
-                    <p class="card-text">Giá: <span th:text="${monAn.gia}"></span>₫</p>
-                    <p class="card-text">Loại: <span th:text="${monAn.theLoai.tenTheLoai}"></span></p>
-                    <a th:href="@{/mon-an/{id}(id=${monAn.id})}" class="btn btn-primary mb-2">Xem chi tiết</a>
-                    <form th:action="@{/gio-hang/them}" method="post" sec:authorize="isAuthenticated()">
-                        <input type="hidden" name="monAnId" th:value="${monAn.id}" />
-                        <button type="submit" class="btn btn-success">Thêm vào giỏ</button>
-                    </form>
+<!-- Main Content -->
+<main>
+    <div class="container my-5">
 
-                    <a href="/login" class="btn btn-outline-secondary" sec:authorize="!isAuthenticated()">
-                        Đăng nhập để mua
-                    </a>
+        <!-- Section Header -->
+        <div class="section-header">
+            <h2>🔥 Thực đơn hôm nay</h2>
+            <p>Khám phá những món ăn được yêu thích nhất</p>
+        </div>
 
+        <!-- Food Grid -->
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 col-xl-3" th:each="monAn : ${monAnList}">
+                <div class="food-card">
+                    <div class="food-card-img-wrapper">
+                        <img th:src="@{${monAn.hinhAnh[0]}}"
+                             th:alt="${monAn.ten}"
+                             onerror="this.src='https://via.placeholder.com/300x220?text=Food+Image'">
+                        <span class="food-badge" th:text="${monAn.theLoai.tenTheLoai}">Category</span>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${monAn.ten}">Tên món ăn</h5>
+
+                        <div class="card-info">
+                            <div class="info-item">
+                                <i class="bi bi-tag-fill"></i>
+                                <span th:text="${monAn.theLoai.tenTheLoai}">Loại</span>
+                            </div>
+                        </div>
+
+                        <div class="price">
+                            <span th:text="${#numbers.formatDecimal(monAn.gia, 0, 'COMMA', 0, 'POINT')} + '₫'">0₫</span>
+                        </div>
+
+                        <div class="card-actions">
+                            <a th:href="@{/mon-an/{id}(id=${monAn.id})}" class="btn btn-view">
+                                <i class="bi bi-eye"></i> Xem chi tiết
+                            </a>
+
+                            <!-- Logged In User -->
+                            <form th:action="@{/gio-hang/them}" method="post" sec:authorize="isAuthenticated()">
+                                <input type="hidden" name="monAnId" th:value="${monAn.id}" />
+                                <button type="submit" class="btn btn-add-cart w-100">
+                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                </button>
+                            </form>
+
+                            <!-- Not Logged In -->
+                            <a href="/login" class="btn btn-login" sec:authorize="!isAuthenticated()">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập để mua
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</div>
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(monAnList)}" class="empty-state">
+            <i class="bi bi-basket3"></i>
+            <h3>Chưa có món ăn nào</h3>
+            <p>Vui lòng quay lại sau!</p>
+        </div>
+
+    </div>
+</main>
 
 <!-- Footer -->
 <div th:replace="fragments/_LayoutUser :: footer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Scripts -->
+<div th:replace="fragments/_LayoutUser :: scripts"></div>
+
 </body>
 </html>

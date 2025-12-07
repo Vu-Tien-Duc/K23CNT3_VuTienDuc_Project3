@@ -9,29 +9,223 @@
       )}">
 
 <head>
-    <!-- CUSTOM STYLES -->
     <th:block th:fragment="styles">
         <style>
-            .stats-card {
-                background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-                transition: .3s;
+            /* Background tổng thể */
+            body {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             }
-            .stats-card:hover {
-                transform: translateY(-4px);
-            }
-            .stats-value {
-                font-size: 2rem;
-                font-weight: bold;
-            }
+
+            /* Welcome Card - Hiện đại hơn */
             .welcome-card {
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
-                padding: 2rem;
-                border-radius: 12px;
+                background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+                padding: 2.5rem;
+                border-radius: 20px;
                 color: white;
                 margin-bottom: 2rem;
+                box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .welcome-card::before {
+                content: "🍔";
+                position: absolute;
+                font-size: 150px;
+                opacity: 0.1;
+                right: -20px;
+                top: -30px;
+                transform: rotate(-15deg);
+            }
+
+            .welcome-card h2 {
+                font-size: 2.2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            .welcome-card p {
+                font-size: 1.1rem;
+                margin-top: 0.5rem;
+                opacity: 0.95;
+            }
+
+            /* Container cho stats */
+            .stats-container {
+                margin-bottom: 2rem;
+            }
+
+            /* Card thống kê - Nâng cấp */
+            .stats-card {
+                border-radius: 16px;
+                padding: 2rem 1.5rem;
+                color: white;
+                text-align: center;
+                font-weight: 600;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+            /* Hiệu ứng sáng phía sau */
+            .stats-card::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+                transition: 0.5s;
+                opacity: 0;
+            }
+
+            .stats-card:hover::before {
+                opacity: 1;
+                animation: shine 1.5s ease-in-out infinite;
+            }
+
+            @keyframes shine {
+                0%, 100% { transform: translate(-50%, -50%) scale(0.8); }
+                50% { transform: translate(-30%, -30%) scale(1); }
+            }
+
+            .stats-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            }
+
+            /* Icon container */
+            .stats-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                display: inline-block;
+                animation: float 3s ease-in-out infinite;
+            }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .stats-value {
+                font-size: 2.8rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .stats-label {
+                font-size: 1.1rem;
+                opacity: 0.95;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
+            }
+
+            /* Gradient màu cho từng card - Phù hợp fastfood */
+            .bg-user {
+                background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            }
+            .bg-order {
+                background: linear-gradient(135deg, #F7931E, #FFC107);
+            }
+            .bg-comment {
+                background: linear-gradient(135deg, #10b981, #34D399);
+            }
+            .bg-food {
+                background: linear-gradient(135deg, #EF4444, #F87171);
+            }
+            .bg-category {
+                background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            }
+            .bg-discount {
+                background: linear-gradient(135deg, #EC4899, #F472B6);
+            }
+
+            /* Quick Actions Section */
+            .quick-actions {
+                background: white;
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin-top: 2rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            }
+
+            .quick-actions h4 {
+                color: #FF6B35;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            .action-btn {
+                display: inline-block;
+                padding: 0.8rem 1.5rem;
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                color: white;
+                border-radius: 10px;
+                text-decoration: none;
+                margin: 0.5rem;
+                transition: 0.3s;
+                font-weight: 600;
+                box-shadow: 0 4px 10px rgba(255, 107, 53, 0.2);
+            }
+
+            .action-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+                color: white;
+            }
+
+            /* Recent Activity Section */
+            .recent-activity {
+                background: white;
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin-top: 2rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            }
+
+            .recent-activity h4 {
+                color: #F7931E;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                font-size: 1.3rem;
+            }
+
+            .activity-item {
+                padding: 1rem;
+                border-left: 4px solid #FF6B35;
+                background: #f8f9fa;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                transition: 0.3s;
+            }
+
+            .activity-item:hover {
+                background: #fff5f2;
+                transform: translateX(5px);
+            }
+
+            .activity-time {
+                color: #6c757d;
+                font-size: 0.85rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .stats-value { font-size: 2rem; }
+                .stats-icon { font-size: 2.5rem; }
+                .welcome-card h2 { font-size: 1.8rem; }
+            }
+
+            /* Link styling */
+            a.card-link {
+                text-decoration: none;
+                display: block;
             }
         </style>
     </th:block>
@@ -39,44 +233,134 @@
 
 <body>
 
-<!-- MAIN CONTENT -->
 <section th:fragment="content">
 
+    <!-- Welcome Banner -->
     <div class="welcome-card">
-        <h2>Chào mừng trở lại, Admin!</h2>
+        <h2>🍕 Chào mừng trở lại, Admin!</h2>
         <p>
             <i class="bi bi-calendar-check"></i>
-            <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+            Hôm nay là <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}"></span>
+            | <i class="bi bi-clock"></i>
+            <span th:text="${#temporals.format(#temporals.createNow(), 'HH:mm')}"></span>
         </p>
     </div>
 
-    <div class="row g-4 mb-4">
+    <!-- Thống kê tổng quan -->
+    <div class="stats-container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 g-4">
 
-        <div class="col-md-3">
-            <div class="stats-card">
-                <h6>Tổng đơn hàng</h6>
-                <div class="stats-value" th:text="${tongDonHang}">0</div>
+            <div class="col">
+                <a href="/admin/nguoi-dung" class="card-link">
+                    <div class="stats-card bg-user">
+                        <div class="stats-icon">👥</div>
+                        <div class="stats-value" th:text="${tongNguoiDung}">0</div>
+                        <div class="stats-label">Người dùng</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/admin/don-hang" class="card-link">
+                    <div class="stats-card bg-order">
+                        <div class="stats-icon">📦</div>
+                        <div class="stats-value" th:text="${tongDonHang}">0</div>
+                        <div class="stats-label">Đơn hàng</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/admin/binh-luan" class="card-link">
+                    <div class="stats-card bg-comment">
+                        <div class="stats-icon">💬</div>
+                        <div class="stats-value" th:text="${tongBinhLuan}">0</div>
+                        <div class="stats-label">Bình luận</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/admin/mon-an" class="card-link">
+                    <div class="stats-card bg-food">
+                        <div class="stats-icon">🍔</div>
+                        <div class="stats-value" th:text="${tongMonAn}">0</div>
+                        <div class="stats-label">Món ăn</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/admin/the-loai" class="card-link">
+                    <div class="stats-card bg-category">
+                        <div class="stats-icon">📑</div>
+                        <div class="stats-value" th:text="${tongTheLoai}">0</div>
+                        <div class="stats-label">Thể loại</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/admin/giam-gia" class="card-link">
+                    <div class="stats-card bg-discount">
+                        <div class="stats-icon">🎁</div>
+                        <div class="stats-value" th:text="${tongGiamGia}">0</div>
+                        <div class="stats-label">Mã giảm giá</div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Quick Actions & Recent Activity Row -->
+    <div class="row g-4">
+
+        <!-- Quick Actions -->
+        <div class="col-md-6">
+            <div class="quick-actions">
+                <h4>
+                    <i class="bi bi-lightning-charge-fill"></i> Thao tác nhanh
+                </h4>
+                <a href="/admin/mon-an/create" class="action-btn">
+                    <i class="bi bi-plus-circle"></i> Thêm món ăn mới
+                </a>
+                <a href="/admin/don-hang" class="action-btn">
+                    <i class="bi bi-box-seam"></i> Xem đơn hàng
+                </a>
+                <a href="/admin/giam-gia/create" class="action-btn">
+                    <i class="bi bi-gift"></i> Tạo mã giảm giá
+                </a>
+                <a href="/admin/the-loai/create" class="action-btn">
+                    <i class="bi bi-tag"></i> Thêm thể loại
+                </a>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="stats-card">
-                <h6>Chờ xử lý</h6>
-                <div class="stats-value" th:text="${choXuLy}">0</div>
-            </div>
-        </div>
+        <!-- Recent Activity -->
+        <div class="col-md-6">
+            <div class="recent-activity">
+                <h4>
+                    <i class="bi bi-activity"></i> Hoạt động gần đây
+                </h4>
 
-        <div class="col-md-3">
-            <div class="stats-card">
-                <h6>Đang xử lý</h6>
-                <div class="stats-value" th:text="${dangXuLy}">0</div>
-            </div>
-        </div>
+                <div class="activity-item">
+                    <strong>🆕 Đơn hàng mới</strong><br>
+                    <small>Đơn hàng #12345 vừa được đặt</small><br>
+                    <span class="activity-time">5 phút trước</span>
+                </div>
 
-        <div class="col-md-3">
-            <div class="stats-card">
-                <h6>Đang giao</h6>
-                <div class="stats-value" th:text="${dangGiao}">0</div>
+                <div class="activity-item">
+                    <strong>⭐ Đánh giá mới</strong><br>
+                    <small>Burger Phô Mai nhận 5 sao từ khách hàng</small><br>
+                    <span class="activity-time">15 phút trước</span>
+                </div>
+
+                <div class="activity-item">
+                    <strong>👤 Người dùng mới</strong><br>
+                    <small>Nguyễn Văn A đã đăng ký tài khoản</small><br>
+                    <span class="activity-time">1 giờ trước</span>
+                </div>
             </div>
         </div>
 
@@ -84,10 +368,30 @@
 
 </section>
 
-<!-- CUSTOM SCRIPTS -->
 <th:block th:fragment="scripts">
     <script>
-        console.log("Admin dashboard loaded!");
+        console.log("🍔 Admin dashboard loaded successfully!");
+
+        // Animation cho số liệu
+        document.addEventListener('DOMContentLoaded', function() {
+            const statsValues = document.querySelectorAll('.stats-value');
+
+            statsValues.forEach(stat => {
+                const finalValue = parseInt(stat.textContent);
+                let currentValue = 0;
+                const increment = Math.ceil(finalValue / 50);
+
+                const counter = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        stat.textContent = finalValue;
+                        clearInterval(counter);
+                    } else {
+                        stat.textContent = currentValue;
+                    }
+                }, 20);
+            });
+        });
     </script>
 </th:block>
 

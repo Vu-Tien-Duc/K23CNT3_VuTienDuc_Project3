@@ -13,6 +13,10 @@ public class TheLoaiService {
 
     private final TheLoaiRepository theLoaiRepository;
 
+    public long countAll() {
+        return theLoaiRepository.count();
+    }
+
     public List<TheLoai> getAll() {
         return theLoaiRepository.findAll();
     }

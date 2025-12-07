@@ -1,5 +1,6 @@
 package k23cnt3.vutienduc.project3.fast_food_order.service;
 
+import k23cnt3.vutienduc.project3.fast_food_order.entity.BinhLuan;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.MonAn;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.TheLoai;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.MonAnRepository;
@@ -18,6 +19,15 @@ public class MonAnService {
 
     private final MonAnRepository monAnRepository;
     private final TheLoaiRepository theLoaiRepository;
+
+    public long countAll() {
+        return monAnRepository.count();
+    }
+
+    public List<MonAn> findAll() {
+        return monAnRepository.findAll();
+    }
+
 
     public Page<MonAn> getAll(int page, int size, String search, Long theLoaiId) {
         Pageable pageable = PageRequest.of(page, size);
@@ -55,11 +65,18 @@ public class MonAnService {
 
     public MonAn update(Long id, MonAn monAn) {
         MonAn existing = getById(id);
+
         existing.setTen(monAn.getTen());
         existing.setMoTa(monAn.getMoTa());
         existing.setGia(monAn.getGia());
-        existing.setHinhAnh(monAn.getHinhAnh());
 
+        // --- Cập nhật nhiều ảnh an toàn ---
+        existing.getHinhAnh().clear();
+        if (monAn.getHinhAnh() != null) {
+            existing.getHinhAnh().addAll(monAn.getHinhAnh());
+        }
+
+        // --- Cập nhật thể loại ---
         if (monAn.getTheLoai() != null && monAn.getTheLoai().getId() != null) {
             TheLoai theLoai = theLoaiRepository.findById(monAn.getTheLoai().getId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy thể loại"));
@@ -68,6 +85,7 @@ public class MonAnService {
 
         return monAnRepository.save(existing);
     }
+
 
     public void delete(Long id) {
         MonAn monAn = monAnRepository.findById(id)

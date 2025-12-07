@@ -1,49 +1,420 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-        title='Người dùng',
-        headerTitle='Danh sách người dùng',
-        content=~{::content}
+            title='Người dùng',
+            headerTitle='Quản lý Người dùng',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
       )}">
 
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body {
+                background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+                color: #333;
+            }
+
+            /* Card Container */
+            .card {
+                border-radius: 20px;
+                border: none;
+                background: white;
+                box-shadow: 0 10px 40px rgba(255, 107, 53, 0.15);
+            }
+
+            .card-body { padding: 2rem; }
+
+            /* Page Header */
+            .page-header {
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                padding: 1.5rem 2rem;
+                margin: -2rem -2rem 2rem -2rem;
+                color: white;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+            }
+
+            .btn-add-header {
+                background: white;
+                color: #FF6B35;
+                padding: 0.7rem 1.5rem;
+                border-radius: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .btn-add-header:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+                color: #EA580C;
+            }
+
+            /* Search & Filter Section */
+            .search-section {
+                background: #FFF7ED;
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                border: 2px solid #FFEDD5;
+            }
+
+            .filter-label {
+                font-weight: 600;
+                color: #FF6B35;
+                margin-bottom: 0.5rem;
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            /* Form Controls */
+            .form-control, .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 2px solid #FFEDD5;
+                background-color: white;
+                transition: all 0.3s;
+                font-weight: 500;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #FF6B35;
+                box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+                outline: none;
+            }
+
+            /* Table Container */
+            .table-container {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            table {
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            th {
+                background: linear-gradient(135deg, #FF6B35, #F7931E);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            td {
+                background-color: white;
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            tr {
+                transition: all 0.3s;
+            }
+
+            tbody tr:hover {
+                background-color: #FFF7ED !important;
+                transform: scale(1.005);
+            }
+
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* User Info */
+            .user-name {
+                font-weight: 700;
+                font-size: 1rem;
+                color: #FF6B35;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .user-name::before {
+                content: "👤";
+                font-size: 1.2rem;
+            }
+
+            .user-email {
+                color: #6C757D;
+                font-size: 0.9rem;
+            }
+
+            .user-email::before {
+                content: "📧 ";
+            }
+
+            .user-phone::before {
+                content: "📱 ";
+                color: #F7931E;
+            }
+
+            .user-address {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .user-address::before {
+                content: "📍 ";
+                color: #EF4444;
+            }
+
+            /* Role Badge */
+            .badge {
+                background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+                color: white;
+                border-radius: 20px;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+            }
+
+            .badge.role-admin {
+                background: linear-gradient(135deg, #EF4444, #F87171);
+            }
+
+            .badge.role-user {
+                background: linear-gradient(135deg, #10B981, #34D399);
+            }
+
+            /* ID Badge */
+            .id-badge {
+                background: #F3F4F6;
+                color: #6C757D;
+                padding: 0.3rem 0.7rem;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            /* Buttons */
+            .btn {
+                border-radius: 10px !important;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s;
+                border: none;
+                font-size: 0.85rem;
+            }
+
+            .btn-edit {
+                background: linear-gradient(135deg, #F59E0B, #FBBF24);
+                color: white;
+            }
+
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            }
+
+            .btn-reset {
+                background: #6C757D;
+                color: white;
+            }
+
+            .btn-reset:hover {
+                background: #5A6268;
+                transform: translateY(-2px);
+            }
+
+            /* Action buttons */
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6C757D;
+            }
+
+            .empty-state::before {
+                content: "👥";
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
+
+                table {
+                    font-size: 0.85rem;
+                }
+            }
+        </style>
+    </th:block>
+</head>
+
 <body>
-
 <section th:fragment="content">
+    <div class="card">
+        <div class="card-body">
 
-    <div class="card p-3">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h5>👥 Quản lý Người Dùng</h5>
+                    <a href="/admin/nguoi-dung/create" class="btn-add-header">
+                        <i class="bi bi-person-plus-fill"></i>
+                        Thêm người dùng
+                    </a>
+                </div>
+            </div>
 
-        <table class="table table-hover">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Tên</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Vai trò</th>
-                <th></th>
-            </tr>
-            </thead>
+            <!-- Search & Filter -->
+            <div class="search-section">
+                <form method="get" th:action="@{/admin/nguoi-dung}" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="filter-label">🔍 Tìm kiếm người dùng</label>
+                        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên hoặc email..." class="form-control"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="filter-label">🎭 Lọc theo vai trò</label>
+                        <select name="role" class="form-select" onchange="this.form.submit()">
+                            <option value="ALL" th:selected="${role == null or role == 'ALL'}">Tất cả vai trò</option>
+                            <option th:each="r : ${roles}" th:value="${r.tenVaiTro}" th:text="${r.tenVaiTro}" th:selected="${role == r.tenVaiTro}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <a href="/admin/nguoi-dung" class="btn btn-reset w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
 
-            <tbody>
-            <tr th:each="u : ${list}">
-                <td th:text="${u.id}"></td>
-                <td th:text="${u.ten}"></td>
-                <td th:text="${u.email}"></td>
-                <td th:text="${u.sdt}"></td>
-                <td th:text="${u.vaiTro.tenVaiTro}"></td>
+            <!-- Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Vai trò</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${users.content}">
+                        <td>
+                            <span class="id-badge" th:text="'#' + ${u.id}"></span>
+                        </td>
+                        <td>
+                            <div class="user-name" th:text="${u.ten}"></div>
+                        </td>
+                        <td>
+                            <span class="user-email" th:text="${u.email}"></span>
+                        </td>
+                        <td>
+                            <span class="user-phone" th:text="${u.sdt}"></span>
+                        </td>
+                        <td>
+                            <span class="user-address" th:text="${u.diaChi}" th:title="${u.diaChi}"></span>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${u.vaiTro.tenVaiTro == 'ADMIN' ? 'role-admin' : 'role-user'}"
+                                  th:text="${u.vaiTro.tenVaiTro}"></span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/nguoi-dung/edit/' + ${u.id}}" class="btn btn-edit btn-sm">
+                                    <i class="bi bi-pencil-fill"></i> Sửa
+                                </a>
+                                <a th:href="@{'/admin/nguoi-dung/delete/' + ${u.id}}" class="btn btn-delete btn-sm"
+                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa người dùng này?')">
+                                    <i class="bi bi-trash-fill"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${users.content.size() == 0}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <strong>Không có người dùng nào</strong>
+                                <p>Chưa có dữ liệu người dùng trong hệ thống</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <td>
-                    <a th:href="@{'/admin/nguoi-dung/edit/' + ${u.id}}"
-                       class="btn btn-warning btn-sm">Sửa</a>
-                </td>
-            </tr>
-            </tbody>
-
-        </table>
-
+        </div>
     </div>
-
 </section>
 
+<th:block th:fragment="scripts">
+    <script>
+        console.log("👥 Loaded: Quản lý người dùng");
+
+        // Animation khi load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
+    </script>
+</th:block>
 </body>
 </html>

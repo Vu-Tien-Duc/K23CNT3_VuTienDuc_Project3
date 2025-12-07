@@ -17,22 +17,69 @@ public class DonHangAdminController {
 
     private final DonHangService donHangService;
 
+    // ====================== LIST ALL ORDERS ======================
     @GetMapping
-    public String list(@RequestParam(required = false) String trangThai, Model model) {
-        List<DonHang> donHangs = donHangService.getAll(trangThai);
-        model.addAttribute("donHangs", donHangs);
-        return "admin/don-hang/list";
+    public String listOrders(Model model,
+                             @RequestParam(defaultValue = "") String keyword,
+                             @RequestParam(defaultValue = "ALL") String trangThai) {
+
+        List<DonHang> orders;
+        if (trangThai.equals("ALL") || trangThai.isEmpty()) {
+            orders = donHangService.getAll(null);
+        } else {
+            orders = donHangService.getAll(trangThai);
+        }
+
+        model.addAttribute("orders", orders);
+        model.addAttribute("trangThais", TrangThaiDonHang.values());
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("activePage", "don-hang");
+
+        return "admin/don-hang/list"; // ✅ list.html
     }
 
-    @PostMapping("/update-status/{id}")
-    public String updateStatus(@PathVariable Long id, @RequestParam TrangThaiDonHang trangThai) {
-        donHangService.updateStatus(id, trangThai);
-        return "redirect:/admin/don-hang";
+    // ====================== VIEW ORDER DETAIL ======================
+    @GetMapping("/detail/{id}")
+    public String viewOrder(@PathVariable Long id, Model model) {
+        DonHang order = donHangService.getAll(null).stream()
+                .filter(o -> o.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+        model.addAttribute("order", order);
+        model.addAttribute("trangThais", TrangThaiDonHang.values());
+        model.addAttribute("activePage", "don-hang");
+
+        return "admin/don-hang/detail"; // ✅ detail.html
     }
 
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    // ====================== SHOW FORM EDIT STATUS ======================
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        DonHang order = donHangService.getAll(null).stream()
+                .filter(o -> o.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+        model.addAttribute("order", order);
+        model.addAttribute("trangThais", TrangThaiDonHang.values());
+        model.addAttribute("activePage", "don-hang");
+
+        return "admin/don-hang/form"; // ✅ form.html
+    }
+
+    // ====================== UPDATE ORDER STATUS ======================
+    @PostMapping("/edit")
+    public String updateOrder(@ModelAttribute("order") DonHang order) {
+        donHangService.updateStatus(order.getId(), order.getTrangThai());
+        return "redirect:/admin/don-hang?success=updated";
+    }
+
+    // ====================== DELETE ORDER ======================
+    @GetMapping("/delete/{id}")
+    public String deleteOrder(@PathVariable Long id) {
         donHangService.delete(id);
-        return "redirect:/admin/don-hang";
+        return "redirect:/admin/don-hang?success=deleted";
     }
 }

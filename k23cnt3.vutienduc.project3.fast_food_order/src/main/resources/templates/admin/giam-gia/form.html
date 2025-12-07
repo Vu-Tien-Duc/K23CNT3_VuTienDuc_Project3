@@ -1,36 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-            title='Giảm giá',
-            headerTitle=${formTitle},
-            content=~{::content}
+            title='Mã giảm giá',
+            headerTitle='Quản lý Mã giảm giá',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
       )}">
-
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body {
+                background-color: #fff7ed; /* tông cam sáng, giống đồ ăn nhanh */
+            }
+            .card {
+                border-radius: 16px;
+                border: none;
+                background: #fff8f1;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            }
+            .card-body {
+                padding: 32px;
+            }
+            h5 {
+                font-weight: 700;
+                color: #f97316; /* cam nổi bật */
+            }
+            .form-label {
+                font-weight: 600;
+                color: #333;
+            }
+            .form-control, .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 1px solid #f97316;
+                background-color: #fff3e0;
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: #ea580c;
+                box-shadow: 0 0 0 0.2rem rgba(249,115,22,0.25);
+            }
+            .btn {
+                border-radius: 12px !important;
+                font-weight: 600;
+                min-width: 120px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .btn-save {
+                background: linear-gradient(to right, #f97316, #f59e0b);
+                color: white;
+                transition: 0.3s;
+            }
+            .btn-save:hover {
+                background: linear-gradient(to right, #ea580c, #d97706);
+            }
+            .btn-cancel {
+                background-color: #6c757d;
+                color: white;
+            }
+            .btn-cancel:hover {
+                background-color: #5a6268;
+            }
+            .d-flex.gap-2 {
+                justify-content: flex-end;
+                margin-top: 24px;
+            }
+        </style>
+    </th:block>
+</head>
 <body>
-
 <section th:fragment="content">
-    <div class="card p-4">
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:600px;">
+        <div class="card-body">
+            <h5 class="mb-4" th:text="${giamGia.id != null ? 'Cập nhật mã giảm giá #' + giamGia.id : 'Tạo mã giảm giá mới'}"></h5>
 
-        <form th:action="@{/admin/giam-gia/save}" th:object="${giamGia}" method="post">
+            <form th:action="@{${giamGia.id != null} ? '/admin/giam-gia/edit' : '/admin/giam-gia/create'}"
+                  th:object="${giamGia}" method="post">
+                <input type="hidden" th:field="*{id}"/>
 
-            <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label for="maGiamGia" class="form-label">Mã giảm giá</label>
+                    <input type="text" id="maGiamGia" class="form-control" th:field="*{maGiamGia}" placeholder="VD: GIAM10" required/>
+                </div>
 
-            <div class="mb-3">
-                <label>Tên chương trình</label>
-                <input class="form-control" th:field="*{ten}">
-            </div>
+                <div class="mb-3">
+                    <label for="giaTri" class="form-label">Giá trị</label>
+                    <input type="number" step="0.01" id="giaTri" class="form-control" th:field="*{giaTri}" placeholder="Nhập giá trị" required/>
+                </div>
 
-            <div class="mb-3">
-                <label>Phần trăm giảm</label>
-                <input type="number" class="form-control" th:field="*{phanTram}">
-            </div>
+                <div class="mb-3">
+                    <label for="laPhanTram" class="form-label">Loại</label>
+                    <select id="laPhanTram" class="form-select" th:field="*{laPhanTram}">
+                        <option th:value="true">Phần trăm (%)</option>
+                        <option th:value="false">Số tiền (đ)</option>
+                    </select>
+                </div>
 
-            <button class="btn btn-success">Lưu</button>
-            <a href="/admin/giam-gia" class="btn btn-secondary ms-2">Hủy</a>
-        </form>
+                <div class="mb-3">
+                    <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                    <input type="datetime-local" id="ngayBatDau" class="form-control" th:field="*{ngayBatDau}"/>
+                </div>
 
+                <div class="mb-3">
+                    <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                    <input type="datetime-local" id="ngayKetThuc" class="form-control" th:field="*{ngayKetThuc}"/>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-save">Lưu</button>
+                    <a href="/admin/giam-gia" class="btn btn-cancel">Hủy</a>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
 
+<th:block th:fragment="scripts">
+    <script>
+        console.log("Loaded form GiamGia - Fast Food Style");
+    </script>
+</th:block>
 </body>
 </html>

@@ -2,95 +2,182 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
+    <title>Đăng ký tài khoản - FastFood</title>
 
     <style>
         body {
-            background: linear-gradient(135deg, #36b9cc, #4e73df);
-            height: 100vh;
+            background: linear-gradient(135deg, #F7931E, #FF6B35);
+            background-image:
+                linear-gradient(135deg, rgba(247,147,30,0.95), rgba(255,107,53,0.95)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="60" opacity="0.05">🍕</text></svg>');
+            min-height: 100vh;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px 0;
         }
 
         .register-card {
             background: #ffffff;
-            padding: 35px 40px;
-            width: 420px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            animation: fadeIn 0.5s ease-in-out;
+            padding: 40px 45px;
+            width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            animation: fadeIn 0.6s ease-in-out;
+            margin: 20px;
+        }
+
+        /* Logo/Icon */
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
         }
 
         .register-title {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             color: #333;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            position: relative;
         }
 
         .input-group label {
-            font-weight: bold;
+            font-weight: 600;
             font-size: 14px;
-            color: #444;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            font-size: 18px;
+            color: #F7931E;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 15px;
             transition: 0.3s;
+            box-sizing: border-box;
         }
 
         .input-group input:focus {
-            border-color: #36b9cc;
-            box-shadow: 0 0 6px rgba(54,185,204,0.4);
+            border-color: #F7931E;
+            box-shadow: 0 0 0 3px rgba(247,147,30,0.1);
             outline: none;
         }
 
         .btn-register {
             width: 100%;
-            padding: 12px;
-            background: #36b9cc;
+            padding: 15px;
+            background: linear-gradient(135deg, #F7931E, #FF6B35);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(247,147,30,0.3);
         }
 
         .btn-register:hover {
-            background: #2c9faf;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247,147,30,0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0 20px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 15px;
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
+        }
+
+        .login-link p {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
 
         .login-link a {
-            color: #4e73df;
+            color: #FF6B35;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 15px;
         }
 
         .login-link a:hover {
             text-decoration: underline;
         }
 
+        /* Terms */
+        .terms {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .terms a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
         @keyframes fadeIn {
             from {
-                transform: translateY(15px);
+                transform: translateY(20px);
                 opacity: 0;
             }
             to {
@@ -106,41 +193,58 @@
 
 <div class="register-card">
 
-    <h2 class="register-title">Đăng ký tài khoản</h2>
+    <div class="logo">
+        <div class="logo-icon">🍕</div>
+    </div>
+
+    <h2 class="register-title">Tạo tài khoản</h2>
+    <p class="subtitle">Tham gia ngay để nhận ưu đãi hấp dẫn!</p>
 
     <form th:action="@{/register/save}" method="post">
 
-
-    <div class="input-group">
+        <div class="input-group">
             <label for="ten">Họ và tên</label>
-            <input type="text" id="ten" name="ten" placeholder="Nhập họ tên..." required>
+            <span class="input-icon">👤</span>
+            <input type="text" id="ten" name="ten" placeholder="Nguyễn Văn A" required>
         </div>
 
         <div class="input-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Nhập email..." required>
+            <span class="input-icon">📧</span>
+            <input type="email" id="email" name="email" placeholder="email@example.com" required>
         </div>
 
         <div class="input-group">
             <label for="matKhau">Mật khẩu</label>
-            <input type="password" id="matKhau" name="matKhau" placeholder="Nhập mật khẩu..." required>
+            <span class="input-icon">🔒</span>
+            <input type="password" id="matKhau" name="matKhau" placeholder="Tối thiểu 6 ký tự" required>
         </div>
 
         <div class="input-group">
             <label for="sdt">Số điện thoại</label>
-            <input type="text" id="sdt" name="sdt" placeholder="Nhập số điện thoại..." required>
+            <span class="input-icon">📱</span>
+            <input type="text" id="sdt" name="sdt" placeholder="0912345678" required>
         </div>
 
         <div class="input-group">
-            <label for="diaChi">Địa chỉ</label>
-            <input type="text" id="diaChi" name="diaChi" placeholder="Nhập địa chỉ..." required>
+            <label for="diaChi">Địa chỉ giao hàng</label>
+            <span class="input-icon">📍</span>
+            <input type="text" id="diaChi" name="diaChi" placeholder="Số nhà, tên đường, quận..." required>
         </div>
 
-        <button class="btn-register" type="submit">Tạo tài khoản</button>
+        <button class="btn-register" type="submit">Đăng ký ngay</button>
+
+        <div class="terms">
+            Bằng việc đăng ký, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a> của chúng tôi
+        </div>
     </form>
 
+    <div class="divider">
+        <span>HOẶC</span>
+    </div>
+
     <div class="login-link">
-        <p>Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
+        <p>Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
     </div>
 
 </div>

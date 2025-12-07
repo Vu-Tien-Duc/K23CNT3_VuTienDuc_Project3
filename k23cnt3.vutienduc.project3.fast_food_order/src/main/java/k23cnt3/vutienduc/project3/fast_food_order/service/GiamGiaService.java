@@ -14,6 +14,10 @@ public class GiamGiaService {
 
     private final GiamGiaRepository giamGiaRepository;
 
+    public long countAll() {
+        return giamGiaRepository.count();
+    }
+
     public List<GiamGia> getAll() {
         return giamGiaRepository.findAll();
     }

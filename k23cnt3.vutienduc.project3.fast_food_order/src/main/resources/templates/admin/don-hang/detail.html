@@ -1,51 +1,281 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-        title='Chi tiết đơn hàng',
-        headerTitle='Chi tiết đơn hàng #' + ${donHang.id},
-        content=~{::content}
+            title='Chi tiết đơn hàng',
+            headerTitle='Chi tiết Đơn hàng',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
       )}">
 
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body { background: #FFF7ED; color: #333; }
+
+            .card-detail {
+                max-width: 1200px;
+                margin: 2rem auto;
+                background: #fff;
+                border-radius: 16px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                overflow: hidden;
+            }
+
+            .card-header {
+                background: linear-gradient(135deg, #F59E0B, #FBBF24);
+                color: white;
+                padding: 1.5rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .card-header h4 {
+                margin: 0;
+                font-weight: 700;
+            }
+
+            .btn-back {
+                background: white;
+                color: #F59E0B;
+                padding: 0.5rem 1.2rem;
+                border-radius: 10px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+            }
+
+            .btn-back:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+            }
+
+            .card-body { padding: 2rem; }
+
+            .status-badge {
+                display: inline-block;
+                padding: 0.4rem 0.8rem;
+                border-radius: 12px;
+                font-weight: 600;
+                color: white;
+                margin-bottom: 1.5rem;
+            }
+
+            .status-CHO_XAC_NHAN { background: #F59E0B; }
+            .status-DA_XAC_NHAN { background: #3B82F6; }
+            .status-DANG_GIAO { background: #8B5CF6; }
+            .status-HOAN_THANH { background: #10B981; }
+            .status-DA_HUY { background: #EF4444; }
+
+            .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .info-box {
+                background: #FFFBEB;
+                padding: 1rem;
+                border-radius: 12px;
+                border: 1px solid #FCD34D;
+            }
+
+            .info-label { font-weight: 600; color: #92400E; }
+            .info-value { font-weight: 700; color: #78350F; }
+
+            .items-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 2rem;
+            }
+
+            .items-table th, .items-table td {
+                padding: 0.8rem 1rem;
+                text-align: left;
+            }
+
+            .items-table th {
+                background: #F59E0B;
+                color: white;
+                font-weight: 600;
+            }
+
+            .items-table tbody tr:nth-child(even) td { background: #FFFBEB; }
+
+            .item-image {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            .total-section {
+                padding: 1rem;
+                border-radius: 12px;
+                background: #ECFDF5;
+                border: 1px solid #6EE7B7;
+                font-weight: 600;
+                margin-bottom: 2rem;
+            }
+
+            .total-row { display: flex; justify-content: space-between; padding: 0.5rem 0; }
+            .total-row.grand-total { color: #065F46; font-weight: 700; font-size: 1.2rem; border-top: 2px solid #10B981; padding-top: 0.5rem; }
+
+            .status-update {
+                padding: 1rem;
+                border-radius: 12px;
+                background: #F3F4F6;
+                border: 1px solid #E5E7EB;
+                margin-bottom: 2rem;
+            }
+
+            .form-select {
+                border-radius: 8px;
+                padding: 0.5rem;
+                border: 1px solid #D1D5DB;
+                font-weight: 500;
+            }
+
+            .action-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .btn-action { padding: 0.6rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: all 0.3s; color: #fff; }
+            .btn-primary { background: #3B82F6; }
+            .btn-success { background: #10B981; }
+            .btn-danger { background: #EF4444; }
+
+            @media(max-width:768px) {
+                .card-header { flex-direction: column; gap: 1rem; text-align:center; }
+                .info-grid { grid-template-columns: 1fr; }
+            }
+        </style>
+    </th:block>
+</head>
+
 <body>
-
 <section th:fragment="content">
+    <div class="card-detail">
 
-    <div class="card p-4">
+        <div class="card-header">
+            <h4>🛒 Chi tiết Đơn hàng #<span th:text="${order.id}"></span></h4>
+            <a th:href="@{/admin/don-hang}" class="btn-back">Quay lại</a>
+        </div>
 
-        <h5 class="mb-3">Thông tin đơn hàng</h5>
+        <div class="card-body">
 
-        <p><strong>Khách:</strong> <span th:text="${donHang.nguoiDung.ten}"></span></p>
-        <p><strong>Ngày đặt:</strong>
-            <span th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}"></span>
-        </p>
-        <p><strong>Trạng thái:</strong> <span th:text="${donHang.trangThai}"></span></p>
+            <!-- Status -->
+            <div class="text-center">
+                <span class="status-badge" th:classappend="'status-' + ${order.trangThai}"
+                      th:text="${#strings.replace(order.trangThai,'_',' ')}"></span>
+            </div>
 
-        <hr>
+            <!-- Order Info -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Khách hàng</div>
+                    <div class="info-value" th:text="${order.nguoiDung != null ? order.nguoiDung.ten : '-'}"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">SĐT</div>
+                    <div class="info-value" th:text="${order.sdt != null ? order.sdt : '-'}"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Địa chỉ giao</div>
+                    <div class="info-value" th:text="${order.diaChiGiao != null ? order.diaChiGiao : '-'}"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Ngày đặt</div>
+                    <div class="info-value" th:text="${order.ngayDat != null ? #temporals.format(order.ngayDat,'dd/MM/yyyy HH:mm') : '-'}"></div>
+                </div>
+            </div>
 
-        <h5>Sản phẩm</h5>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Món ăn</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="ct : ${donHang.chiTiet}">
-                <td th:text="${ct.monAn.ten}"></td>
-                <td th:text="${ct.soLuong}"></td>
-                <td th:text="${ct.tongTien}"></td>
-            </tr>
-            </tbody>
-        </table>
+            <!-- Order Items -->
+            <h5 class="mb-2">Chi tiết món ăn</h5>
+            <table class="items-table">
+                <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên món</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ct : ${order.chiTietDonHangs}">
+                    <td>
+                        <img th:if="${ct.monAn != null and ct.monAn.hinhAnh.size() > 0}"
+                             th:src="@{${ct.monAn.hinhAnh[0]}}"
+                             alt="Hình món ăn"
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
+                        <span th:if="${ct.monAn == null or ct.monAn.hinhAnh.size() == 0}">-</span>
+                    </td>
 
-        <hr>
 
-        <a href="/admin/don-hang" class="btn btn-secondary">Quay lại</a>
+                    <td th:text="${ct.monAn != null ? ct.monAn.ten : '-'}"></td>
+                    <td th:text="${ct.soLuong}"></td>
+                    <td th:text="${ct.monAn != null ? ct.monAn.gia + ' đ' : '-'}"></td>
+                    <td th:text="${ct.monAn != null ? ct.monAn.gia * ct.soLuong + ' đ' : '-'}"></td>
+                </tr>
+                <tr th:if="${order.chiTietDonHangs.size() == 0}">
+                    <td colspan="5" class="text-center text-muted">Chưa có món ăn.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Total & Discount -->
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Giảm giá:</span>
+                    <span th:text="${order.giamGia != null ? order.giamGia.maGiamGia + ' (' + (order.giamGia.laPhanTram ? order.giamGia.giaTri + '%' : order.giamGia.giaTri + ' đ') + ')' : 'Không'}"></span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>Tổng thanh toán:</span>
+                    <span th:text="${order.thanhToan != null ? order.thanhToan.soTien + ' đ' : '-'}"></span>
+                </div>
+            </div>
+
+            <!-- Update Status -->
+            <div class="status-update" th:if="${trangThais != null}">
+                <form th:action="@{/admin/don-hang/edit}" method="post">
+                    <input type="hidden" name="id" th:value="${order.id}" />
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <select name="trangThai" class="form-select">
+                                <option th:each="status : ${trangThais}"
+                                        th:value="${status}"
+                                        th:text="${#strings.replace(status,'_',' ')}"
+                                        th:selected="${status == order.trangThai}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn-action btn-success w-100">Cập nhật trạng thái</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a th:if="${order.thanhToan != null}"
+                   th:href="@{'/admin/thanh-toan/detail/' + ${order.thanhToan.id}}"
+                   class="btn-action btn-primary">Xem thanh toán</a>
+                <button type="button" class="btn-action btn-danger"
+                        th:onclick="'confirmDelete(' + ${order.id} + ')'">Xóa đơn hàng</button>
+            </div>
+
+        </div>
     </div>
-
 </section>
 
+<th:block th:fragment="scripts">
+    <script>
+        function confirmDelete(id) {
+            if(confirm('Bạn có chắc chắn muốn xóa đơn hàng #' + id + '?')) {
+                window.location.href = '/admin/don-hang/delete/' + id;
+            }
+        }
+    </script>
+</th:block>
 </body>
 </html>

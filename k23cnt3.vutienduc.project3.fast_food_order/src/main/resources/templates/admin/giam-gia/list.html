@@ -1,49 +1,353 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-        title='Quản lý giảm giá',
-        headerTitle='Mã giảm giá',
-        content=~{::content}
+            title='Mã giảm giá',
+            headerTitle='Quản lý mã giảm giá',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
       )}">
 
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body {
+                background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+                color: #333;
+            }
+
+            /* Card Container */
+            .card {
+                border-radius: 20px;
+                border: none;
+                background: white;
+                box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+            }
+
+            .card-body { padding: 2rem; }
+
+            /* Header Section */
+            .page-header {
+                background: linear-gradient(135deg, #8B5CF6, #EC4899);
+                padding: 1.5rem 2rem;
+                margin: -2rem -2rem 2rem -2rem;
+                color: white;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            /* Add Button in Header */
+            .btn-add-header {
+                background: white;
+                color: #8B5CF6;
+                padding: 0.7rem 1.5rem;
+                border-radius: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+                border: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .btn-add-header:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+                color: #7C3AED;
+            }
+
+            /* Table Container */
+            .table-container {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            table {
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            th {
+                background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                text-align: left;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            td {
+                background-color: white;
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            tbody tr {
+                transition: all 0.3s;
+            }
+
+            tbody tr:hover {
+                background-color: #FAF5FF !important;
+                transform: scale(1.01);
+            }
+
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Discount Code Styling */
+            .discount-code {
+                background: linear-gradient(135deg, #8B5CF6, #EC4899);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 10px;
+                font-weight: 700;
+                display: inline-block;
+                font-family: 'Courier New', monospace;
+                font-size: 1rem;
+                letter-spacing: 1px;
+                border: 2px dashed white;
+            }
+
+            /* Value Styling */
+            .discount-value {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #EC4899;
+            }
+
+            /* Type Badge */
+            .type-badge {
+                padding: 0.4rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .type-percent {
+                background: linear-gradient(135deg, #10B981, #34D399);
+                color: white;
+            }
+
+            .type-money {
+                background: linear-gradient(135deg, #F59E0B, #FBBF24);
+                color: white;
+            }
+
+            /* Date Display */
+            .date-display {
+                font-size: 0.9rem;
+                color: #6C757D;
+            }
+
+            .date-display::before {
+                content: "📅 ";
+            }
+
+            /* Action Buttons */
+            .btn {
+                border-radius: 10px !important;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s;
+                border: none;
+                font-size: 0.85rem;
+            }
+
+            .btn-edit {
+                background: linear-gradient(135deg, #F59E0B, #D97706);
+                color: white;
+            }
+
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6C757D;
+            }
+
+            .empty-state::before {
+                content: "🎁";
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            /* ID Badge */
+            .id-badge {
+                background: #F3F4F6;
+                color: #6C757D;
+                padding: 0.3rem 0.7rem;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            /* Action buttons container */
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
+
+                table {
+                    font-size: 0.85rem;
+                }
+            }
+        </style>
+    </th:block>
+</head>
+
 <body>
-
 <section th:fragment="content">
+    <div class="card">
+        <div class="card-body">
 
-    <div class="d-flex justify-content-between mb-3">
-        <h5>Danh sách mã giảm giá</h5>
-        <a href="/admin/giam-gia/create" class="btn btn-primary">+ Thêm mới</a>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h5>
+                        <span>🎁</span>
+                        Quản lý Mã Giảm Giá
+                    </h5>
+                    <a href="/admin/giam-gia/create" class="btn-add-header">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Thêm mã mới
+                    </a>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mã giảm giá</th>
+                        <th>Giá trị</th>
+                        <th>Loại</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="g : ${giamGias}">
+                        <td>
+                            <span class="id-badge" th:text="'#' + ${g.id}"></span>
+                        </td>
+                        <td>
+                            <span class="discount-code" th:text="${g.maGiamGia}"></span>
+                        </td>
+                        <td>
+                            <span class="discount-value" th:text="${g.giaTri} + (${g.laPhanTram} ? '%' : ' đ')"></span>
+                        </td>
+                        <td>
+                            <span class="type-badge"
+                                  th:classappend="${g.laPhanTram ? 'type-percent' : 'type-money'}"
+                                  th:text="${g.laPhanTram ? 'Phần trăm' : 'Tiền mặt'}"></span>
+                        </td>
+                        <td>
+                            <span class="date-display" th:text="${g.ngayBatDau != null ? #temporals.format(g.ngayBatDau,'dd/MM/yyyy HH:mm') : '-'}"></span>
+                        </td>
+                        <td>
+                            <span class="date-display" th:text="${g.ngayKetThuc != null ? #temporals.format(g.ngayKetThuc,'dd/MM/yyyy HH:mm') : '-'}"></span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/giam-gia/edit/' + ${g.id}}" class="btn btn-edit btn-sm">
+                                    <i class="bi bi-pencil-fill"></i> Sửa
+                                </a>
+                                <a th:href="@{'/admin/giam-gia/delete/' + ${g.id}}" class="btn btn-delete btn-sm"
+                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa mã giảm giá này?')">
+                                    <i class="bi bi-trash-fill"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${giamGias.size() == 0}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <strong>Chưa có mã giảm giá</strong>
+                                <p>Hãy tạo mã giảm giá để thu hút khách hàng!</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     </div>
-
-    <div class="card p-3">
-        <table class="table table-hover">
-            <thead class="table-light">
-            <tr>
-                <th>Mã</th>
-                <th>Tên</th>
-                <th>Giảm (%)</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="g : ${list}">
-                <td th:text="${g.id}"></td>
-                <td th:text="${g.ten}"></td>
-                <td th:text="${g.phanTram}"></td>
-                <td>
-                    <a th:href="@{'/admin/giam-gia/edit/' + ${g.id}}" class="btn btn-warning btn-sm">Sửa</a>
-                    <a th:href="@{'/admin/giam-gia/delete/' + ${g.id}}"
-                       onclick="return confirm('Xóa?')"
-                       class="btn btn-danger btn-sm">Xóa</a>
-                </td>
-            </tr>
-            </tbody>
-
-        </table>
-    </div>
-
 </section>
 
+<th:block th:fragment="scripts">
+    <script>
+        console.log("🎁 Loaded: Quản lý mã giảm giá");
+
+        // Animation khi load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
+    </script>
+</th:block>
 </body>
 </html>

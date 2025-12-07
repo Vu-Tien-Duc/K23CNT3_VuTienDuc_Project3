@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title='Cập nhật đơn hàng',
+            headerTitle='Cập nhật trạng thái Đơn hàng',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
+      )}">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body { background-color: #fff7ed; color: #333; }
+            .card { border-radius: 16px; border: none; background: #fff8f1; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+            .card-body { padding: 32px; }
+            h5 { color: #f97316; font-weight: 700; }
+            .form-label { font-weight: 600; color: #333; }
+            .form-select { border-radius: 12px !important; padding: 12px 16px; border: 1px solid #f97316; background-color: #fff3e0; }
+            .form-select:focus { border-color: #ea580c; box-shadow: 0 0 0 0.2rem rgba(249,115,22,0.25); }
+            .btn { border-radius: 12px !important; font-weight: 600; min-width: 120px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .btn-submit { background: linear-gradient(to right, #16a34a, #22c55e); color: white; }
+            .btn-submit:hover { background: linear-gradient(to right, #15803d, #16a34a); }
+            .btn-cancel { background-color: #6c757d; color: white; }
+            .btn-cancel:hover { background-color: #5a6268; }
+            .d-flex.gap-2 { justify-content: flex-end; margin-top: 24px; }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<section th:fragment="content">
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:600px;">
+        <div class="card-body">
+            <h5 class="mb-4">Cập nhật đơn hàng #<span th:text="${order.id}"></span></h5>
+
+            <form th:action="@{/admin/don-hang/edit}" th:object="${order}" method="post">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="mb-3">
+                    <label for="trangThai" class="form-label">Trạng thái</label>
+                    <select id="trangThai" class="form-select" th:field="*{trangThai}" required>
+                        <option th:each="t : ${trangThais}" th:value="${t}" th:text="${t}" th:selected="${order.trangThai == t}"></option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-submit">Cập nhật</button>
+                    <a href="/admin/don-hang" class="btn btn-cancel">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<th:block th:fragment="scripts">
+    <script>console.log("Loaded form đơn hàng");</script>
+</th:block>
+</body>
+</html>

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
             title=${monAn.id != null} ? 'Sửa Món Ăn' : 'Thêm Món Ăn',
@@ -9,84 +10,108 @@
 <head>
     <th:block th:fragment="styles">
         <style>
-            .img-preview {
-                max-width: 100px;
-                max-height: 100px;
-                margin-right: 5px;
+            body { background-color: #fff7ed; color: #333; }
+            .card { border-radius: 16px; border: none; background: #fff8f1; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+            .card-body { padding: 32px; }
+            h5 { color: #f97316; font-weight: 700; margin-bottom: 24px; }
+            .form-label { font-weight: 600; color: #333; }
+            .form-control, .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 1px solid #f97316;
+                background-color: #fff3e0;
             }
+            .form-control:focus, .form-select:focus {
+                border-color: #ea580c;
+                box-shadow: 0 0 0 0.2rem rgba(249,115,22,0.25);
+            }
+            .btn {
+                border-radius: 12px !important;
+                font-weight: 600;
+                min-width: 120px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .btn-save {
+                background: linear-gradient(to right, #f97316, #f59e0b);
+                color: white;
+            }
+            .btn-save:hover {
+                background: linear-gradient(to right, #ea580c, #d97706);
+            }
+            .btn-cancel {
+                background-color: #6c757d;
+                color: white;
+            }
+            .btn-cancel:hover {
+                background-color: #5a6268;
+            }
+            .img-preview { max-width: 100px; max-height: 100px; margin-right: 5px; border-radius: 8px; }
+            .d-flex.gap-2 { justify-content: flex-end; margin-top: 24px; }
         </style>
     </th:block>
 </head>
 
 <body>
-
 <section th:fragment="content">
-
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:600px;">
         <div class="card-body">
+            <h5 th:text="${monAn.id != null} ? 'Sửa Món Ăn' : 'Thêm Món Ăn'"></h5>
 
-            <form th:action="${monAn.id != null} ?
-                   @{/admin/mon-an/edit/{id}(id=${monAn.id})} :
-                   @{/admin/mon-an/create}"
+            <form th:action="${monAn.id != null} ? @{/admin/mon-an/edit/{id}(id=${monAn.id})} : @{/admin/mon-an/create}"
                   th:object="${monAn}" method="post">
 
+                <!-- Tên món -->
                 <div class="mb-3">
                     <label class="form-label">Tên món ăn</label>
                     <input type="text" class="form-control" th:field="*{ten}" required>
                 </div>
 
+                <!-- Mô tả -->
                 <div class="mb-3">
                     <label class="form-label">Mô tả</label>
                     <textarea class="form-control" th:field="*{moTa}" rows="3"></textarea>
                 </div>
 
+                <!-- Giá -->
                 <div class="mb-3">
                     <label class="form-label">Giá</label>
                     <input type="number" class="form-control" th:field="*{gia}" required min="0">
                 </div>
 
+                <!-- Thể loại -->
                 <div class="mb-3">
                     <label class="form-label">Thể loại</label>
-                    <select class="form-select" name="theLoaiId" required>
-                        <option value="" disabled>-- Chọn thể loại --</option>
-                        <option th:each="tl : ${theLoaiList}"
-                                th:value="${tl.id}"
-                                th:text="${tl.tenTheLoai}"
-                                th:selected="${monAn.theLoai != null} ? ${tl.id} == ${monAn.theLoai.id} : false">
-                        </option>
+                    <select name="theLoaiId" class="form-select" required>
+                        <option value="" disabled th:selected="${theLoaiId == null}">-- Chọn thể loại --</option>
+                        <option th:each="tl : ${theLoaiList}" th:value="${tl.id}" th:text="${tl.tenTheLoai}"
+                                th:selected="${monAn.theLoai != null and monAn.theLoai.id == tl.id}"></option>
                     </select>
-
                 </div>
 
+                <!-- Hình ảnh -->
                 <div class="mb-3">
-                    <label class="form-label">Hình ảnh (URL, phân tách dấu ,)</label>
-                    <input type="text" class="form-control" name="hinhAnhStr"
-                           th:value="${monAn.hinhAnh != null} ? ${#strings.join(monAn.hinhAnh, ',')} : ''"
-                           placeholder="Nhập URL hình ảnh, cách nhau dấu ,">
-
+                    <label class="form-label">Hình ảnh (URL, ngăn cách bằng dấu ,)</label>
+                    <input type="text" class="form-control" name="hinhAnhStr" th:value="${hinhAnhStr}" placeholder="Nhập URL hình ảnh">
                 </div>
 
-                <!-- Preview ảnh -->
-                <div class="mb-3">
-                    <div th:if="${monAn.hinhAnh != null}">
-                        <img th:each="url : ${monAn.hinhAnh}" th:src="${url}" class="img-preview"/>
-                    </div>
+                <!-- Preview -->
+                <div class="mb-3" th:if="${monAn.hinhAnh != null}">
+                    <img th:each="url : ${monAn.hinhAnh}" th:src="${url}" class="img-preview"/>
                 </div>
 
-                <button type="submit" class="btn btn-success">Lưu</button>
-                <a href="/admin/mon-an" class="btn btn-secondary">Hủy</a>
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-save">Lưu</button>
+                    <a href="/admin/mon-an" class="btn btn-cancel">Hủy</a>
+                </div>
             </form>
-
         </div>
     </div>
-
 </section>
 
 <th:block th:fragment="scripts">
-    <script>
-        console.log("Form món ăn loaded");
-    </script>
+    <script>console.log("Form món ăn loaded");</script>
 </th:block>
-
 </body>
 </html>

@@ -26,7 +26,7 @@ public class DonHangController {
     public String detail(@PathVariable Long id, Model model) {
         DonHang donHang = donHangService.getMyOrderById(id);
         model.addAttribute("donHang", donHang);
-        return "user/don-hang/detail";
+        return "user/don-hang/detail.html";
     }
 
     @PostMapping("/create")

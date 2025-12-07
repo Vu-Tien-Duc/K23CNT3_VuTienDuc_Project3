@@ -16,44 +16,59 @@ public class GiamGiaAdminController {
 
     private final GiamGiaService giamGiaService;
 
+    // ====================== LIST ALL ======================
     @GetMapping
-    public String list(Model model) {
-        List<GiamGia> ds = giamGiaService.getAll();
-        model.addAttribute("giamGias", ds);
-        return "admin/giam-gia/list";
+    public String listGiamGia(Model model) {
+        List<GiamGia> giamGias = giamGiaService.getAll();
+        model.addAttribute("giamGias", giamGias);
+        return "admin/giam-gia/list"; // ✅ list.html
     }
 
+    // ====================== SHOW CREATE FORM ======================
     @GetMapping("/create")
-    public String createForm(Model model) {
+    public String showCreateForm(Model model) {
         model.addAttribute("giamGia", new GiamGia());
-        return "admin/giam-gia/form";
+        return "admin/giam-gia/form"; // ✅ form.html
     }
 
+    // ====================== CREATE ======================
     @PostMapping("/create")
-    public String create(GiamGia giamGia) {
+    public String createGiamGia(@ModelAttribute("giamGia") GiamGia giamGia) {
         giamGiaService.create(giamGia);
-        return "redirect:/admin/giam-gia";
+        return "redirect:/admin/giam-gia?success=created";
     }
 
+    // ====================== SHOW EDIT FORM ======================
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
-        GiamGia g = giamGiaService.getAll().stream()
-                .filter(x -> x.getId().equals(id))
+    public String showEditForm(@PathVariable Long id, Model model) {
+        GiamGia giamGia = giamGiaService.getAll().stream()
+                .filter(g -> g.getId().equals(id))
                 .findFirst()
-                .orElseThrow();
-        model.addAttribute("giamGia", g);
-        return "admin/giam-gia/form";
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy mã giảm giá"));
+        model.addAttribute("giamGia", giamGia);
+        return "admin/giam-gia/form"; // ✅ form.html
     }
 
-    @PostMapping("/edit/{id}")
-    public String update(@PathVariable Long id, GiamGia giamGia) {
-        giamGiaService.update(id, giamGia);
-        return "redirect:/admin/giam-gia";
+    // ====================== UPDATE ======================
+    @PostMapping("/edit")
+    public String updateGiamGia(@ModelAttribute("giamGia") GiamGia giamGia) {
+        GiamGia existing = giamGiaService.getAll().stream()
+                .filter(g -> g.getId().equals(giamGia.getId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy mã giảm giá"));
+
+        // Giữ nguyên ngày nếu rỗng
+        if (giamGia.getNgayBatDau() == null) giamGia.setNgayBatDau(existing.getNgayBatDau());
+        if (giamGia.getNgayKetThuc() == null) giamGia.setNgayKetThuc(existing.getNgayKetThuc());
+
+        giamGiaService.update(giamGia.getId(), giamGia);
+        return "redirect:/admin/giam-gia?success=updated";
     }
 
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    // ====================== DELETE ======================
+    @GetMapping("/delete/{id}")
+    public String deleteGiamGia(@PathVariable Long id) {
         giamGiaService.delete(id);
-        return "redirect:/admin/giam-gia";
+        return "redirect:/admin/giam-gia?success=deleted";
     }
 }

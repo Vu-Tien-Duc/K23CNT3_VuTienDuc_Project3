@@ -11,107 +11,440 @@
 <head>
     <th:block th:fragment="styles">
         <style>
-            table {
+            body {
+                background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+                color: #333;
+            }
+
+            /* Card Container */
+            .card {
+                border-radius: 20px;
+                border: none;
                 background: white;
+                box-shadow: 0 10px 40px rgba(239, 68, 68, 0.15);
+            }
+
+            .card-body { padding: 2rem; }
+
+            /* Page Header */
+            .page-header {
+                background: linear-gradient(135deg, #EF4444, #F87171);
+                padding: 1.5rem 2rem;
+                margin: -2rem -2rem 2rem -2rem;
+                color: white;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+            }
+
+            .btn-add-header {
+                background: white;
+                color: #EF4444;
+                padding: 0.7rem 1.5rem;
+                border-radius: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .btn-add-header:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+                color: #DC2626;
+            }
+
+            /* Search & Filter Section */
+            .search-section {
+                background: #FFF7ED;
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                border: 2px solid #FFEDD5;
+            }
+
+            .filter-label {
+                font-weight: 600;
+                color: #EF4444;
+                margin-bottom: 0.5rem;
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            /* Form Controls */
+            .form-control, .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 2px solid #FFEDD5;
+                background-color: white;
+                transition: all 0.3s;
+                font-weight: 500;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #EF4444;
+                box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+                outline: none;
+            }
+
+            /* Table Container */
+            .table-container {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            table.table {
+                background: white;
+                margin-bottom: 0;
+            }
+
+            table thead {
+                background: linear-gradient(135deg, #EF4444, #F87171);
+                color: white;
+            }
+
+            table th {
+                font-weight: 600;
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            table tbody tr td {
+                vertical-align: middle;
+                padding: 1rem;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            table tbody tr {
+                transition: all 0.3s;
+            }
+
+            table tbody tr:hover {
+                background-color: #FFF5F5;
+                transform: scale(1.005);
+            }
+
+            table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Food Image */
+            .food-img {
+                width: 90px;
+                height: 90px;
+                object-fit: cover;
+                border-radius: 12px;
+                border: 3px solid #FFEDD5;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                transition: all 0.3s;
+            }
+
+            .food-img:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+            }
+
+            /* Food Name */
+            .food-name {
+                font-weight: 700;
+                font-size: 1rem;
+                color: #EF4444;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .food-name::before {
+                content: "🍔";
+                font-size: 1.2rem;
+            }
+
+            /* Category Badge */
+            .category-badge {
+                background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+                color: white;
+                padding: 0.4rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                display: inline-block;
+            }
+
+            /* Price Display */
+            .price-display {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #F59E0B;
+            }
+
+            .price-display::before {
+                content: "💰 ";
+            }
+
+            /* Description */
+            .description-text {
+                max-width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                color: #6C757D;
+                font-size: 0.9rem;
+            }
+
+            /* Buttons */
+            .btn {
+                border-radius: 10px !important;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s;
+                border: none;
+                font-size: 0.85rem;
+            }
+
+            .btn-edit {
+                background: linear-gradient(135deg, #10B981, #34D399);
+                color: white;
+            }
+
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #6C757D, #495057);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+            }
+
+            .btn-reset {
+                background: #6C757D;
+                color: white;
+            }
+
+            .btn-reset:hover {
+                background: #5A6268;
+                transform: translateY(-2px);
+            }
+
+            /* Action buttons */
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            /* Pagination */
+            .pagination {
+                margin-top: 1.5rem;
+            }
+
+            .pagination .page-link {
+                border-radius: 10px !important;
+                padding: 0.5rem 1rem;
+                margin: 0 0.25rem;
+                border: 2px solid #FFEDD5;
+                color: #EF4444;
+                font-weight: 600;
+                transition: all 0.3s;
+            }
+
+            .pagination .page-link:hover {
+                background: linear-gradient(135deg, #EF4444, #F87171);
+                color: white;
+                border-color: #EF4444;
+                transform: translateY(-2px);
+            }
+
+            .pagination .page-item.disabled .page-link {
+                background: #F3F4F6;
+                color: #9CA3AF;
+                border-color: #E5E7EB;
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6C757D;
+            }
+
+            .empty-state::before {
+                content: "🍽️";
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            /* Alert */
+            .alert {
+                border-radius: 12px;
+                border: none;
+                font-weight: 500;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .food-img {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
             }
         </style>
     </th:block>
 </head>
 
 <body>
-
 <section th:fragment="content">
 
-    <div class="card shadow-sm">
+    <div class="card">
         <div class="card-body">
 
-            <!-- Header & button tạo mới -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Danh sách Món ăn</h5>
-                <a href="/admin/mon-an/create" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Thêm mới
-                </a>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h5>🍔 Quản lý Món Ăn</h5>
+                    <a href="/admin/mon-an/create" class="btn-add-header">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Thêm món mới
+                    </a>
+                </div>
             </div>
 
-            <!-- Hiển thị lỗi nếu có -->
+            <!-- Error Message -->
             <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-            <!-- Form tìm kiếm & lọc thể loại -->
-            <form method="get" th:action="@{/admin/mon-an}" class="mb-3">
-                <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control mb-2"/>
-
-                <select name="theLoaiId" class="form-select mb-2">
-                    <!-- Option mặc định -->
-                    <option th:value="''" th:text="'Tất cả thể loại'" th:selected="${theLoaiId == null}"></option>
-
-
-                    <!-- Loop danh sách thể loại -->
-                    <option th:each="theLoai : ${theLoaiList}"
-                            th:value="${theLoai.id}"
-                            th:text="${theLoai.tenTheLoai}"
-                            th:selected="${theLoaiId != null and theLoaiId == theLoai.id}">
-
-                    </option>
-                </select>
-
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            </form>
-
-            <!-- Bảng danh sách món ăn -->
-            <table class="table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th>Tên món ăn</th>
-                    <th>Thể loại</th>
-                    <th>Mô tả</th>
-                    <th>Giá</th>
-                    <th>Hình ảnh</th>
-                    <th style="width: 150px">Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="ma : ${monAnPage.content}">
-                    <td th:text="${ma.ten}"></td>
-                    <td th:text="${ma.theLoai != null ? ma.theLoai.tenTheLoai : 'Chưa có'}"></td>
-                    <td th:text="${ma.moTa}"></td>
-                    <td th:text="${ma.gia}"></td>
-                    <td>
-                    <span th:each="img : ${ma.hinhAnh}" class="d-block mb-1">
-                        <img th:src="@{${img}}" alt="Hình món ăn" style="max-width: 100px; max-height: 80px;"/>
-                    </span>
-                    </td>
-
-                    <td>
-                        <a th:href="@{'/admin/mon-an/edit/' + ${ma.id}}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-pencil"></i>
+            <!-- Search & Filter -->
+            <div class="search-section">
+                <form method="get" th:action="@{/admin/mon-an}" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="filter-label">🔍 Tìm kiếm món ăn</label>
+                        <input type="text" name="search" th:value="${search}" placeholder="Nhập tên món ăn..."
+                               class="form-control"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="filter-label">📑 Lọc theo thể loại</label>
+                        <select name="theLoaiId" class="form-select" onchange="this.form.submit()">
+                            <option th:value="''" th:text="'Tất cả thể loại'" th:selected="${theLoaiId == null}"></option>
+                            <option th:each="theLoai : ${theLoaiList}" th:value="${theLoai.id}"
+                                    th:text="${theLoai.tenTheLoai}"
+                                    th:selected="${theLoaiId != null and theLoaiId == theLoai.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <a href="/admin/mon-an" class="btn btn-reset w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
                         </a>
-                        <a th:href="@{'/admin/mon-an/delete/' + ${ma.id}}"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Bạn có chắc muốn xóa?')">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                    <button type="submit" class="btn btn-primary d-none">Tìm kiếm</button>
+                </form>
+            </div>
 
-            <!-- Phân trang -->
+            <!-- Table -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Tên món ăn</th>
+                        <th>Thể loại</th>
+                        <th>Mô tả</th>
+                        <th>Giá bán</th>
+                        <th>Hình ảnh</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ma : ${monAnPage.content}">
+                        <td>
+                            <div class="food-name" th:text="${ma.ten}"></div>
+                        </td>
+                        <td>
+                            <span class="category-badge" th:text="${ma.theLoai != null ? ma.theLoai.tenTheLoai : 'Chưa phân loại'}"></span>
+                        </td>
+                        <td>
+                            <span class="description-text" th:text="${ma.moTa}" th:title="${ma.moTa}"></span>
+                        </td>
+                        <td>
+                            <span class="price-display" th:text="${#numbers.formatDecimal(ma.gia, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                        </td>
+                        <td>
+                            <span th:each="img : ${ma.hinhAnh}" class="d-inline-block me-1 mb-1">
+                                <img th:src="@{${img}}" alt="Hình món ăn" class="food-img"/>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/mon-an/edit/' + ${ma.id}}" class="btn btn-edit btn-sm">
+                                    <i class="bi bi-pencil-fill"></i> Sửa
+                                </a>
+                                <a th:href="@{'/admin/mon-an/delete/' + ${ma.id}}" class="btn btn-delete btn-sm"
+                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa món ăn này?')">
+                                    <i class="bi bi-trash-fill"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${monAnPage.content.size() == 0}">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <strong>Chưa có món ăn nào</strong>
+                                <p>Hãy thêm món ăn mới vào menu!</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
             <nav th:if="${monAnPage.totalPages > 1}">
-                <ul class="pagination">
+                <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${monAnPage.first} ? 'disabled'">
                         <a class="page-link"
                            th:href="@{/admin/mon-an(page=${monAnPage.number - 1}, search=${search}, theLoaiId=${theLoaiId})}">
-                            Trước
+                            <i class="bi bi-chevron-left"></i> Trước
                         </a>
                     </li>
+
                     <li class="page-item disabled">
                         <span class="page-link"
                               th:text="'Trang ' + (${monAnPage.number + 1}) + ' / ' + ${monAnPage.totalPages}"></span>
                     </li>
+
                     <li class="page-item" th:classappend="${monAnPage.last} ? 'disabled'">
                         <a class="page-link"
                            th:href="@{/admin/mon-an(page=${monAnPage.number + 1}, search=${search}, theLoaiId=${theLoaiId})}">
-                            Sau
+                            Sau <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>
                 </ul>
@@ -124,7 +457,23 @@
 
 <th:block th:fragment="scripts">
     <script>
-        console.log("Loaded list món ăn");
+        console.log("🍔 Loaded: Quản lý món ăn");
+
+        // Animation khi load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
     </script>
 </th:block>
 

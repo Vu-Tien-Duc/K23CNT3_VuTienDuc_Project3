@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title='Bình luận',
+            headerTitle='Quản lý Bình luận',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
+      )}">
+
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body {
+                background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+                color: #333;
+            }
+
+            /* Card Container */
+            .card {
+                border-radius: 20px;
+                border: none;
+                background: white;
+                box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15);
+            }
+
+            .card-body { padding: 2rem; }
+
+            /* Page Header */
+            .page-header {
+                background: linear-gradient(135deg, #10B981, #34D399);
+                padding: 1.5rem 2rem;
+                margin: -2rem -2rem 2rem -2rem;
+                color: white;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+            }
+
+            .stats-info {
+                display: flex;
+                gap: 2rem;
+                margin-top: 0.5rem;
+            }
+
+            .stat-item {
+                font-size: 0.9rem;
+                opacity: 0.95;
+            }
+
+            .stat-item strong {
+                font-size: 1.1rem;
+            }
+
+            /* Filter Section */
+            .filter-section {
+                background: #F0FDF4;
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                border: 2px solid #D1FAE5;
+            }
+
+            .filter-label {
+                font-weight: 600;
+                color: #10B981;
+                margin-bottom: 0.5rem;
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            .form-control, .form-select {
+                border-radius: 12px !important;
+                padding: 12px 16px;
+                border: 2px solid #D1FAE5;
+                background-color: white;
+                transition: all 0.3s;
+                font-weight: 500;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #10B981;
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+                outline: none;
+            }
+
+            /* Table Container */
+            .table-container {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            table.table {
+                background: white;
+                margin-bottom: 0;
+            }
+
+            table th {
+                background: linear-gradient(135deg, #10B981, #34D399);
+                color: white;
+                font-weight: 600;
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            table td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            table tbody tr {
+                transition: all 0.3s;
+            }
+
+            table tbody tr:hover {
+                background-color: #F0FDF4;
+                transform: scale(1.005);
+            }
+
+            table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Comment Card */
+            .comment-card {
+                background: #F9FAFB;
+                padding: 1rem;
+                border-radius: 10px;
+                border-left: 4px solid #10B981;
+                max-width: 400px;
+            }
+
+            .comment-content {
+                color: #374151;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 0.5rem;
+            }
+
+            .comment-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.85rem;
+                color: #6B7280;
+            }
+
+            /* Rating Stars */
+            .rating-stars {
+                display: flex;
+                gap: 0.2rem;
+                font-size: 1.2rem;
+            }
+
+            .star {
+                color: #FCD34D;
+            }
+
+            .star.empty {
+                color: #D1D5DB;
+            }
+
+            /* User Info */
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 600;
+                color: #10B981;
+            }
+
+            .user-info::before {
+                content: "👤";
+                font-size: 1.2rem;
+            }
+
+            /* Food Info */
+            .food-info {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #EF4444;
+                font-weight: 600;
+            }
+
+            .food-info::before {
+                content: "🍔";
+                font-size: 1.2rem;
+            }
+
+            /* Date Display */
+            .date-display {
+                color: #6B7280;
+                font-size: 0.9rem;
+            }
+
+            .date-display::before {
+                content: "📅 ";
+            }
+
+            /* ID Badge */
+            .id-badge {
+                background: #F3F4F6;
+                color: #6B7280;
+                padding: 0.3rem 0.7rem;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            /* Action Buttons */
+            .btn {
+                border-radius: 10px !important;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s;
+                border: none;
+                font-size: 0.85rem;
+            }
+
+            .btn-detail {
+                background: linear-gradient(135deg, #3B82F6, #60A5FA);
+                color: white;
+            }
+
+            .btn-detail:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            }
+
+            .btn-reset {
+                background: #6C757D;
+                color: white;
+            }
+
+            .btn-reset:hover {
+                background: #5A6268;
+                transform: translateY(-2px);
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6B7280;
+            }
+
+            .empty-state::before {
+                content: "💬";
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            /* Average Rating Box */
+            .avg-rating-box {
+                background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+                padding: 1rem;
+                border-radius: 12px;
+                text-align: center;
+                margin-bottom: 1.5rem;
+                border: 2px solid #FBBF24;
+            }
+
+            .avg-rating-value {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #D97706;
+            }
+
+            .avg-rating-stars {
+                font-size: 1.5rem;
+                margin: 0.5rem 0;
+            }
+
+            .avg-rating-label {
+                color: #92400E;
+                font-weight: 600;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .stats-info {
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<section th:fragment="content">
+    <div class="card">
+        <div class="card-body">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <div>
+                        <h5>💬 Quản lý Bình Luận & Đánh Giá</h5>
+                        <div class="stats-info">
+                            <div class="stat-item">
+                                Tổng số: <strong th:text="${binhLuans != null ? binhLuans.size() : 0}">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                Đánh giá TB: <strong>4.5 ⭐</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Rating Display -->
+            <div class="avg-rating-box" th:if="${avgRating != null}">
+                <div class="avg-rating-label">Đánh giá trung bình</div>
+                <div class="avg-rating-value" th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">4.5</div>
+                <div class="avg-rating-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <form method="get" th:action="@{/admin/binh-luan}" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="filter-label">🍔 Lọc theo món ăn</label>
+                        <select name="monAnId" class="form-select" onchange="this.form.submit()">
+                            <option value="">Tất cả món ăn</option>
+                            <option th:each="ma : ${monAns}"
+                                    th:value="${ma.id}"
+                                    th:text="${ma.ten}"
+                                    th:selected="${monAnId != null and monAnId == ma.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="filter-label">⭐ Lọc theo đánh giá</label>
+                        <select name="rating" class="form-select" onchange="this.form.submit()">
+                            <option value="">Tất cả đánh giá</option>
+                            <option value="5" th:selected="${rating == 5}">5 sao ⭐⭐⭐⭐⭐</option>
+                            <option value="4" th:selected="${rating == 4}">4 sao ⭐⭐⭐⭐</option>
+                            <option value="3" th:selected="${rating == 3}">3 sao ⭐⭐⭐</option>
+                            <option value="2" th:selected="${rating == 2}">2 sao ⭐⭐</option>
+                            <option value="1" th:selected="${rating == 1}">1 sao ⭐</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="filter-label">👤 Tìm theo người dùng</label>
+                        <input type="text" name="keyword" th:value="${keyword}"
+                               placeholder="Nhập tên người dùng..." class="form-control"/>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <a href="/admin/binh-luan" class="btn btn-reset w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nội dung bình luận</th>
+                        <th>Người đánh giá</th>
+                        <th>Món ăn</th>
+                        <th>Đánh giá</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="bl : ${binhLuans}">
+                        <td>
+                            <span class="id-badge" th:text="'#' + ${bl.id}"></span>
+                        </td>
+                        <td>
+                            <div class="comment-card">
+                                <div class="comment-content" th:text="${bl.noiDung}"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-info" th:text="${bl.nguoiDung.ten}"></div>
+                        </td>
+                        <td>
+                            <div class="food-info" th:text="${bl.monAn.ten}"></div>
+                        </td>
+                        <td>
+                            <div class="rating-stars">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                      th:classappend="${i <= bl.danhGia ? 'star' : 'star empty'}">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="date-display"
+                                  th:text="${bl.ngayTao != null ? #temporals.format(bl.ngayTao, 'dd/MM/yyyy HH:mm') : '-'}"></span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/binh-luan/detail/' + ${bl.id}}" class="btn btn-detail btn-sm">
+                                    <i class="bi bi-eye-fill"></i> Chi tiết
+                                </a>
+                                <a th:href="@{'/admin/binh-luan/delete/' + ${bl.id}}" class="btn btn-delete btn-sm"
+                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa bình luận này?')">
+                                    <i class="bi bi-trash-fill"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${binhLuans == null or binhLuans.size() == 0}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <strong>Chưa có bình luận nào</strong>
+                                <p>Chưa có khách hàng nào đánh giá món ăn</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<th:block th:fragment="scripts">
+    <script>
+        console.log("💬 Loaded: Quản lý bình luận");
+
+        // Animation khi load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

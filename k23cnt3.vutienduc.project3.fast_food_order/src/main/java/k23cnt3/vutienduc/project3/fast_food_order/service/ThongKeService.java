@@ -26,8 +26,8 @@ public class ThongKeService {
         stats.put("dangGiao", donHangRepository.countByTrangThai(TrangThaiDonHang.DANG_GIAO));
         stats.put("daGiao", donHangRepository.countByTrangThai(TrangThaiDonHang.DA_GIAO));
 
-        Double tongDoanhThu = thanhToanRepository.sumAllSoTien();
-        stats.put("tongDoanhThu", tongDoanhThu != null ? tongDoanhThu : 0.0);
+
+
 
         stats.put("tongNguoiDung", nguoiDungRepository.count());
         stats.put("tongMonAn", monAnRepository.count());
