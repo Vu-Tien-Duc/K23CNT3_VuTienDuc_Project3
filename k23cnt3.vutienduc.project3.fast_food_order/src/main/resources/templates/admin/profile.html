@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_LayoutAdmin :: layout(
+            title='Hồ sơ Admin',
+            headerTitle='Hồ sơ của bạn',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts})}">
+
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            body {
+                background: #f3f4f6;
+                font-family: 'Inter', sans-serif;
+                color: #1f2937;
+            }
+            .profile-card {
+                max-width: 700px;
+                margin: 2rem auto;
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+                overflow: hidden;
+            }
+            .profile-header {
+                background: linear-gradient(135deg, #f97316, #f59e0b);
+                padding: 2rem;
+                color: #fff;
+                text-align: center;
+            }
+            .profile-header h3 {
+                margin: 0;
+                font-size: 2rem;
+                font-weight: 700;
+            }
+            .avatar {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 4px solid #fff;
+                object-fit: cover;
+                margin-top: 1rem;
+            }
+            .profile-body {
+                padding: 2rem;
+            }
+            .info-row {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .info-label {
+                width: 160px;
+                font-weight: 600;
+                color: #4b5563;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .info-value {
+                color: #1f2937;
+                font-weight: 500;
+            }
+            .btn-back {
+                display: inline-block;
+                margin-top: 1.5rem;
+                background: linear-gradient(135deg, #f97316, #f59e0b);
+                color: #fff;
+                padding: 0.75rem 1.8rem;
+                border-radius: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+            }
+            .btn-back:hover {
+                background: linear-gradient(135deg, #ea580c, #d97706);
+                transform: translateY(-2px);
+            }
+            .info-icon {
+                font-size: 1.2rem;
+                color: #f97316;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<section th:fragment="content">
+    <div class="profile-card">
+        <div class="profile-header">
+            <h3>Hồ sơ Admin</h3>
+            <img th:src="@{/images/admin-avatar.jpg}" alt="Avatar" class="avatar">
+        </div>
+        <div class="profile-body">
+
+            <div class="info-row">
+                <span class="info-label"><i class="bi bi-person-circle info-icon"></i> Họ và tên:</span>
+                <span class="info-value" th:text="${admin.ten}">Nguyễn Văn A</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label"><i class="bi bi-envelope info-icon"></i> Email:</span>
+                <span class="info-value" th:text="${admin.email}">admin@example.com</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label"><i class="bi bi-phone info-icon"></i> SĐT:</span>
+                <span class="info-value" th:text="${admin.sdt != null ? admin.sdt : '-'}">0123456789</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label"><i class="bi bi-geo-alt info-icon"></i> Địa chỉ:</span>
+                <span class="info-value" th:text="${admin.diaChi != null ? admin.diaChi : '-'}">123 Đường ABC</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label"><i class="bi bi-shield-check info-icon"></i> Vai trò:</span>
+                <span class="info-value" th:text="${admin.vaiTro.tenVaiTro}">ADMIN</span>
+            </div>
+
+            <a href="/admin/index" class="btn-back">Quay lại Dashboard</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

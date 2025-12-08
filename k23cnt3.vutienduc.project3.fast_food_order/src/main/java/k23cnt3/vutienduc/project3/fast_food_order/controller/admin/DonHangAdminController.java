@@ -24,20 +24,24 @@ public class DonHangAdminController {
                              @RequestParam(defaultValue = "ALL") String trangThai) {
 
         List<DonHang> orders;
+
+        // --- Lọc theo trạng thái ---
         if (trangThai.equals("ALL") || trangThai.isEmpty()) {
-            orders = donHangService.getAll(null);
+            orders = donHangService.getAll(null); // lấy tất cả đơn
         } else {
-            orders = donHangService.getAll(trangThai);
+            orders = donHangService.getAll(trangThai); // lọc theo enum
         }
 
         model.addAttribute("orders", orders);
-        model.addAttribute("trangThais", TrangThaiDonHang.values());
+        model.addAttribute("trangThais", TrangThaiDonHang.values()); // list enum
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("keyword", keyword);
         model.addAttribute("activePage", "don-hang");
 
-        return "admin/don-hang/list"; // ✅ list.html
+        return "admin/don-hang/list";
     }
+
+
 
     // ====================== VIEW ORDER DETAIL ======================
     @GetMapping("/detail/{id}")

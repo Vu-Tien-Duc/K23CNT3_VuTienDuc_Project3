@@ -21,7 +21,7 @@ public class GiamGiaAdminController {
     public String listGiamGia(Model model) {
         List<GiamGia> giamGias = giamGiaService.getAll();
         model.addAttribute("giamGias", giamGias);
-        return "admin/giam-gia/list"; // ✅ list.html
+        return "admin/giam-gia/list"; // ✅ index.html
     }
 
     // ====================== SHOW CREATE FORM ======================

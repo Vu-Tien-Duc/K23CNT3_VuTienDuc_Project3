@@ -14,4 +14,7 @@ public interface MonAnRepository extends JpaRepository<MonAn, Long> {
     Page<MonAn> findByTheLoai(TheLoai theLoai, Pageable pageable);
     List<MonAn> findByTheLoai(TheLoai theLoai);
     Page<MonAn> findByTenContainingIgnoreCase(String ten, Pageable pageable);
+    Page<MonAn> findByTheLoai_TenTheLoaiIgnoreCase(String tenTheLoai, Pageable pageable);
+
+    Page<MonAn> findByTheLoaiAndTenContainingIgnoreCase(TheLoai theLoai, String search, Pageable pageable);
 }

@@ -328,7 +328,12 @@
                         <label class="filter-label">🔍 Lọc theo trạng thái</label>
                         <select name="trangThai" class="form-select" onchange="this.form.submit()">
                             <option value="ALL" th:selected="${trangThai == 'ALL'}">Tất cả trạng thái</option>
-                            <option th:each="t : ${trangThais}" th:value="${t}" th:text="${t}" th:selected="${trangThai == t}"></option>
+
+                            <option th:each="t : ${trangThais}"
+                                    th:value="${t.name()}"
+                                    th:text="${t}"
+                                    th:selected="${trangThai == t.name()}">
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2">

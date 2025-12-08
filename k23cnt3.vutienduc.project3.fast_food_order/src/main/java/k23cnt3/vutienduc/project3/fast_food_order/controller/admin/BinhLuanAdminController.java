@@ -36,7 +36,7 @@ public class BinhLuanAdminController {
         model.addAttribute("rating", rating);
         model.addAttribute("keyword", keyword);
 
-        return "admin/binh-luan/list"; // list.html
+        return "admin/binh-luan/list"; // index.html
     }
 
     // ===== CHI TIẾT BÌNH LUẬN =====

@@ -1,6 +1,5 @@
 package k23cnt3.vutienduc.project3.fast_food_order.service;
 
-import k23cnt3.vutienduc.project3.fast_food_order.entity.BinhLuan;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.MonAn;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.TheLoai;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.MonAnRepository;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,19 +28,35 @@ public class MonAnService {
         return monAnRepository.findAll();
     }
 
-
-    public Page<MonAn> getAll(int page, int size, String search, Long theLoaiId) {
+    /**
+     * Lấy danh sách món ăn có phân trang + search + filter thể loại + filter theo tên thể loại.
+     * Phiên bản chính: 5 tham số
+     */
+    public Page<MonAn> getAll(int page, int size, String search, Long theLoaiId, String tenTheLoai) {
         Pageable pageable = PageRequest.of(page, size);
+
+        if (tenTheLoai != null && !tenTheLoai.isEmpty()) {
+            return monAnRepository.findByTheLoai_TenTheLoaiIgnoreCase(tenTheLoai, pageable);
+        }
 
         if (theLoaiId != null) {
             TheLoai theLoai = theLoaiRepository.findById(theLoaiId)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy thể loại"));
             return monAnRepository.findByTheLoai(theLoai, pageable);
-        } else if (search != null && !search.isEmpty()) {
+        }
+
+        if (search != null && !search.isEmpty()) {
             return monAnRepository.findByTenContainingIgnoreCase(search, pageable);
         }
 
         return monAnRepository.findAll(pageable);
+    }
+
+    /**
+     * Overload: phiên bản 4 tham số (giữ nguyên logic, tự đặt tenTheLoai = null)
+     */
+    public Page<MonAn> getAll(int page, int size, String search, Long theLoaiId) {
+        return getAll(page, size, search, theLoaiId, null);
     }
 
     public MonAn getById(Long id) {
@@ -69,14 +85,12 @@ public class MonAnService {
         existing.setTen(monAn.getTen());
         existing.setMoTa(monAn.getMoTa());
         existing.setGia(monAn.getGia());
+        existing.setGiaCu(monAn.getGiaCu());
 
-        // --- Cập nhật nhiều ảnh an toàn ---
-        existing.getHinhAnh().clear();
-        if (monAn.getHinhAnh() != null) {
-            existing.getHinhAnh().addAll(monAn.getHinhAnh());
-        }
+        existing.setHinhAnh(
+                monAn.getHinhAnh() != null ? new ArrayList<>(monAn.getHinhAnh()) : new ArrayList<>()
+        );
 
-        // --- Cập nhật thể loại ---
         if (monAn.getTheLoai() != null && monAn.getTheLoai().getId() != null) {
             TheLoai theLoai = theLoaiRepository.findById(monAn.getTheLoai().getId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy thể loại"));
@@ -86,14 +100,14 @@ public class MonAnService {
         return monAnRepository.save(existing);
     }
 
-
     public void delete(Long id) {
         MonAn monAn = monAnRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn"));
+
         if (!monAn.getChiTietDonHangs().isEmpty()) {
             throw new RuntimeException("Không thể xóa món ăn đã có trong đơn hàng");
         }
+
         monAnRepository.delete(monAn);
     }
-
 }

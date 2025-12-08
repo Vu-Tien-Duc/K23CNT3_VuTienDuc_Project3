@@ -20,7 +20,7 @@ public class TheLoaiAdminController {
         model.addAttribute("list", theLoaiService.getAll());
         model.addAttribute("title", "Danh sách thể loại");
         model.addAttribute("headerTitle", "Thể loại");
-        return "admin/the-loai/list"; // ✅ list.html
+        return "admin/the-loai/list"; // ✅ index.html
     }
 
     // ====================== SHOW CREATE FORM ======================

@@ -34,7 +34,7 @@ public class NguoiDungAdminController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
 
-        return "admin/nguoi-dung/list"; // ✅ list.html
+        return "admin/nguoi-dung/list"; // ✅ index.html
     }
 
     // ====================== SHOW FORM CREATE ======================

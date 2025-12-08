@@ -199,14 +199,14 @@
             }
 
             /* Description */
-            .description-text {
-                max-width: 250px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                color: #6C757D;
-                font-size: 0.9rem;
-            }
+          .description-text {
+    max-width: 250px;         /* chiều rộng tối đa */
+    overflow-wrap: break-word; /* tự xuống dòng khi dài */
+    white-space: normal;       /* cho phép xuống dòng */
+    color: #6C757D;
+    font-size: 0.9rem;
+}
+
 
             /* Buttons */
             .btn {
@@ -379,6 +379,7 @@
                         <th>Thể loại</th>
                         <th>Mô tả</th>
                         <th>Giá bán</th>
+                        <th>Giá cũ</th>
                         <th>Hình ảnh</th>
                         <th>Thao tác</th>
                     </tr>
@@ -397,6 +398,14 @@
                         <td>
                             <span class="price-display" th:text="${#numbers.formatDecimal(ma.gia, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
                         </td>
+
+                        <td>
+                            <span th:if="${ma.giaCu != null}" class="price">
+                                <span th:text="${#numbers.formatDecimal(ma.giaCu, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                            </span>
+                            <span th:unless="${ma.giaCu != null}" class="text-muted">Không có giá gốc</span>
+                        </td>
+
                         <td>
                             <span th:each="img : ${ma.hinhAnh}" class="d-inline-block me-1 mb-1">
                                 <img th:src="@{${img}}" alt="Hình món ăn" class="food-img"/>

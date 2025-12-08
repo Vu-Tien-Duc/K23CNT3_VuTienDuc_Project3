@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,7 +39,7 @@ public class MonAnAdminController {
         model.addAttribute("search", search);
         model.addAttribute("theLoaiId", theLoaiId);
 
-        return "admin/mon-an/list"; // ✅ list.html
+        return "admin/mon-an/list";
     }
 
     // ========================= CREATE ===========================
@@ -48,7 +48,7 @@ public class MonAnAdminController {
         model.addAttribute("monAn", new MonAn());
         model.addAttribute("theLoaiList", theLoaiService.getAll());
         model.addAttribute("hinhAnhStr", "");
-        return "admin/mon-an/form"; // ✅ form.html
+        return "admin/mon-an/form";
     }
 
     @PostMapping("/create")
@@ -56,6 +56,7 @@ public class MonAnAdminController {
             @ModelAttribute MonAn monAn,
             @RequestParam(required = false) String hinhAnhStr,
             @RequestParam(required = false) Long theLoaiId,
+            @RequestParam(required = false) Double giaCu,
             Model model) {
 
         if (theLoaiId == null) {
@@ -63,10 +64,11 @@ public class MonAnAdminController {
             model.addAttribute("monAn", monAn);
             model.addAttribute("theLoaiList", theLoaiService.getAll());
             model.addAttribute("hinhAnhStr", hinhAnhStr == null ? "" : hinhAnhStr);
-            return "admin/mon-an/form"; // ✅ form.html
+            return "admin/mon-an/form";
         }
 
         monAn.setTheLoai(theLoaiService.getById(theLoaiId));
+        monAn.setGiaCu(giaCu);
 
         if (hinhAnhStr != null && !hinhAnhStr.isBlank()) {
             monAn.setHinhAnh(Arrays.asList(hinhAnhStr.split("\\s*,\\s*")));
@@ -78,9 +80,10 @@ public class MonAnAdminController {
         return "redirect:/admin/mon-an";
     }
 
-    // ========================= EDIT =============================
+    // ========================= EDIT ==============================
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+
         MonAn monAn = monAnService.getById(id);
 
         String hinhAnhStr = (monAn.getHinhAnh() != null && !monAn.getHinhAnh().isEmpty())
@@ -91,34 +94,43 @@ public class MonAnAdminController {
         model.addAttribute("theLoaiList", theLoaiService.getAll());
         model.addAttribute("hinhAnhStr", hinhAnhStr);
 
-        return "admin/mon-an/form"; // ✅ form.html
+        return "admin/mon-an/form";
     }
 
     @PostMapping("/edit/{id}")
     public String updateMonAn(
             @PathVariable Long id,
-            @ModelAttribute MonAn monAn,
-            @RequestParam(required = false) Long theLoaiId,
+            @ModelAttribute MonAn form,
             @RequestParam(required = false) String hinhAnhStr,
+            @RequestParam(required = false) Long theLoaiId,
+            @RequestParam(required = false) Double giaCu,
             Model model) {
 
         if (theLoaiId == null) {
             model.addAttribute("error", "Vui lòng chọn thể loại");
-            model.addAttribute("monAn", monAn);
+            model.addAttribute("monAn", form);
             model.addAttribute("theLoaiList", theLoaiService.getAll());
             model.addAttribute("hinhAnhStr", hinhAnhStr == null ? "" : hinhAnhStr);
-            return "admin/mon-an/form"; // ✅ form.html
+            return "admin/mon-an/form";
         }
 
-        monAn.setTheLoai(theLoaiService.getById(theLoaiId));
+        // Lấy món ăn cũ
+        MonAn existing = monAnService.getById(id);
+
+        // Cập nhật dữ liệu
+        existing.setTen(form.getTen());
+        existing.setMoTa(form.getMoTa());
+        existing.setGia(form.getGia());
+        existing.setGiaCu(giaCu); // <<< BẠN BỊ THIẾU DÒNG NÀY TRƯỚC ĐÓ
+        existing.setTheLoai(theLoaiService.getById(theLoaiId));
 
         if (hinhAnhStr != null && !hinhAnhStr.isBlank()) {
-            monAn.setHinhAnh(Arrays.asList(hinhAnhStr.split("\\s*,\\s*")));
+            existing.setHinhAnh(Arrays.asList(hinhAnhStr.split("\\s*,\\s*")));
         } else {
-            monAn.setHinhAnh(new ArrayList<>());
+            existing.setHinhAnh(new ArrayList<>());
         }
 
-        monAnService.update(id, monAn);
+        monAnService.update(id, existing);
         return "redirect:/admin/mon-an";
     }
 
@@ -131,7 +143,7 @@ public class MonAnAdminController {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("monAnPage", monAnService.getAll(0, 5, null, null));
             model.addAttribute("theLoaiList", theLoaiService.getAll());
-            return "admin/mon-an/list"; // ✅ list.html
+            return "admin/mon-an/list";
         }
         return "redirect:/admin/mon-an";
     }

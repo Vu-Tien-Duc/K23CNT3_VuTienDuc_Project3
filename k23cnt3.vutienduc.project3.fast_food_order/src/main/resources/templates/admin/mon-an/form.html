@@ -79,6 +79,17 @@
                     <input type="number" class="form-control" th:field="*{gia}" required min="0">
                 </div>
 
+                <!-- Giá cũ -->
+                <div class="mb-3">
+                    <label class="form-label">Giá cũ (khuyến mãi)</label>
+                    <!-- dùng th:field để Thymeleaf bind trực tiếp -->
+                    <input type="number" step="1000" min="0" class="form-control" th:field="*{giaCu}" placeholder="Để trống nếu không có giá cũ">
+                    <div class="form-text">Để trống nếu không có giá cũ</div>
+                </div>
+
+
+
+
                 <!-- Thể loại -->
                 <div class="mb-3">
                     <label class="form-label">Thể loại</label>

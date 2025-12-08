@@ -37,12 +37,12 @@ public class TheLoaiService {
     }
 
     public void delete(Long id) {
-        TheLoai theLoai = theLoaiRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thể loại"));
+        TheLoai theLoai = getById(id);
+
         if (!theLoai.getMonAns().isEmpty()) {
             throw new RuntimeException("Không thể xóa thể loại còn món ăn");
         }
+
         theLoaiRepository.delete(theLoai);
     }
-
 }

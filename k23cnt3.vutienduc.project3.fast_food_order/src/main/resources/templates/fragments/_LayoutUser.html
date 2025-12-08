@@ -9,54 +9,43 @@
 
     <style>
         :root {
-            --primary: #FF6B35;
-            --primary-dark: #E5511E;
-            --primary-light: #FF8C5A;
-            --secondary: #FFD23F;
-            --success: #10B981;
+            --primary-color: #FFA500;
+            --secondary-color: #FF8C00;
+            --dark-bg: #1a1a1a;
+            --text-light: #f8f9fa;
             --bg-main: #FFF9F5;
-            --bg-card: #FFFFFF;
-            --text-dark: #2D3748;
-            --text-light: #718096;
-            --shadow-sm: 0 2px 8px rgba(255, 107, 53, 0.08);
-            --shadow-md: 0 4px 16px rgba(255, 107, 53, 0.12);
-            --shadow-lg: 0 8px 24px rgba(255, 107, 53, 0.15);
         }
 
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
 
         body {
             background-color: var(--bg-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        main {
-            flex: 1;
+            overflow-x: hidden;
         }
 
         /* === HEADER STYLES === */
-        .navbar-custom {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
-            box-shadow: var(--shadow-lg);
+        .navbar {
+            background: var(--dark-bg) !important;
             padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
         .navbar-brand {
+            color: var(--primary-color) !important;
+            font-weight: bold;
             font-size: 1.8rem;
-            font-weight: 800;
-            color: white !important;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 10px;
             transition: transform 0.3s ease;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .navbar-brand:hover {
@@ -74,59 +63,43 @@
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.95) !important;
-            font-weight: 600;
-            padding: 0.6rem 1rem !important;
-            margin: 0 0.2rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            color: var(--text-light) !important;
+            margin: 0 15px;
+            transition: all 0.3s;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
         }
 
         .nav-link:hover {
-            background-color: rgba(255,255,255,0.2);
-            color: white !important;
-            transform: translateY(-2px);
+            color: var(--primary-color) !important;
+            background: rgba(255, 165, 0, 0.1);
         }
 
         .nav-link i {
             font-size: 1.1rem;
         }
 
-        .dropdown-menu {
+        .btn-order {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
             border: none;
-            box-shadow: var(--shadow-lg);
-            border-radius: 16px;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            min-width: 220px;
-        }
-
-        .dropdown-item {
-            padding: 0.8rem 1.2rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            display: flex;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
             align-items: center;
-            gap: 0.7rem;
-            font-weight: 500;
+            gap: 8px;
         }
 
-        .dropdown-item i {
-            width: 20px;
-            color: var(--primary);
-        }
-
-        .dropdown-item:hover {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .dropdown-item:hover i {
-            color: white;
+        .btn-order:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,165,0,0.4);
         }
 
         .cart-badge {
@@ -139,7 +112,7 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: linear-gradient(135deg, #EF4444, #DC2626);
+            background: #EF4444;
             color: white;
             border-radius: 50%;
             padding: 0.2rem 0.45rem;
@@ -158,79 +131,122 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: white;
-            color: var(--primary);
+            background: var(--primary-color);
+            color: white;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             margin-right: 0.5rem;
-            font-size: 1.1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-size: 1rem;
+            border: 2px solid rgba(255,165,0,0.3);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            min-width: 220px;
+            background: white;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 500;
+            color: var(--dark-bg);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .dropdown-item:hover i {
+            color: white;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
         }
 
         /* === FOOTER STYLES === */
-        footer {
-            background: linear-gradient(135deg, var(--text-dark) 0%, #1A202C 100%);
-            margin-top: auto;
-            box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+        .footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 80px;
         }
 
-        .footer-content {
-            padding: 3.5rem 0 1.5rem;
-        }
-
-        .footer-section {
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h5 {
-            color: var(--secondary);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
+        .footer h5 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 10px;
         }
 
-        .footer-section h5 i {
+        .footer h5 i {
             font-size: 1.5rem;
         }
 
         .footer-description {
-            color: rgba(255,255,255,0.7);
-            line-height: 1.7;
+            color: #aaa;
+            line-height: 1.8;
             margin-bottom: 1.5rem;
         }
 
-        .footer-section ul {
+        .footer ul {
             list-style: none;
             padding: 0;
         }
 
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
+        .footer ul li {
+            margin-bottom: 10px;
         }
 
-        .footer-section ul li a {
-            color: rgba(255,255,255,0.75);
+        .footer ul li a {
+            color: #aaa;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
         }
 
-        .footer-section ul li a:hover {
-            color: var(--secondary);
-            transform: translateX(5px);
-        }
-
-        .footer-section ul li a::before {
+        .footer ul li a::before {
             content: '▸';
-            color: var(--primary);
+            color: var(--primary-color);
+        }
+
+        .footer ul li a:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
         }
 
         .social-icons {
@@ -243,7 +259,7 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            background: rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -255,22 +271,38 @@
         }
 
         .social-icon:hover {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-color);
             transform: translateY(-5px) rotate(5deg);
             color: white;
             border-color: transparent;
-            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 16px rgba(255, 165, 0, 0.4);
         }
 
-        .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 1.8rem 0;
+        .contact-info {
+            color: #aaa;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            line-height: 1.6;
+        }
+
+        .contact-info i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            min-width: 20px;
+            margin-top: 2px;
+        }
+
+        .copyright {
             text-align: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.95rem;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #333;
+            color: #aaa;
         }
 
-        .footer-bottom i {
+        .copyright i {
             color: #EF4444;
             animation: heartbeat 1.5s infinite;
         }
@@ -279,37 +311,6 @@
             0%, 100% { transform: scale(1); }
             10%, 30% { transform: scale(1.2); }
             20%, 40% { transform: scale(1); }
-        }
-
-        .contact-info {
-            color: rgba(255,255,255,0.75);
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            line-height: 1.6;
-        }
-
-        .contact-info i {
-            color: var(--secondary);
-            font-size: 1.2rem;
-            min-width: 20px;
-        }
-
-        /* === ANIMATIONS === */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-menu.show {
-            animation: slideDown 0.3s ease;
         }
 
         /* === RESPONSIVE === */
@@ -325,12 +326,12 @@
             .user-avatar {
                 width: 32px;
                 height: 32px;
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
         }
 
         @media (max-width: 768px) {
-            .footer-section {
+            .footer {
                 text-align: center;
             }
 
@@ -341,6 +342,10 @@
             .contact-info {
                 justify-content: center;
             }
+
+            .footer h5 {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -348,27 +353,24 @@
 
 <!-- Header -->
 <div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" th:href="@{/}">
                 <i class="bi bi-shop"></i>
-                FastFoodApp
+                Food Lover
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                    aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <!-- Menu Navigation -->
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/}">
                             <i class="bi bi-house-door-fill"></i> Trang chủ
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/menu}">
+                        <a class="nav-link" th:href="@{/mon-an}">
                             <i class="bi bi-grid-fill"></i> Thực đơn
                         </a>
                     </li>
@@ -377,24 +379,24 @@
                             <i class="bi bi-info-circle-fill"></i> Giới thiệu
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}">
+                            <i class="bi bi-telephone-fill"></i> Liên hệ
+                        </a>
+                    </li>
 
                     <!-- Cart Icon -->
                     <li class="nav-item" th:if="${nguoiDung != null}">
                         <a class="nav-link cart-badge" th:href="@{/gio-hang}">
-                            <i class="bi bi-cart3"></i> Giỏ hàng
-                            <span class="badge-count" th:if="${cartCount > 0}" th:text="${cartCount}">0</span>
+                            <i class="bi bi-cart3"></i>
+                            <span class="badge-count" th:if="${cartCount != null && cartCount > 0}" th:text="${cartCount}">0</span>
                         </a>
                     </li>
 
                     <!-- Chưa đăng nhập -->
                     <li class="nav-item" th:if="${nguoiDung == null}">
-                        <a class="nav-link" th:href="@{/login}">
+                        <a th:href="@{/login}" class="btn btn-order ms-3">
                             <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
-                        </a>
-                    </li>
-                    <li class="nav-item" th:if="${nguoiDung == null}">
-                        <a class="nav-link" th:href="@{/register}">
-                            <i class="bi bi-person-plus-fill"></i> Đăng ký
                         </a>
                     </li>
 
@@ -431,7 +433,6 @@
                             </li>
                         </ul>
                     </li>
-
                 </ul>
             </div>
         </div>
@@ -440,14 +441,15 @@
 
 <!-- Footer -->
 <div th:fragment="footer">
-    <footer class="text-white">
-        <div class="container footer-content">
+    <footer class="footer">
+        <div class="container">
             <div class="row">
                 <!-- About Section -->
-                <div class="col-md-4 footer-section">
-                    <h5><i class="bi bi-shop"></i> FastFoodApp</h5>
+                <div class="col-md-4 mb-4">
+                    <h5><i class="bi bi-shop"></i> Food Lover</h5>
                     <p class="footer-description">
-                        Mang đến cho bạn những món ăn nhanh ngon nhất với dịch vụ giao hàng tận nơi nhanh chóng và tiện lợi. Chất lượng là ưu tiên hàng đầu!
+                        Mang đến cho bạn những món ăn nhanh ngon nhất với dịch vụ giao hàng tận nơi.
+                        Chất lượng là ưu tiên hàng đầu của chúng tôi!
                     </p>
                     <div class="social-icons">
                         <a href="#" class="social-icon" title="Facebook">
@@ -469,7 +471,7 @@
                 </div>
 
                 <!-- Quick Links -->
-                <div class="col-md-4 footer-section">
+                <div class="col-md-4 mb-4">
                     <h5><i class="bi bi-link-45deg"></i> Liên kết nhanh</h5>
                     <ul>
                         <li><a th:href="@{/menu}">Thực đơn</a></li>
@@ -482,7 +484,7 @@
                 </div>
 
                 <!-- Contact Info -->
-                <div class="col-md-4 footer-section">
+                <div class="col-md-4 mb-4">
                     <h5><i class="bi bi-telephone-fill"></i> Liên hệ</h5>
                     <div class="contact-info">
                         <i class="bi bi-geo-alt-fill"></i>
@@ -494,7 +496,7 @@
                     </div>
                     <div class="contact-info">
                         <i class="bi bi-envelope-fill"></i>
-                        <span>support@fastfoodapp.com</span>
+                        <span>support@foodlover.com</span>
                     </div>
                     <div class="contact-info">
                         <i class="bi bi-clock-fill"></i>
@@ -502,10 +504,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="container">
-                &copy; 2025 FastFoodApp. All rights reserved. Made with <i class="bi bi-heart-fill"></i> in Vietnam
+
+            <div class="copyright">
+                &copy; 2025 Food Lover. All rights reserved. Made with <i class="bi bi-heart-fill"></i> by Vu Tien Duc
             </div>
         </div>
     </footer>
@@ -514,6 +515,28 @@
 <!-- Scripts Fragment -->
 <div th:fragment="scripts">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.5)';
+            } else {
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+            }
+        });
+    </script>
 </div>
 
 </body>

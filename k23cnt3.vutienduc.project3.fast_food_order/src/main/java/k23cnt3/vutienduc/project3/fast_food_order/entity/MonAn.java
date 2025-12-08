@@ -21,7 +21,7 @@ public class MonAn {
     private String ten;
     private String moTa;
     private double gia;
-
+    private Double giaCu; // Giá gốc, có thể null nếu không khuyến mãi
     @ElementCollection
     @CollectionTable(name = "mon_an_hinh_anh", joinColumns = @JoinColumn(name = "mon_an_id"))
     @Column(name = "url_hinh")
