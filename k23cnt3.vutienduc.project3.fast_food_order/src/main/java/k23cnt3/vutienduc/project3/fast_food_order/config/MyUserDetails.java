@@ -20,6 +20,11 @@ public class MyUserDetails implements UserDetails {
         return nguoiDung;
     }
 
+    // ⭐ Thêm method này để Thymeleaf lấy tên user
+    public String getTen() {
+        return nguoiDung.getTen();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + nguoiDung.getVaiTro().getTenVaiTro()));

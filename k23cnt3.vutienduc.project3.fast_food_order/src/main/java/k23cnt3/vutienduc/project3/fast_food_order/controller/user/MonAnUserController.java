@@ -1,74 +1,86 @@
 package k23cnt3.vutienduc.project3.fast_food_order.controller.user;
 
 import k23cnt3.vutienduc.project3.fast_food_order.entity.MonAn;
-import k23cnt3.vutienduc.project3.fast_food_order.entity.TheLoai;
+import k23cnt3.vutienduc.project3.fast_food_order.entity.NguoiDung;
+import k23cnt3.vutienduc.project3.fast_food_order.repository.NguoiDungRepository;
+import k23cnt3.vutienduc.project3.fast_food_order.service.BinhLuanService;
 import k23cnt3.vutienduc.project3.fast_food_order.service.MonAnService;
 import k23cnt3.vutienduc.project3.fast_food_order.service.TheLoaiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.security.Principal;
 
 @Controller
+@RequestMapping("/mon-an")
 @RequiredArgsConstructor
 public class MonAnUserController {
 
     private final MonAnService monAnService;
     private final TheLoaiService theLoaiService;
+    private final BinhLuanService binhLuanService;
+    private final NguoiDungRepository nguoiDungRepository;
 
-    /**
-     * Trang danh sách món ăn: /mon-an hoặc /mon-an/index
-     * - search (optional)
-     * - theLoaiId (optional)
-     * - page (optional)
-     */
-    @GetMapping({"/mon-an", "/mon-an/index"})
-    public String index(
-            Model model,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) Long theLoai,
-            @RequestParam(required = false) String tenTheLoai
-    ) {
+    // Dùng chung để gửi thông tin user login lên layout
+    private void addLoggedUser(Model model, Principal principal) {
+        if (principal != null) {
+            NguoiDung nd = nguoiDungRepository
+                    .findByEmail(principal.getName())
+                    .orElse(null);
+            model.addAttribute("nguoiDung", nd);
+        } else {
+            model.addAttribute("nguoiDung", null);
+        }
+    }
 
-        Page<MonAn> monAnPage = monAnService.getAll(page, size, search, theLoai, tenTheLoai);
+    // ===============================
+    // 🔥 DANH SÁCH MÓN ĂN + LỌC + SEARCH + PHÂN TRANG
+    // ===============================
+    @GetMapping
+    public String list(@RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "8") int size,
+                       @RequestParam(required = false) String search,
+                       @RequestParam(required = false) Long theLoaiId,
+                       Model model,
+                       Principal principal) {
 
-        model.addAttribute("monAnPage", monAnPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", monAnPage.getTotalPages());
+        addLoggedUser(model, principal);
+
+        // Lấy dữ liệu phân trang
+        model.addAttribute("pageData",
+                monAnService.getAll(page, size, search, theLoaiId));
 
         model.addAttribute("search", search);
-        model.addAttribute("theLoaiId", theLoai);
-        model.addAttribute("tenTheLoai", tenTheLoai);
-
-        model.addAttribute("theLoaiList", theLoaiService.getAll());
+        model.addAttribute("theLoaiId", theLoaiId);
+        model.addAttribute("dsTheLoai", theLoaiService.getAll());
 
         return "user/mon-an/index";
     }
 
+    // ===============================
+    // 🔥 TRANG CHI TIẾT MÓN ĂN
+    // ===============================
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id,
+                         Model model,
+                         Principal principal) {
 
-    /**
-     * Chi tiết món ăn: /mon-an/{id}
-     */
-    @GetMapping("/mon-an/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+        addLoggedUser(model, principal);
+
         MonAn monAn = monAnService.getById(id);
-        model.addAttribute("monAn", monAn);
 
-        // Lấy thêm danh sách các món khác cùng thể loại (gợi ý)
-        if (monAn.getTheLoai() != null) {
-            List<MonAn> related = monAnService.getByTheLoai(monAn.getTheLoai().getId());
-            related.removeIf(m -> m.getId().equals(monAn.getId())); // bỏ món hiện tại
-            model.addAttribute("related", related);
-        }
+        model.addAttribute("monAn", monAn);
+        model.addAttribute("theLoai", monAn.getTheLoai());
+        model.addAttribute("goiYMons",
+                monAnService.getByTheLoai(monAn.getTheLoai().getId()));
+
+        // Bình luận + Đánh giá
+        model.addAttribute("binhLuans", binhLuanService.filterBinhLuan(id, null, null));
+        model.addAttribute("avgRating", binhLuanService.getAverageRatingByMonAn(id));
+        model.addAttribute("tongDanhGia", binhLuanService.countByMonAn(id));
 
         return "user/mon-an/detail";
     }
-
 }

@@ -1,13 +1,10 @@
 package k23cnt3.vutienduc.project3.fast_food_order.controller.user;
 
 import k23cnt3.vutienduc.project3.fast_food_order.entity.MonAn;
-import k23cnt3.vutienduc.project3.fast_food_order.entity.NguoiDung;
-import k23cnt3.vutienduc.project3.fast_food_order.entity.VaiTro;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.MonAnRepository;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.NguoiDungRepository;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.VaiTroRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,30 +22,33 @@ public class HomeUserController {
     private final VaiTroRepository vaiTroRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @GetMapping({"/", "/index"})
     public String index(Model model, Principal principal) {
-        NguoiDung nguoiDung = null;
-        if (principal != null) {
-            nguoiDung = nguoiDungRepository.findByEmail(principal.getName()).orElse(null);
-        }
-        model.addAttribute("nguoiDung", nguoiDung);
 
+        // Lấy thông tin user đang đăng nhập (nếu có)
+        if (principal != null) {
+            var user = nguoiDungRepository.findByEmail(principal.getName()).orElse(null);
+            model.addAttribute("nguoiDung", user);
+        } else {
+            model.addAttribute("nguoiDung", null);
+        }
+
+        // Lấy danh sách món ăn
         List<MonAn> dsMonAn = monAnRepository.findAll();
-        int count = dsMonAn.size();
-        model.addAttribute("monAnList", dsMonAn.subList(0, Math.min(5, count)));
+        model.addAttribute("monAnList", dsMonAn.subList(0, Math.min(5, dsMonAn.size())));
 
         return "user/index";
     }
 
+
     @GetMapping("/login")
     public String login() {
-        return "login"; // templates/login.html
+        return "login";
     }
 
     @GetMapping("/register")
     public String register() {
-        return "register"; // trang đăng ký
+        return "register";
     }
 
     @PostMapping("/register/save")
@@ -60,18 +60,16 @@ public class HomeUserController {
             @RequestParam String diaChi,
             Model model
     ) {
-        // Kiểm tra email đã tồn tại chưa
+
         if (nguoiDungRepository.existsByEmail(email)) {
             model.addAttribute("error", "Email đã tồn tại!");
             return "register";
         }
 
-        // Lấy role USER
-        VaiTro userRole = vaiTroRepository.findByTenVaiTro("USER")
+        var userRole = vaiTroRepository.findByTenVaiTro("USER")
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại!"));
 
-        // Tạo user mới
-        NguoiDung user = NguoiDung.builder()
+        var user = k23cnt3.vutienduc.project3.fast_food_order.entity.NguoiDung.builder()
                 .ten(ten)
                 .email(email)
                 .matKhau(passwordEncoder.encode(matKhau))
@@ -82,8 +80,6 @@ public class HomeUserController {
 
         nguoiDungRepository.save(user);
 
-        // Chuyển về login
         return "redirect:/login?success";
     }
-
 }

@@ -2,267 +2,560 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <th:block th:replace="~{fragments/_LayoutUser :: head}"></th:block>
-
+    <meta charset="UTF-8">
+    <title>Danh sách món ăn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ==== Category Section ==== */
-        .category-section {
-            padding: 80px 0;
-            background: #f8f9fa;
+        body {
+            background-color: #f8f9fa;
         }
 
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .section-title h2 {
+        .page-header h2 {
             font-size: 2.5rem;
             font-weight: bold;
-            color: var(--dark-bg);
-            margin-bottom: 10px;
-        }
-
-        .section-title .highlight {
-            color: var(--primary-color);
-        }
-
-        .section-title p {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            cursor: pointer;
-            margin-bottom: 30px;
-            height: 100%;
-        }
-
-        .category-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .category-card i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .category-card h5 {
-            font-weight: bold;
-            color: var(--dark-bg);
-            margin-bottom: 10px;
-        }
-
-        .category-card p {
-            color: #666;
             margin: 0;
         }
 
-        /* ==== Food Items ==== */
-        .food-card {
+        .welcome-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .welcome-badge i {
+            font-size: 1.2rem;
+        }
+
+        .filter-section {
             background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 35px;
+        }
+
+        .filter-section .form-control,
+        .filter-section .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
             transition: all 0.3s;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
+        }
+
+        .filter-section .form-control:focus,
+        .filter-section .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.15);
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .food-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             height: 100%;
+            background: white;
         }
 
         .food-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
         .food-image {
             position: relative;
+            width: 100%;
+            height: 220px;
             overflow: hidden;
-            height: 200px;
+            background: #f8f9fa;
         }
 
         .food-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s;
+            transition: transform 0.5s ease;
         }
 
         .food-card:hover .food-image img {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         .food-badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--primary-color);
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             color: white;
-            padding: 5px 15px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: bold;
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255,107,107,0.4);
+            z-index: 10;
+            animation: pulse 2s infinite;
         }
 
-        .food-content {
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(245,87,108,0.4);
+            z-index: 10;
+        }
+
+        .food-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .food-card:hover .food-overlay {
+            opacity: 1;
+        }
+
+        .card-body {
             padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
         }
 
-        .food-title {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 52px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
             margin-bottom: 10px;
         }
 
-        .food-desc {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            flex: 1;
-        }
-
-        .food-footer {
+        .price-section {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: auto;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .food-price {
-            font-size: 1.3rem;
+        .price-current {
+            color: #ff6b6b;
+            font-size: 1.4rem;
             font-weight: bold;
-            color: var(--primary-color);
         }
 
-        .btn-add-cart {
-            background: var(--primary-color);
-            color: white;
+        .price-old {
+            color: #9ca3af;
+            font-size: 1rem;
+            text-decoration: line-through;
+        }
+
+        .card-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 15px 20px;
+        }
+
+        .btn-view-detail {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            padding: 5px 15px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
             transition: all 0.3s;
+            width: 100%;
         }
 
-        .btn-add-cart:hover {
-            background: var(--secondary-color);
+        .btn-view-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
         }
 
-        /* ==== Pagination ==== */
         .pagination {
-            justify-content: center;
+            margin-top: 40px;
+            gap: 8px;
+        }
+
+        .page-link {
+            border: none;
+            background: white;
+            color: #667eea;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .page-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(102,126,234,0.3);
+        }
+
+        .page-item.disabled .page-link {
+            background: #e9ecef;
+            color: #9ca3af;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+
+        .no-results i {
+            font-size: 5rem;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .no-results h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .stats-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
     </style>
 </head>
+
 <body>
-<!-- Header -->
+
+<!-- HEADER -->
 <div th:replace="~{fragments/_LayoutUser :: header}"></div>
 
-<!-- Category Filter -->
-<section class="category-section">
+<!-- PAGE HEADER -->
+<div class="page-header">
     <div class="container">
-        <div class="section-title">
-            <h2>Danh Mục <span class="highlight">Món Ăn</span></h2>
-            <p>Khám phá các loại món ăn yêu thích</p>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <input type="text" class="form-control" placeholder="Tìm món ăn..."
-                       th:value="${search}" id="searchInput">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="fas fa-utensils"></i> Thực Đơn Món Ăn</h2>
+                <p class="mb-0">Khám phá hương vị tuyệt vời từ đồ ăn nhanh của chúng tôi</p>
             </div>
-            <div class="col-md-3">
-                <select class="form-select" id="theLoaiSelect">
-                    <option value="">-- Tất cả thể loại --</option>
-                    <option th:each="tl : ${theLoaiList}"
+            <div class="col-md-4 text-md-end" th:if="${nguoiDung != null}">
+                <div class="welcome-badge">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Xin chào, <strong th:text="${nguoiDung.ten}"></strong>!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+
+    <!-- STATS SECTION -->
+    <div class="stats-section" th:if="${pageData != null}">
+        <div class="stat-item">
+            <div class="stat-number" th:text="${pageData.totalElements}">0</div>
+            <div class="stat-label">Món ăn</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(dsTheLoai)}">0</div>
+            <div class="stat-label">Thể loại</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">
+                <i class="fas fa-star text-warning"></i> 4.5
+            </div>
+            <div class="stat-label">Đánh giá TB</div>
+        </div>
+    </div>
+
+    <!-- FILTER SECTION -->
+    <div class="filter-section">
+        <form th:action="@{/mon-an}" method="get" class="row g-3">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border: 2px solid #e9ecef; border-right: none;">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text"
+                           class="form-control border-start-0"
+                           name="search"
+                           placeholder="Tìm kiếm món ăn yêu thích..."
+                           th:value="${search}"
+                           style="border-left: none;">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <select class="form-select" name="theLoaiId">
+                    <option value="">
+                        <i class="fas fa-list"></i> Tất cả thể loại
+                    </option>
+                    <option th:each="tl : ${dsTheLoai}"
                             th:value="${tl.id}"
-                            th:text="${tl.tenTheLoai}"
-                            th:selected="${tl.id} == ${theLoaiId}">
+                            th:selected="${theLoaiId == tl.id}"
+                            th:text="${tl.tenTheLoai}">
                     </option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <button class="btn btn-primary w-100" onclick="filter()">Lọc</button>
-            </div>
-            <div class="col-md-2">
-                <a th:href="@{/mon-an}" class="btn btn-secondary w-100">Reset</a>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-lg-3 col-md-6 mb-3" th:each="monAn : ${monAnPage.content}">
-                <a th:href="@{/mon-an/{id}(id=${monAn.id})}" class="text-decoration-none text-dark">
-                    <div class="food-card">
-                        <div class="food-image">
-                            <img th:src="${monAn.hinhAnh != null && monAn.hinhAnh.size() > 0
-                                          ? monAn.hinhAnh[0]
-                                          : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}"
-                                 th:alt="${monAn.ten}">
-                            <span class="food-badge">Hot</span>
-                        </div>
-                        <div class="food-content">
-                            <h5 class="food-title" th:text="${monAn.ten}"></h5>
-                            <p class="food-desc" th:text="${monAn.moTa}"></p>
-                            <div class="food-footer">
-                                <span class="food-price" th:text="${#numbers.formatDecimal(monAn.gia,0,'COMMA',0,'POINT')} + '₫'"></span>
-                                <button class="btn-add-cart" th:onclick="'addToCart(' + ${monAn.id} + '); return false;'">
-                                    <i class="bi bi-cart-plus-fill"></i>
-                                </button>
-                            </div>
-                        </div>
+            <div class="col-md-3">
+                <div class="row g-2">
+                    <div class="col-7">
+                        <button type="submit" class="btn btn-primary btn-filter w-100">
+                            <i class="fas fa-filter"></i> Lọc
+                        </button>
                     </div>
-                </a>
+                    <div class="col-5">
+                        <a th:href="@{/mon-an}" class="btn btn-secondary btn-reset w-100">
+                            <i class="fas fa-redo"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- FOOD CARDS -->
+    <div class="row" th:if="${pageData != null && pageData.content.size() > 0}">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="mon : ${pageData.content}">
+            <div class="card food-card">
+                <!-- ẢNH MÓN ĂN -->
+                <div class="food-image">
+                    <img th:src="${mon.hinhAnh != null && #lists.size(mon.hinhAnh) > 0 ? mon.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}"
+                         th:alt="${mon.ten}"
+                         onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'">
+
+                    <!-- BADGE HOT -->
+                    <span class="food-badge">
+                        <i class="fas fa-fire"></i> Hot
+                    </span>
+
+                    <!-- DISCOUNT BADGE -->
+                    <span class="discount-badge" th:if="${mon.giaCu != null && mon.giaCu > mon.gia}">
+                        -<span th:text="${#numbers.formatDecimal((mon.giaCu - mon.gia) / mon.giaCu * 100, 0, 0)}">0</span>%
+                    </span>
+
+                    <div class="food-overlay"></div>
+                </div>
+
+                <div class="card-body">
+                    <!-- CATEGORY TAG -->
+                    <span class="category-tag" th:if="${mon.theLoai != null}">
+                        <i class="fas fa-tag"></i> <span th:text="${mon.theLoai.tenTheLoai}">Category</span>
+                    </span>
+
+                    <!-- TITLE -->
+                    <h5 class="card-title" th:text="${mon.ten}">Tên món ăn</h5>
+
+                    <!-- PRICE -->
+                    <div class="price-section">
+                        <span class="price-current" th:text="${#numbers.formatDecimal(mon.gia, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</span>
+                        <span class="price-old" th:if="${mon.giaCu != null && mon.giaCu > mon.gia}"
+                              th:text="${#numbers.formatDecimal(mon.giaCu, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</span>
+                    </div>
+
+                    <!-- RATING -->
+                    <div class="text-warning mb-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="text-muted small">(4.5)</span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <a th:href="@{'/mon-an/' + ${mon.id}}" class="btn btn-primary btn-view-detail">
+                        <i class="fas fa-eye"></i> Xem chi tiết
+                    </a>
+                </div>
             </div>
         </div>
-
-        <!-- Pagination -->
-        <nav th:if="${monAnPage.totalPages > 1}">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${monAnPage.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/mon-an(page=${currentPage - 1}, search=${search}, theLoai=${theLoaiId})}">Previous</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, monAnPage.totalPages-1)}"
-                    th:classappend="${i} == ${currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/mon-an(page=${i}, search=${search}, theLoai=${theLoaiId})}" th:text="${i + 1}"></a>
-                </li>
-                <li class="page-item" th:classappend="${monAnPage.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/mon-an(page=${currentPage + 1}, search=${search}, theLoai=${theLoaiId})}">Next</a>
-                </li>
-            </ul>
-        </nav>
-
     </div>
-</section>
 
-<!-- Footer -->
+    <!-- NO RESULTS -->
+    <div class="no-results" th:if="${pageData == null || pageData.content.size() == 0}">
+        <i class="fas fa-search"></i>
+        <h4>Không tìm thấy món ăn nào</h4>
+        <p>Vui lòng thử tìm kiếm với từ khóa khác hoặc chọn thể loại khác</p>
+        <a th:href="@{/mon-an}" class="btn btn-primary btn-filter mt-3">
+            <i class="fas fa-home"></i> Xem tất cả món ăn
+        </a>
+    </div>
+
+    <!-- PAGINATION -->
+    <nav th:if="${pageData != null && pageData.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <!-- Previous -->
+            <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/mon-an(page=${pageData.number - 1}, search=${search}, theLoaiId=${theLoaiId})}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+
+            <!-- Page Numbers -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}"
+                th:if="${i >= pageData.number - 2 && i <= pageData.number + 2}"
+                th:classappend="${i == pageData.number} ? 'active'">
+                <a class="page-link"
+                   th:text="${i + 1}"
+                   th:href="@{/mon-an(page=${i}, search=${search}, theLoaiId=${theLoaiId})}"></a>
+            </li>
+
+            <!-- Next -->
+            <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/mon-an(page=${pageData.number + 1}, search=${search}, theLoaiId=${theLoaiId})}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<!-- FOOTER -->
 <div th:replace="~{fragments/_LayoutUser :: footer}"></div>
 
-<!-- Scripts -->
+<!-- SCRIPTS -->
 <div th:replace="~{fragments/_LayoutUser :: scripts}"></div>
 
 <script>
-    function addToCart(monAnId) {
-        alert('Thêm món vào giỏ hàng: ' + monAnId);
-        // TODO: Gọi API add cart
-    }
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
 
-    function filter() {
-        const search = document.getElementById('searchInput').value;
-        const theLoai = document.getElementById('theLoaiSelect').value;
-        window.location.href = '/mon-an?search=' + encodeURIComponent(search) + '&theLoai=' + theLoai;
-    }
+    // Animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.food-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s, transform 0.5s';
+        observer.observe(card);
+    });
 </script>
+
 </body>
 </html>

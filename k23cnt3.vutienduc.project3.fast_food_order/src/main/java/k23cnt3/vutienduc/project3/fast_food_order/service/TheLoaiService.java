@@ -16,6 +16,9 @@ public class TheLoaiService {
     public long countAll() {
         return theLoaiRepository.count();
     }
+    public TheLoai getByTenTheLoai(String ten) {
+        return theLoaiRepository.findByTenTheLoai(ten).orElse(null);
+    }
 
     public List<TheLoai> getAll() {
         return theLoaiRepository.findAll();
