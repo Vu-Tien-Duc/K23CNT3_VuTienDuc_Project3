@@ -1,135 +1,580 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head>
-    <th:block th:replace="~{fragments/_LayoutUser :: head}"></th:block>
-    <meta charset="UTF-8">
-    <title th:text="${monAn.ten} + ' - Chi tiết'">Chi tiết món ăn</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Chi tiết món ăn',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
+      )}">
+
+<!-- =========================== STYLES =========================== -->
+<th:block th:fragment="styles">
     <style>
-        .food-main-image {
+        /* Thumbnail */
+        .thumbnail-item {
+            transition: transform .2s ease, border-color .2s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .thumbnail-item:hover img {
+            transform: scale(1.1);
+            border-color: #ff6b6b !important;
+            box-shadow: 0 6px 18px rgba(255,107,107,0.3);
+        }
+        .thumb-img.active-thumb {
+            outline: 3px solid #ff6b6b;
+            transform: scale(1.05);
+            border-color: #ff6b6b !important;
+        }
+
+        /* Carousel */
+        .carousel-inner {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .large-image {
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-item:hover .large-image {
+            transform: scale(1.05);
+        }
+
+        /* ===== LIGHTBOX PHÓNG TO ===== */
+        #imageLightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            animation: fadeIn .3s ease;
+            backdrop-filter: blur(8px);
         }
-        .food-thumbnails img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 5px;
-            border: 2px solid transparent;
-            transition: border 0.2s;
+
+        .lightbox-wrapper {
+            width: 900px;
+            height: 600px;
+            max-width: 95vw;
+            max-height: 95vh;
+            overflow: hidden;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: zoomIn .3s ease;
         }
-        .food-thumbnails img.selected {
-            border: 2px solid #ff6f00;
+
+        #lightboxImg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
-        .btn-order {
-            background-color: #ff6f00;
-            color: #fff;
-            font-weight: bold;
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .btn-order:hover {
-            background-color: #e65c00;
-            color: #fff;
+
+        @keyframes zoomIn {
+            from { transform: scale(.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
-        .review-card {
-            border-radius: 8px;
-            background-color: #fff;
+
+        /* Product Info Section */
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .price-tag {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .rating-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .info-label {
+            color: #495057;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .info-value {
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .description-box {
+            background: #f8f9fa;
             padding: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            border-radius: 6px;
+            border-left: 3px solid #6c757d;
+            line-height: 1.6;
+            color: #495057;
         }
-        .suggestion-card img {
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px 8px 0 0;
+
+        /* Buttons */
+        .action-btn {
+            padding: 12px 28px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-add-cart {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-add-cart:hover {
+            background: #218838;
+            color: white;
+        }
+
+        .btn-buy-now {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-buy-now:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        /* Related Products */
+        .related-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .related-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .related-card img {
+            transition: transform 0.3s ease;
+        }
+
+        .related-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Star Rating System */
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            font-size: 2rem;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            cursor: pointer;
+            color: transparent;
+            text-shadow: 0 0 0 #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            text-shadow: 0 0 0 #ffd700;
+        }
+
+        .star-rating input:checked ~ label {
+            text-shadow: 0 0 0 #ffd700;
+        }
+
+        /* Comment Form */
+        .comment-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .comment-form textarea {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 12px;
+        }
+
+        .comment-form textarea:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+        }
+
+        .submit-review-btn {
+            background: #0d6efd;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .submit-review-btn:hover {
+            background: #0b5ed7;
+        }
+
+        /* Comment Cards */
+        .comment-card {
+            border: none;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #dee2e6;
+        }
+
+        .comment-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .comment-author {
+            color: #212529;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .comment-stars {
+            color: #ffc107;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .no-comments {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            color: #6c757d;
         }
     </style>
-</head>
+</th:block>
 
-<body>
 
-<!-- HEADER -->
-<div th:replace="~{fragments/_LayoutUser :: header}"></div>
+<!-- =========================== PAGE CONTENT =========================== -->
+<th:block th:fragment="content">
 
-<main class="container py-5">
+    <main class="container py-5">
 
-    <!-- Chi tiết món ăn -->
-    <div class="row mb-5">
-        <div class="col-md-5">
-            <img th:src="${monAn.hinhAnh != null && #lists.size(monAn.hinhAnh) > 0 ? monAn.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}"
-                 th:alt="${monAn.ten}" class="food-main-image mb-3">
+        <div class="row g-4">
+            <!-- ========== HÌNH ẢNH (CAROUSEL + THUMBNAIL) ========== -->
+            <div class="col-md-5">
 
-            <!-- Ảnh thu nhỏ nếu có nhiều hình -->
-            <div class="food-thumbnails d-flex" th:if="${monAn.hinhAnh != null && #lists.size(monAn.hinhAnh) > 1}">
-                <img th:each="img,iterStat : ${monAn.hinhAnh}"
-                     th:src="${img}"
-                     th:classappend="${iterStat.index == 0} ? 'selected'"
-                     th:alt="${monAn.ten}"
-                     th:onclick="|document.querySelector('.food-main-image').src='${img}'|">
+                <!-- CAROUSEL -->
+                <div id="carouselMonAn" class="carousel slide shadow-lg mb-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+
+                        <!-- Ảnh lớn -->
+                        <div th:each="img, iStat : ${monAn.hinhAnh}"
+                             th:class="'carousel-item' + (${iStat.index} == 0 ? ' active' : '')">
+                            <img th:src="${img}"
+                                 class="d-block w-100 large-image"
+                                 style="height: 400px; object-fit: cover; cursor: zoom-in;">
+                        </div>
+
+                        <!-- Không có ảnh -->
+                        <div th:if="${#lists.isEmpty(monAn.hinhAnh)}" class="carousel-item active">
+                            <img src="/images/no-image.png"
+                                 class="d-block w-100 large-image"
+                                 style="height: 400px; object-fit: cover; cursor: zoom-in;">
+                        </div>
+
+                    </div>
+
+                    <!-- Nút chuyển ảnh -->
+                    <button class="carousel-control-prev" type="button"
+                            data-bs-target="#carouselMonAn" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+
+                    <button class="carousel-control-next" type="button"
+                            data-bs-target="#carouselMonAn" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+
+                <!-- THUMBNAIL -->
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                    <div th:each="img, iStat : ${monAn.hinhAnh}"
+                         class="thumbnail-item"
+                         style="cursor:pointer;">
+
+                        <img th:src="${img}"
+                             th:attr="data-index=${iStat.index}"
+                             style="width:90px; height:90px; object-fit:cover; border:3px solid #e9ecef; border-radius:12px;"
+                             class="thumb-img">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========== THÔNG TIN MÓN ĂN ========== -->
+            <div class="col-md-7">
+
+                <h1 class="product-title" th:text="${monAn.ten}"></h1>
+
+                <div class="mb-3">
+                    <span class="rating-badge">
+                        <i class="bi bi-star-fill"></i>
+                        <span th:text="${avgRating != null ? avgRating : 0}"></span>/5
+                        <span class="ms-2">(<span th:text="${tongDanhGia}"></span> đánh giá)</span>
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <span class="price-tag">
+                        <span th:text="${#numbers.formatDecimal(monAn.gia,0,'POINT',0,'COMMA')} + ' VNĐ'"></span>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <span class="info-label"><i class="bi bi-tag-fill"></i> Thể loại:</span>
+                    <span class="info-value ms-2" th:text="${monAn.theLoai != null ? monAn.theLoai.tenTheLoai : 'Không có'}"></span>
+                </div>
+
+                <div class="mb-4">
+                    <p class="info-label"><i class="bi bi-card-text"></i> Mô tả:</p>
+                    <div class="description-box" th:text="${monAn.moTa != null ? monAn.moTa : 'Chưa có mô tả'}"></div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex flex-wrap gap-3">
+
+                    <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
+                       class="action-btn btn-add-cart">
+                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                    </a>
+
+                    <a th:href="${nguoiDung == null ? '/login' : '/cart/buy-now/' + monAn.id}"
+                       class="action-btn btn-buy-now">
+                        <i class="bi bi-lightning-fill"></i> Mua ngay
+                    </a>
+
+                    <a href="/mon-an" class="action-btn btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+
+                </div>
             </div>
         </div>
 
-        <div class="col-md-7">
-            <h2 class="fw-bold" th:text="${monAn.ten}"></h2>
-            <p class="fs-4 text-danger fw-bold" th:text="${#numbers.formatDecimal(monAn.gia,0,'COMMA',0,'POINT') + ' đ'}"></p>
+        <hr class="my-5" style="border-top: 2px solid #e9ecef;">
 
-            <p><strong>Thể loại: </strong><span th:text="${theLoai.tenTheLoai}"></span></p>
-            <p th:text="${monAn.moTa}"></p>
+        <!-- =========================== GỢI Ý =========================== -->
+        <h3 class="section-title"><i class="bi bi-fire"></i> Những món ăn liên quan</h3>
 
-            <button class="btn btn-order mt-3">
-                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-            </button>
-        </div>
-    </div>
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-4 col-sm-6" th:each="m : ${monAnList}">
+                <a th:href="@{'/mon-an/' + ${m.id}}" class="text-decoration-none text-dark">
 
-    <hr>
+                    <div class="card related-card shadow-sm h-100">
 
-    <!-- Gợi ý món cùng thể loại -->
-    <section class="mb-5">
-        <h3 class="fw-bold mb-4">Món ăn tương tự</h3>
-        <div class="row g-4">
-            <div class="col-md-3" th:each="item : ${goiYMons}">
-                <a th:href="@{'/mon-an/' + ${item.id}}" class="text-decoration-none text-dark">
-                    <div class="card suggestion-card shadow border-0">
-                        <img th:src="${item.hinhAnh != null && #lists.size(item.hinhAnh) > 0 ? item.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}"
-                             th:alt="${item.ten}" class="card-img-top">
-                        <div class="card-body">
-                            <h6 class="fw-bold" th:text="${item.ten}"></h6>
-                            <p class="text-danger fw-bold mb-0" th:text="${#numbers.formatDecimal(item.gia,0,'COMMA',0,'POINT') + ' đ'}"></p>
+                        <div class="ratio ratio-4x3" style="overflow: hidden; border-radius: 16px 16px 0 0;">
+                            <img th:src="${
+                            m.hinhAnh != null && m.hinhAnh.size() > 0
+                                ? m.hinhAnh.get(0)
+                                : '/images/no-image.png'
+                        }"
+                                 class="card-img-top"
+                                 style="object-fit: cover;">
                         </div>
+
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-2" th:text="${m.ten}" style="color: #2c3e50;"></h6>
+                            <p class="text-danger fw-bold mb-0" style="font-size: 1.1rem;"
+                               th:text="${#numbers.formatDecimal(m.gia,0,'POINT',0,'COMMA')} + ' VNĐ'"></p>
+                        </div>
+
                     </div>
+
                 </a>
             </div>
         </div>
-    </section>
 
-    <hr>
+        <hr class="my-5" style="border-top: 2px solid #e9ecef;">
 
-    <!-- Bình luận -->
-    <section>
-        <h3 class="fw-bold mb-4">Đánh giá & Bình luận</h3>
-        <p>⭐ <strong th:text="${avgRating}"></strong> / 5
-            ( <span th:text="${tongDanhGia}"></span> lượt đánh giá )
-        </p>
+        <!-- =========================== BÌNH LUẬN =========================== -->
+        <h3 class="section-title" id="binh-luan">
+            <i class="bi bi-chat-left-text-fill"></i> Đánh giá & Bình luận
+        </h3>
 
-        <div class="mt-4" th:each="bl : ${binhLuans}">
-            <div class="review-card mb-3">
-                <h6 class="fw-bold" th:text="${bl.nguoiDung.ten}"></h6>
-                <p>⭐ <span th:text="${bl.diem}"></span></p>
-                <p th:text="${bl.noiDung}"></p>
+        <div th:if="${nguoiDung != null}" class="mb-5">
+            <div class="comment-form">
+                <form method="post" th:action="@{/mon-an/binh-luan/add}">
+                    <input type="hidden" name="monAnId" th:value="${monAn.id}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nội dung bình luận</label>
+                        <textarea class="form-control" name="noiDung" rows="4"
+                                  placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Đánh giá của bạn</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="danhGia" value="5" required>
+                            <label for="star5">⭐</label>
+
+                            <input type="radio" id="star4" name="danhGia" value="4">
+                            <label for="star4">⭐</label>
+
+                            <input type="radio" id="star3" name="danhGia" value="3">
+                            <label for="star3">⭐</label>
+
+                            <input type="radio" id="star2" name="danhGia" value="2">
+                            <label for="star2">⭐</label>
+
+                            <input type="radio" id="star1" name="danhGia" value="1">
+                            <label for="star1">⭐</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn submit-review-btn">
+                        Gửi đánh giá
+                    </button>
+                </form>
             </div>
         </div>
-    </section>
 
-</main>
+        <div th:if="${nguoiDung == null}" class="alert alert-info">
+            Bạn cần <a href="/login" class="fw-bold">đăng nhập</a> để đánh giá và bình luận.
+        </div>
 
-<!-- FOOTER -->
-<div th:replace="~{fragments/_LayoutUser :: footer}"></div>
+        <!-- LIST BÌNH LUẬN -->
+        <div class="mt-4">
 
-<!-- SCRIPTS -->
-<div th:replace="~{fragments/_LayoutUser :: scripts}"></div>
+            <div th:if="${#lists.isEmpty(dsBinhLuan)}" class="no-comments">
+                <i class="bi bi-chat-quote" style="font-size: 3rem; color: #dee2e6;"></i>
+                <p class="mt-3 mb-0" style="font-size: 1.1rem;">Chưa có bình luận nào. Hãy là người đầu tiên đánh giá!</p>
+            </div>
 
-</body>
+            <div th:each="bl : ${dsBinhLuan}" class="card comment-card shadow-sm mb-3">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="comment-author mb-0">
+                            <i class="bi bi-person-circle"></i>
+                            <span th:text="${bl.nguoiDung != null ? bl.nguoiDung.ten : 'Người dùng'}"></span>
+                        </h6>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i>
+                            <span th:text="${#temporals.format(bl.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
+                        </small>
+                    </div>
+
+                    <div class="comment-stars mb-2">
+                        <span th:each="i : ${#numbers.sequence(1, bl.danhGia)}">⭐</span>
+                        <span class="text-muted ms-1">(<span th:text="${bl.danhGia}"></span>/5)</span>
+                    </div>
+
+                    <p class="mb-0" style="line-height: 1.7; color: #495057;" th:text="${bl.noiDung}"></p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================== LIGHTBOX POPUP =========================== -->
+    <div id="imageLightbox">
+        <div class="lightbox-wrapper">
+            <img id="lightboxImg" src="" alt="Lightbox">
+        </div>
+    </div>
+
+</th:block>
+
+
+<!-- =========================== SCRIPTS =========================== -->
+<th:block th:fragment="scripts">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* ========== Thumbnail → đổi ảnh lớn ========== */
+            const carousel = new bootstrap.Carousel(document.getElementById("carouselMonAn"));
+
+            document.querySelectorAll(".thumb-img").forEach(img => {
+                img.addEventListener("click", () => {
+                    carousel.to(parseInt(img.dataset.index));
+
+                    document.querySelectorAll(".thumb-img")
+                        .forEach(t => t.classList.remove("active-thumb"));
+
+                    img.classList.add("active-thumb");
+                });
+            });
+
+            /* ========== LIGHTBOX xem ảnh lớn ========== */
+            const lightbox = document.getElementById("imageLightbox");
+            const lightboxImg = document.getElementById("lightboxImg");
+
+            document.querySelectorAll(".large-image").forEach(img => {
+                img.style.cursor = "zoom-in";
+                img.addEventListener("click", () => {
+                    lightboxImg.src = img.src;
+                    lightbox.style.display = "flex";
+                });
+            });
+
+            lightbox.addEventListener("click", () => {
+                lightbox.style.display = "none";
+            });
+
+        });
+    </script>
+</th:block>
+
 </html>

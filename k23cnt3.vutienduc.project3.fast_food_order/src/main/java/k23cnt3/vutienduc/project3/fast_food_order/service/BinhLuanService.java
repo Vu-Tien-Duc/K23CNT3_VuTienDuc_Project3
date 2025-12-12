@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,64 +15,64 @@ public class BinhLuanService {
 
     private final BinhLuanRepository binhLuanRepository;
 
-    // Lấy tất cả bình luận
+    // Lấy tất cả
     public List<BinhLuan> findAll() {
         return binhLuanRepository.findAll();
     }
 
-    // Lấy bình luận theo ID
+    // Lấy theo ID
     public Optional<BinhLuan> findById(Long id) {
         return binhLuanRepository.findById(id);
     }
 
-    // Lọc bình luận (kết hợp nhiều điều kiện)
-    public List<BinhLuan> filterBinhLuan(Long monAnId, Integer rating, String keyword) {
-        List<BinhLuan> result = findAll();
+    // Lấy bình luận theo món ăn – mặc định sắp xếp mới nhất
+    public List<BinhLuan> findByMonAn(Long monAnId) {
+        return binhLuanRepository.findByMonAnIdOrderByNgayTaoDesc(monAnId);
+    }
 
-        // Lọc theo món ăn
-        if (monAnId != null) {
-            result = binhLuanRepository.findByMonAnId(monAnId);
-        }
+    // Lọc bình luận theo rating + keyword (tên người dùng)
+    public List<BinhLuan> filterBinhLuan(Long monAnId, Integer rating, String keyword) {
+
+        // Bắt đầu từ danh sách theo món ăn
+        List<BinhLuan> result = binhLuanRepository.findByMonAnIdOrderByNgayTaoDesc(monAnId);
 
         // Lọc theo rating
         if (rating != null) {
             result = result.stream()
                     .filter(bl -> bl.getDanhGia() == rating)
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
-        // Lọc theo keyword (tên người dùng)
+        // Lọc theo keyword tên người dùng
         if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = keyword.toLowerCase();
             result = result.stream()
-                    .filter(bl -> bl.getNguoiDung().getTen()
-                            .toLowerCase()
-                            .contains(keyword.toLowerCase()))
-                    .toList();
+                    .filter(bl -> bl.getNguoiDung() != null &&
+                            bl.getNguoiDung().getTen().toLowerCase().contains(kw))
+                    .collect(Collectors.toList());
         }
 
         return result;
     }
 
-    // Lưu bình luận
+    // Lưu
     public BinhLuan save(BinhLuan binhLuan) {
         return binhLuanRepository.save(binhLuan);
     }
 
-    // Xóa bình luận
+    // Xoá
     public void deleteById(Long id) {
         binhLuanRepository.deleteById(id);
     }
 
-    // Tính đánh giá trung bình
+    // Rating TB tất cả
     public Double getAverageRating() {
-        Double avg = binhLuanRepository.getAverageRating();
-        return avg != null ? avg : 0.0;
+        return Optional.ofNullable(binhLuanRepository.getAverageRating()).orElse(0.0);
     }
 
-    // Tính đánh giá trung bình theo món ăn
+    // Rating TB theo món
     public Double getAverageRatingByMonAn(Long monAnId) {
-        Double avg = binhLuanRepository.getAverageRatingByMonAnId(monAnId);
-        return avg != null ? avg : 0.0;
+        return Optional.ofNullable(binhLuanRepository.getAverageRatingByMonAnId(monAnId)).orElse(0.0);
     }
 
     // Đếm tất cả
@@ -79,7 +80,7 @@ public class BinhLuanService {
         return binhLuanRepository.count();
     }
 
-    // Đếm theo món ăn
+    // Đếm theo món
     public long countByMonAn(Long monAnId) {
         return binhLuanRepository.countByMonAnId(monAnId);
     }
