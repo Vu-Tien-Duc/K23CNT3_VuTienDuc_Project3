@@ -20,7 +20,7 @@ public class ThanhToan {
     private double soTien;
     private String phuongThuc; // "ONLINE" hoặc "COD"
     private LocalDateTime ngayThanhToan;
-    private String trangThai; // ✅ thêm trường này
+    private String trangThai;
 
     @OneToOne
     @JoinColumn(name = "don_hang_id")

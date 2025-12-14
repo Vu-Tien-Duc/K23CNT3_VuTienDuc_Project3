@@ -14,4 +14,5 @@ public interface DonHangRepository extends JpaRepository<DonHang, Long> {
     List<DonHang> findByTrangThaiOrderByNgayDatDesc(TrangThaiDonHang trangThai);
     List<DonHang> findAllByOrderByNgayDatDesc();
     long countByTrangThai(TrangThaiDonHang trangThai);
+
 }

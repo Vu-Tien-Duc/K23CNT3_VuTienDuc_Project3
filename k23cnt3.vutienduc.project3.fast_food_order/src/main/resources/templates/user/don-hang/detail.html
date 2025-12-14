@@ -1,31 +1,260 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/_LayoutUser :: content">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết đơn hàng</title>
-</head>
-<body>
-<h2>Đơn hàng #<span th:text="${donHang.id}"></span></h2>
-<p>Ngày đặt: <span th:text="${donHang.ngayDat}"></span></p>
-<p>Trạng thái: <span th:text="${donHang.trangThai}"></span></p>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Chi tiết đơn hàng',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
 
-<h3>Chi tiết món ăn</h3>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Tên món</th>
-        <th>Giá</th>
-        <th>Số lượng</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ct : ${donHang.chiTietDonHangList}">
-        <td th:text="${ct.monAn.ten}"></td>
-        <td th:text="${ct.monAn.gia}"></td>
-        <td th:text="${ct.soLuong}"></td>
-    </tr>
-    </tbody>
-</table>
-<p>Tổng thanh toán: <span th:text="${donHang.thanhToan.soTien}"></span> VND</p>
-</body>
+<!-- =========================== CUSTOM STYLES =========================== -->
+<th:block th:fragment="customStyles">
+    <style>
+        .order-card {
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .order-header {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .btn-back {
+            background: #fff;
+            color: #f97316;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .order-body {
+            padding: 2rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .status-CHO_XU_LY { background: #f59e0b; }
+        .status-DANG_XU_LY { background: #0ea5e9; }
+        .status-DANG_GIAO { background: #6366f1; }
+        .status-DA_GIAO { background: #16a34a; }
+        .status-DA_HUY { background: #ef4444; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #9a3412;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: #7c2d12;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        thead th {
+            background: #f97316;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) td {
+            background: #fff7ed;
+        }
+
+        .food-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .total-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            font-weight: 600;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+        }
+
+        .total-row.grand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #065f46;
+        }
+
+        @media (max-width: 768px) {
+            .order-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</th:block>
+
+<!-- =========================== CONTENT =========================== -->
+<th:block th:fragment="content">
+    <div class="order-card">
+
+        <!-- HEADER -->
+        <div class="order-header">
+            <h4>📦 Chi tiết đơn hàng #<span th:text="${donHang.id}"></span></h4>
+            <a th:href="@{/orders}" class="btn-back">Quay lại</a>
+        </div>
+
+        <div class="order-body">
+
+            <!-- STATUS -->
+            <div class="text-center mb-3">
+                <span class="status-badge"
+                      th:classappend="'status-' + ${donHang.trangThai}"
+                      th:text="${#strings.replace(donHang.trangThai,'_',' ')}">
+                </span>
+            </div>
+
+            <!-- INFO -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Ngày đặt</div>
+                    <div class="info-value"
+                         th:text="${#temporals.format(donHang.ngayDat,'dd/MM/yyyy HH:mm')}">
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Số điện thoại</div>
+                    <div class="info-value"
+                         th:text="${donHang.sdt != null ? donHang.sdt : '-'}">
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Địa chỉ giao</div>
+                    <div class="info-value"
+                         th:text="${donHang.diaChiGiao != null ? donHang.diaChiGiao : '-'}">
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Thanh toán</div>
+                    <div class="info-value"
+                         th:text="${donHang.thanhToan != null
+                            && donHang.thanhToan.trangThai == 'DA_THANH_TOAN'
+                            ? 'Đã thanh toán'
+                            : 'Chưa thanh toán'}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEMS -->
+            <h5>🍔 Món ăn trong đơn</h5>
+            <table>
+                <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên món</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ct : ${donHang.chiTietDonHangs}">
+                    <td>
+                        <img class="food-img"
+                             th:src="${ct.monAn.hinhAnh != null && ct.monAn.hinhAnh.size() > 0
+                                ? ct.monAn.hinhAnh[0]
+                                : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'}"
+                             th:alt="${ct.monAn.ten}">
+                    </td>
+                    <td th:text="${ct.monAn.ten}"></td>
+                    <td th:text="${ct.soLuong}"></td>
+                    <td th:text="${#numbers.formatDecimal(ct.monAn.gia,0,'COMMA',0,'POINT')} + ' ₫'"></td>
+                    <td th:text="${#numbers.formatDecimal(ct.monAn.gia * ct.soLuong,0,'COMMA',0,'POINT')} + ' ₫'"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- TOTAL -->
+            <div class="total-box">
+                <div class="total-row">
+                    <span>Tạm tính</span>
+                    <span th:text="${#numbers.formatDecimal(donHang.tongTien,0,'COMMA',0,'POINT')} + ' ₫'"></span>
+                </div>
+                <div class="total-row grand">
+                    <span>Tổng thanh toán</span>
+                    <span th:text="${donHang.thanhToan != null
+                        ? #numbers.formatDecimal(donHang.thanhToan.soTien,0,'COMMA',0,'POINT') + ' ₫'
+                        : #numbers.formatDecimal(donHang.tongTien,0,'COMMA',0,'POINT') + ' ₫'}">
+                    </span>
+                </div>
+            </div>
+
+            <!-- CANCEL -->
+            <form th:if="${donHang.trangThai ==
+                T(k23cnt3.vutienduc.project3.fast_food_order.entity.TrangThaiDonHang).CHO_XU_LY}"
+                  th:action="@{/orders/{id}/cancel(id=${donHang.id})}"
+                  method="post"
+                  onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');"
+                  class="text-center mt-3">
+                <button class="btn btn-outline-danger btn-sm">Hủy đơn</button>
+            </form>
+
+        </div>
+    </div>
+</th:block>
+
+<!-- =========================== CUSTOM SCRIPTS =========================== -->
+<th:block th:fragment="customScripts"></th:block>
+
 </html>

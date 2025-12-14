@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Thanh toán',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
+
+<!-- =========================== CUSTOM STYLES =========================== -->
+<th:block th:fragment="customStyles">
+    <style>
+        .order-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .order-total {
+            font-size: 18px;
+            font-weight: 600;
+            color: #dc2626;
+        }
+    </style>
+</th:block>
+
+
+<!-- =========================== CONTENT =========================== -->
+<th:block th:fragment="content">
+    <div class="container py-4">
+        <h3 class="mb-4">📦 Đơn hàng của tôi</h3>
+
+        <div th:if="${#lists.isEmpty(donHangs)}" class="alert alert-info">
+            Bạn chưa có đơn hàng nào.
+        </div>
+
+        <div th:each="dh : ${donHangs}" class="order-card">
+
+            <!-- HEADER -->
+            <div class="order-header">
+                <div>
+                    <strong>Đơn hàng #<span th:text="${dh.id}"></span></strong>
+                    <div class="order-meta"
+                         th:text="${#temporals.format(dh.ngayDat, 'dd/MM/yyyy HH:mm')}">
+                    </div>
+                </div>
+
+                <!-- TRẠNG THÁI ĐƠN -->
+                <div>
+                    <span class="badge bg-warning text-dark"
+                          th:if="${dh.trangThai.name() == 'CHO_XU_LY'}">Chờ xử lý</span>
+                    <span class="badge bg-primary"
+                          th:if="${dh.trangThai.name() == 'DANG_GIAO'}">Đang giao</span>
+                    <span class="badge bg-success"
+                          th:if="${dh.trangThai.name() == 'DA_GIAO'}">Đã giao</span>
+                    <span class="badge bg-danger"
+                          th:if="${dh.trangThai.name() == 'DA_HUY'}">Đã hủy</span>
+                </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="d-flex gap-2 mb-2">
+                <!-- TRẠNG THÁI THANH TOÁN -->
+                <span class="badge bg-danger"
+                      th:if="${dh.thanhToan.trangThai == 'CHUA_THANH_TOAN'}">
+                    Chưa thanh toán
+                </span>
+                <span class="badge bg-success"
+                      th:if="${dh.thanhToan.trangThai == 'DA_THANH_TOAN'}">
+                    Đã thanh toán
+                </span>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="order-footer">
+                <div class="order-total"
+                     th:text="${#numbers.formatDecimal(dh.thanhToan.soTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                </div>
+
+                <div class="d-flex gap-2">
+                    <!-- ✅ CHI TIẾT ĐƠN -->
+                    <a th:href="@{/orders/{id}(id=${dh.id})}"
+                       class="btn btn-outline-primary btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <!-- ❌ NÚT HỦY ĐƠN -->
+                    <form th:if="${dh.trangThai.name() == 'CHO_XU_LY'}"
+                          th:action="@{/orders/{id}/cancel(id=${dh.id})}"
+                          method="post"
+                          onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            Hủy đơn
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+            <!-- =========================== CUSTOM SCRIPTS =========================== -->
+<th:block th:fragment="customScripts">
+    <!-- Hiện tại chưa cần JS riêng -->
+</th:block>
+
+</html>
