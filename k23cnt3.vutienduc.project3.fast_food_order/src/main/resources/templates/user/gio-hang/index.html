@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Giỏ hàng',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
+
+<!-- ================== CONTENT ================== -->
+<th:block th:fragment="content">
+    <div class="container py-5">
+
+        <h3 class="mb-4 fw-bold">🛒 Giỏ hàng của bạn</h3>
+
+        <!-- GIỎ HÀNG TRỐNG -->
+        <div th:if="${#maps.isEmpty(cartItems)}"
+             class="alert alert-info text-center">
+            <p class="mb-2">Giỏ hàng của bạn đang trống.</p>
+            <a href="/" class="btn btn-outline-primary mt-2">
+                ← Quay lại mua sắm
+            </a>
+        </div>
+
+        <!-- CÓ SẢN PHẨM -->
+        <table th:if="${!#maps.isEmpty(cartItems)}"
+               class="table align-middle text-center cart-table">
+            <thead>
+            <tr>
+                <th>Món ăn</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td class="text-start">
+                    <img th:src="${item.key.hinhAnh[0]}"
+                         class="cart-img"
+                         alt="food">
+                    <span class="ms-3 fw-semibold"
+                          th:text="${item.key.ten}"></span>
+                </td>
+
+                <td th:text="${#numbers.formatDecimal(item.key.gia,0,'COMMA',0,'POINT')} + ' ₫'"></td>
+
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            th:onclick="'decrease(' + ${item.key.id} + ')'">−</button>
+
+                    <span class="mx-2 fw-semibold"
+                          th:id="'qty-' + ${item.key.id}"
+                          th:text="${item.value}"></span>
+
+                    <button class="btn btn-sm btn-outline-secondary"
+                            th:onclick="'increase(' + ${item.key.id} + ')'">+</button>
+                </td>
+
+                <td th:id="'row-total-' + ${item.key.id}"
+                    th:text="${#numbers.formatDecimal(item.key.gia * item.value,0,'COMMA',0,'POINT')} + ' ₫'">
+                </td>
+
+                <td>
+                    <a th:href="@{/cart/remove/{id}(id=${item.key.id})}"
+                       class="btn btn-sm btn-danger">
+                        ✕
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- TỔNG TIỀN -->
+        <div th:if="${!#maps.isEmpty(cartItems)}"
+             class="d-flex justify-content-end mt-3">
+            <div class="total-box">
+                Tổng tiền:
+                <span id="total-price"
+                      th:text="${#numbers.formatDecimal(tongTien,0,'COMMA',0,'POINT')} + ' ₫'"></span>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div th:if="${!#maps.isEmpty(cartItems)}"
+             class="d-flex justify-content-between mt-4">
+
+            <a href="/" class="btn btn-outline-primary">
+                ← Tiếp tục mua
+            </a>
+
+            <a href="/checkout" class="btn btn-success px-4">
+                🧾 Đặt hàng
+            </a>
+        </div>
+
+    </div>
+</th:block>
+
+<!-- ================== STYLES ================== -->
+<th:block th:fragment="customStyles">
+    <style>
+        h3 {
+            font-weight: 700;
+        }
+
+        .cart-table {
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        .cart-table thead {
+            background: linear-gradient(135deg, #ff7a18, #ffb347);
+            color: #fff;
+        }
+
+        .cart-table th {
+            border: none;
+            padding: 14px;
+            font-weight: 600;
+        }
+
+        .cart-table td {
+            padding: 14px;
+            vertical-align: middle;
+        }
+
+        .cart-img {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-outline-secondary {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+
+        .btn-danger {
+            border-radius: 6px;
+            padding: 4px 10px;
+        }
+
+        .total-box {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        #total-price {
+            color: #e63946;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .btn-outline-primary,
+        .btn-success {
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-weight: 500;
+        }
+
+        .btn-success {
+            box-shadow: 0 6px 16px rgba(40,167,69,0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(40,167,69,0.4);
+        }
+
+        .alert-info {
+            border-radius: 14px;
+            font-size: 1.05rem;
+            padding: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .cart-img {
+                width: 60px;
+                height: 45px;
+            }
+
+            .cart-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</th:block>
+
+<!-- ================== JS ================== -->
+<th:block th:fragment="customScripts">
+    <script>
+        function increase(id) {
+            fetch('/cart/increase', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'id=' + id
+            })
+            .then(res => res.json())
+            .then(data => updateUI(id, data));
+        }
+
+        function decrease(id) {
+            fetch('/cart/decrease', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'id=' + id
+            })
+            .then(res => res.json())
+            .then(data => updateUI(id, data));
+        }
+
+        function updateUI(id, data) {
+            if (!data.cart[id]) {
+                location.reload();
+                return;
+            }
+
+            document.getElementById('qty-' + id).innerText = data.cart[id];
+            document.getElementById('total-price').innerText =
+                data.tongTien.toLocaleString() + ' ₫';
+        }
+    </script>
+</th:block>
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Thanh toán',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
+
+
+<th:block th:fragment="content">
+
+    <div class="container py-5">
+
+        <h3 class="mb-4">
+            <i class="bi bi-credit-card"></i> Thanh toán
+        </h3>
+
+        <!-- ================== HIỂN THỊ LỖI ================== -->
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/checkout}" method="post">
+
+            <div class="row g-4">
+
+                <!-- ================== THÔNG TIN GIAO HÀNG ================== -->
+                <div class="col-md-7">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="mb-3">Thông tin giao hàng</h5>
+
+                            <!-- HỌ TÊN -->
+                            <div class="mb-3">
+                                <label class="form-label">Họ tên</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:value="${nguoiDung.ten}"
+                                       readonly>
+                            </div>
+
+                            <!-- EMAIL -->
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email"
+                                       class="form-control"
+                                       th:value="${nguoiDung.email}"
+                                       readonly>
+                            </div>
+
+                            <!-- SĐT -->
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="text"
+                                       name="sdt"
+                                       class="form-control"
+                                       placeholder="Nhập số điện thoại"
+                                       th:value="${nguoiDung.sdt}"
+                                       required>
+                            </div>
+
+                            <!-- ĐỊA CHỈ -->
+                            <div class="mb-3">
+                                <label class="form-label">Địa chỉ giao hàng</label>
+                                <textarea name="diaChi"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Nhập địa chỉ giao hàng"
+                                          required
+                                          th:text="${nguoiDung.diaChi}"></textarea>
+                            </div>
+
+                            <hr>
+
+                            <!-- PHƯƠNG THỨC THANH TOÁN -->
+                            <h6>Phương thức thanh toán</h6>
+
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="phuongThuc"
+                                       value="COD"
+                                       checked>
+                                <label class="form-check-label">
+                                    Thanh toán khi nhận hàng (COD)
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="phuongThuc"
+                                       value="ONLINE">
+                                <label class="form-check-label">
+                                    Thanh toán Online
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================== ĐƠN HÀNG ================== -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="mb-3">Đơn hàng của bạn</h5>
+
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    th:each="item : ${cartItems}">
+                                    <div>
+                                        <strong th:text="${item.key.ten}"></strong>
+                                        <div class="text-muted small">
+                                            Số lượng:
+                                            <span th:text="${item.value}"></span>
+                                        </div>
+                                    </div>
+                                    <span>
+                                        <span th:text="${#numbers.formatDecimal(item.key.gia * item.value, 0, 'POINT', 0, 'COMMA')}"></span> ₫
+                                    </span>
+                                </li>
+                            </ul>
+
+                            <!-- MÃ GIẢM GIÁ -->
+                            <div class="mb-3">
+                                <label class="form-label">Mã giảm giá</label>
+                                <input type="text"
+                                       name="maGiamGia"
+                                       class="form-control"
+                                       placeholder="Nhập mã (nếu có)">
+                            </div>
+
+                            <hr>
+
+                            <!-- TỔNG TIỀN -->
+                            <div class="d-flex justify-content-between mb-3">
+                                <strong>Tổng tiền</strong>
+                                <strong class="text-danger fs-5">
+                                    <span th:text="${#numbers.formatDecimal(tongTien, 0, 'POINT', 0, 'COMMA')}"></span> ₫
+                                </strong>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100 py-2">
+                                <i class="bi bi-check-circle"></i>
+                                Đặt hàng
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</th:block>
+<!-- ================== CUSTOM STYLES ================== -->
+<th:block th:fragment="customStyles">
+    <!-- CSS riêng nếu cần -->
+</th:block>
+
+<!-- ================== CUSTOM SCRIPTS ================== -->
+<th:block th:fragment="customScripts">
+    <!-- JS riêng nếu cần -->
+</th:block>
+</html>

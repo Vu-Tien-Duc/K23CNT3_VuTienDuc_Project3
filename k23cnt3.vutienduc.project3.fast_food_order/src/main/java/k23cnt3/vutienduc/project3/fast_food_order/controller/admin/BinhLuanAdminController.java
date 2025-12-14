@@ -53,6 +53,6 @@ public class BinhLuanAdminController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         binhLuanService.deleteById(id);
-        return "redirect:/admin/binh-luan?success=deleted";
+        return "redirect:/admin/binh-luan?success.html=deleted";
     }
 }

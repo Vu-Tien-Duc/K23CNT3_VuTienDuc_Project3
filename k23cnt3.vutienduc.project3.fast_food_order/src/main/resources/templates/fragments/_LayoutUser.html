@@ -409,13 +409,19 @@
                     </a>
                 </li>
 
-                <!-- Cart Icon -->
-                <li class="nav-item" th:if="${#authentication.principal != null}">
-                    <a class="nav-link cart-badge" th:href="@{/gio-hang}">
+                <!-- Cart Icon (CHỈ HIỆN KHI ĐÃ LOGIN) -->
+                <li class="nav-item" th:if="${nguoiDung != null}">
+                    <a class="nav-link cart-badge" th:href="@{/cart}">
                         <i class="bi bi-cart3"></i>
-                        <span class="badge-count" th:if="${cartCount != null && cartCount > 0}" th:text="${cartCount}">0</span>
+
+                        <span class="badge-count"
+                              th:if="${cartCount != null && cartCount > 0}"
+                              th:text="${cartCount}">
+                                0
+                        </span>
                     </a>
                 </li>
+
 
                 <!-- Chưa đăng nhập -->
                 <li class="nav-item" th:if="${nguoiDung == null}">

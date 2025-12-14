@@ -1,10 +1,10 @@
 package k23cnt3.vutienduc.project3.fast_food_order.controller.user;
 
+import jakarta.servlet.http.HttpSession;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.MonAn;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.MonAnRepository;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.NguoiDungRepository;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.VaiTroRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,40 +14,58 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
-public class HomeUserController {
+public class HomeUserController extends BaseController {
 
-    private final NguoiDungRepository nguoiDungRepository;
     private final MonAnRepository monAnRepository;
     private final VaiTroRepository vaiTroRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // ✅ Constructor rõ ràng – gọi super()
+    public HomeUserController(
+            NguoiDungRepository nguoiDungRepository,
+            MonAnRepository monAnRepository,
+            VaiTroRepository vaiTroRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        super(nguoiDungRepository);
+        this.monAnRepository = monAnRepository;
+        this.vaiTroRepository = vaiTroRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // ================= HOME =================
     @GetMapping({"/", "/index"})
-    public String index(Model model, Principal principal) {
+    public String index(Model model, Principal principal, HttpSession session) {
 
-        // Lấy thông tin user đang đăng nhập (nếu có)
-        if (principal != null) {
-            var user = nguoiDungRepository.findByEmail(principal.getName()).orElse(null);
-            model.addAttribute("nguoiDung", user);
-        } else {
-            model.addAttribute("nguoiDung", null);
-        }
+        // user đăng nhập
+        addLoggedUser(model, principal);
 
-        // Lấy danh sách món ăn
+        // số lượng giỏ hàng (session cart)
+        addCartCount(model, session);
+
+        // danh sách món ăn
         List<MonAn> dsMonAn = monAnRepository.findAll();
-        model.addAttribute("monAnList", dsMonAn.subList(0, Math.min(5, dsMonAn.size())));
+        model.addAttribute(
+                "monAnList",
+                dsMonAn.subList(0, Math.min(5, dsMonAn.size()))
+        );
 
         return "user/index";
     }
 
-
+    // ================= LOGIN =================
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model, Principal principal, HttpSession session) {
+        addLoggedUser(model, principal);
+        addCartCount(model, session);
         return "login";
     }
 
+    // ================= REGISTER =================
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model, Principal principal, HttpSession session) {
+        addLoggedUser(model, principal);
+        addCartCount(model, session);
         return "register";
     }
 
@@ -58,11 +76,13 @@ public class HomeUserController {
             @RequestParam String matKhau,
             @RequestParam String sdt,
             @RequestParam String diaChi,
-            Model model
+            Model model,
+            HttpSession session
     ) {
 
         if (nguoiDungRepository.existsByEmail(email)) {
             model.addAttribute("error", "Email đã tồn tại!");
+            addCartCount(model, session);
             return "register";
         }
 
@@ -80,6 +100,6 @@ public class HomeUserController {
 
         nguoiDungRepository.save(user);
 
-        return "redirect:/login?success";
+        return "redirect:/login?success.html";
     }
 }

@@ -77,13 +77,13 @@ public class DonHangAdminController {
     @PostMapping("/edit")
     public String updateOrder(@ModelAttribute("order") DonHang order) {
         donHangService.updateStatus(order.getId(), order.getTrangThai());
-        return "redirect:/admin/don-hang?success=updated";
+        return "redirect:/admin/don-hang?success.html=updated";
     }
 
     // ====================== DELETE ORDER ======================
     @GetMapping("/delete/{id}")
     public String deleteOrder(@PathVariable Long id) {
         donHangService.delete(id);
-        return "redirect:/admin/don-hang?success=deleted";
+        return "redirect:/admin/don-hang?success.html=deleted";
     }
 }

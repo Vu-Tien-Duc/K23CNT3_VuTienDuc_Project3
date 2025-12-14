@@ -3,12 +3,12 @@
       th:replace="~{fragments/_LayoutUser :: layout(
             title='Trang chủ - Food Lover',
             content=~{::content},
-            customStyles=~{::styles},
-            customScripts=~{::scripts}
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
       )}">
 
 <head>
-    <th:block th:fragment="styles">
+    <th:block th:fragment="customStyles">
         <style>
             /* Hero Section */
             .hero-section {
@@ -421,14 +421,15 @@
                                     <!-- GIÁ -->
                                     <span class="food-price"
                                           th:text="${#numbers.formatDecimal(monAn.gia, 0, 'COMMA', 0, 'POINT')} + '₫'">
-                                            50.000₫
-                                        </span>
-
-                                    <!-- NÚT ADD CART -->
-                                    <button class="btn-add-cart"
-                                            th:onclick="'addToCart(' + ${monAn.id} + '); return false;'">
+                                        50.000₫
+                                    </span>
+                                    <!-- Add to cart -->
+                                    <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
+                                       class="btn-add-cart action-btn">
                                         <i class="bi bi-cart-plus-fill"></i>
-                                    </button>
+                                    </a>
+
+
                                 </div>
                             </div>
                         </div>
@@ -475,43 +476,7 @@
     </section>
 </th:block>
 
-<th:block th:fragment="scripts">
-    <script>
-        // Add to cart function
-        function addToCart(monAnId) {
-            // Check if user is logged in
-            const isLoggedIn = /*[[${nguoiDung != null}]]*/ false;
 
-            if (!isLoggedIn) {
-                alert('Vui lòng đăng nhập để thêm món vào giỏ hàng!');
-                window.location.href = '/login';
-                return;
-            }
 
-            // Implement add to cart functionality
-            fetch('/api/cart/add/' + monAnId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Đã thêm món vào giỏ hàng!');
-                    // Update cart count
-                    const cartBadge = document.querySelector('.badge-count');
-                    if (cartBadge) {
-                        cartBadge.textContent = parseInt(cartBadge.textContent || 0) + 1;
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra. Vui lòng thử lại!');
-            });
-        }
-    </script>
-</th:block>
 </body>
 </html>

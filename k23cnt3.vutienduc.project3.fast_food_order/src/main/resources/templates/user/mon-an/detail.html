@@ -9,529 +9,768 @@
 <!-- =========================== STYLES =========================== -->
 <th:block th:fragment="styles">
     <style>
-        /* Thumbnail */
-        .thumbnail-item {
-            transition: transform .2s ease, border-color .2s ease;
-            border-radius: 12px;
+        :root {
+            --elegant-gold: #d4af37;
+            --deep-navy: #1a2332;
+            --soft-cream: #f8f5f0;
+            --warm-brown: #8b7355;
+            --accent-rose: #c97064;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #f8f5f0 0%, #e8e3dc 100%);
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        /* Elegant Card Container */
+        .elegant-container {
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
             overflow: hidden;
-        }
-        .thumbnail-item:hover img {
-            transform: scale(1.1);
-            border-color: #ff6b6b !important;
-            box-shadow: 0 6px 18px rgba(255,107,107,0.3);
-        }
-        .thumb-img.active-thumb {
-            outline: 3px solid #ff6b6b;
-            transform: scale(1.05);
-            border-color: #ff6b6b !important;
+            margin: 40px auto;
+            max-width: 1400px;
         }
 
-        /* Carousel */
-        .carousel-inner {
-            border-radius: 16px;
-            overflow: hidden;
+        /* Image Gallery - Museum Style */
+        .gallery-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 50px;
+            position: relative;
         }
 
-        .large-image {
-            transition: transform 0.3s ease;
+        .gallery-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--elegant-gold), transparent);
         }
 
-        .carousel-item:hover .large-image {
-            transform: scale(1.05);
+        .main-image-frame {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+            position: relative;
         }
 
-        /* ===== LIGHTBOX PHÓNG TO ===== */
-        #imageLightbox {
+        .main-image-frame::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid var(--elegant-gold);
+            pointer-events: none;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            display: block;
+            filter: contrast(1.05) saturate(0.95);
+            cursor: zoom-in;
+        }
+
+        .thumbnail-gallery {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .thumbnail-frame {
+            background: white;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .thumbnail-frame:hover,
+        .thumbnail-frame.active {
+            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .thumbnail-frame img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Product Details - Luxury Style */
+        .details-section {
+            padding: 60px 50px;
+            background: white;
+        }
+
+        .product-category {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--warm-brown);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--deep-navy);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stars-visual {
+            color: var(--elegant-gold);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .rating-text {
+            color: #666;
+            font-size: 0.9rem;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .price-section {
+            margin: 40px 0;
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .price-amount {
+            font-size: 3rem;
+            color: var(--deep-navy);
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        .price-currency {
+            font-size: 1.5rem;
+            color: #999;
+            margin-left: 10px;
+        }
+
+        /* Description - Editorial Style */
+        .description-section {
+            margin: 50px 0;
+            line-height: 2;
+            color: #555;
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        .description-section p {
+            margin-bottom: 20px;
+        }
+
+        /* Action Buttons - Minimalist */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .btn-elegant {
+            padding: 18px 45px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'Arial', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary-elegant {
+            background: var(--deep-navy);
+            color: white;
+        }
+
+        .btn-primary-elegant:hover {
+            background: var(--elegant-gold);
+            color: var(--deep-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary-elegant {
+            background: transparent;
+            color: var(--deep-navy);
+            border: 2px solid var(--deep-navy);
+        }
+
+        .btn-secondary-elegant:hover {
+            background: var(--deep-navy);
+            color: white;
+        }
+
+        .btn-outline-elegant {
+            background: transparent;
+            color: var(--warm-brown);
+            border: 2px solid var(--warm-brown);
+        }
+
+        .btn-outline-elegant:hover {
+            background: var(--warm-brown);
+            color: white;
+        }
+
+        /* Related Products - Gallery Grid */
+        .related-section {
+            background: var(--soft-cream);
+            padding: 80px 50px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--deep-navy);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            color: #999;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .product-card {
+            background: white;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .product-card:hover .product-card-image {
+            filter: brightness(0.95) contrast(1.05);
+        }
+
+        .product-card-body {
+            padding: 30px;
+        }
+
+        .product-card-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--deep-navy);
+            margin-bottom: 15px;
+        }
+
+        .product-card-price {
+            font-size: 1.5rem;
+            color: var(--accent-rose);
+            font-weight: 300;
+        }
+
+        /* Reviews Section - Magazine Style */
+        .reviews-section {
+            background: white;
+            padding: 80px 50px;
+        }
+
+        .review-form-container {
+            background: var(--soft-cream);
+            padding: 50px;
+            margin-bottom: 60px;
+            border-left: 4px solid var(--elegant-gold);
+        }
+
+        .form-group-elegant {
+            margin-bottom: 30px;
+        }
+
+        .form-label-elegant {
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .form-control-elegant {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #d0d0d0;
+            background: white;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-elegant:focus {
+            outline: none;
+            border-color: var(--elegant-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Star Rating - Refined */
+        .star-rating-elegant {
+            display: flex;
+            gap: 8px;
+            font-size: 2rem;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating-elegant input {
+            display: none;
+        }
+
+        .star-rating-elegant label {
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating-elegant label:hover,
+        .star-rating-elegant label:hover ~ label {
+            color: var(--elegant-gold);
+        }
+
+        .star-rating-elegant input:checked ~ label {
+            color: var(--elegant-gold);
+        }
+
+        .btn-submit-elegant {
+            background: var(--deep-navy);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-submit-elegant:hover {
+            background: var(--elegant-gold);
+            color: var(--deep-navy);
+        }
+
+        /* Review Cards - Editorial */
+        .review-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            border-color: var(--elegant-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .reviewer-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--deep-navy);
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .review-stars {
+            color: var(--elegant-gold);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .review-content {
+            line-height: 1.8;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .no-reviews {
+            text-align: center;
+            padding: 80px 20px;
+            color: #999;
+        }
+
+        .no-reviews i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Lightbox - Gallery Style */
+        .lightbox-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             display: none;
-            justify-content: center;
             align-items: center;
-            z-index: 99999;
-            animation: fadeIn .3s ease;
-            backdrop-filter: blur(8px);
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
         }
 
-        .lightbox-wrapper {
-            width: 900px;
-            height: 600px;
-            max-width: 95vw;
-            max-height: 95vh;
-            overflow: hidden;
-            border-radius: 20px;
+       /* Lightbox - Refined Size */
+
+        .lightbox-content {
+            width: 700px;
+            height: 450px;
+            background: white;
+            padding: 20px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            animation: zoomIn .3s ease;
+            justify-content: center;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.35);
         }
 
-        #lightboxImg {
+        /* Ảnh LUÔN BẰNG NHAU */
+        .lightbox-image {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            object-fit: cover;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+
+        /* Divider */
+        .elegant-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--elegant-gold), transparent);
+            margin: 80px 0;
         }
 
-        @keyframes zoomIn {
-            from { transform: scale(.85); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        /* Alert */
+        .alert-elegant {
+            background: var(--soft-cream);
+            border-left: 4px solid var(--accent-rose);
+            padding: 20px 30px;
+            font-family: 'Arial', sans-serif;
+            color: #666;
         }
 
-        /* Product Info Section */
-        .product-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
-
-        .price-tag {
-            background: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        .rating-badge {
-            background: #ffc107;
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 6px;
+        .alert-elegant a {
+            color: var(--deep-navy);
             font-weight: 600;
-            display: inline-block;
+            text-decoration: none;
         }
 
-        .info-label {
-            color: #495057;
-            font-weight: 600;
-            font-size: 1rem;
+        .alert-elegant a:hover {
+            color: var(--elegant-gold);
         }
 
-        .info-value {
-            background: #f8f9fa;
-            padding: 6px 12px;
-            border-radius: 4px;
-            display: inline-block;
-            color: #212529;
-            font-weight: 500;
-        }
-
-        .description-box {
-            background: #f8f9fa;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lightbox-content {
+            width: 90vw;
+            height: 55vw; /* giữ tỉ lệ */
             padding: 15px;
-            border-radius: 6px;
-            border-left: 3px solid #6c757d;
-            line-height: 1.6;
-            color: #495057;
         }
 
-        /* Buttons */
-        .action-btn {
-            padding: 12px 28px;
-            font-weight: 600;
-            font-size: 1rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            border: none;
-        }
+            .lightbox-image {
+                max-height: 50vh;
+            }
+            .product-name {
+                font-size: 2.5rem;
+            }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+            .price-amount {
+                font-size: 2rem;
+            }
 
-        .btn-add-cart {
-            background: #28a745;
-            color: white;
-        }
+            .details-section,
+            .gallery-section,
+            .reviews-section,
+            .related-section {
+                padding: 40px 30px;
+            }
 
-        .btn-add-cart:hover {
-            background: #218838;
-            color: white;
-        }
-
-        .btn-buy-now {
-            background: #007bff;
-            color: white;
-        }
-
-        .btn-buy-now:hover {
-            background: #0056b3;
-            color: white;
-        }
-
-        /* Related Products */
-        .related-card {
-            transition: all 0.3s ease;
-            border: none;
-            border-radius: 16px;
-            overflow: hidden;
-            background: white;
-        }
-
-        .related-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-        }
-
-        .related-card img {
-            transition: transform 0.3s ease;
-        }
-
-        .related-card:hover img {
-            transform: scale(1.1);
-        }
-
-        /* Star Rating System */
-        .star-rating {
-            display: flex;
-            gap: 8px;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-            font-size: 2rem;
-        }
-
-        .star-rating input {
-            display: none;
-        }
-
-        .star-rating label {
-            cursor: pointer;
-            color: transparent;
-            text-shadow: 0 0 0 #ddd;
-            transition: all 0.2s ease;
-        }
-
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            text-shadow: 0 0 0 #ffd700;
-        }
-
-        .star-rating input:checked ~ label {
-            text-shadow: 0 0 0 #ffd700;
-        }
-
-        /* Comment Form */
-        .comment-form {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-
-        .comment-form textarea {
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            padding: 12px;
-        }
-
-        .comment-form textarea:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
-        }
-
-        .submit-review-btn {
-            background: #0d6efd;
-            border: none;
-            padding: 10px 24px;
-            font-weight: 600;
-            border-radius: 6px;
-            color: white;
-        }
-
-        .submit-review-btn:hover {
-            background: #0b5ed7;
-        }
-
-        /* Comment Cards */
-        .comment-card {
-            border: none;
-            border-radius: 8px;
-            background: white;
-            border: 1px solid #dee2e6;
-        }
-
-        .comment-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .comment-author {
-            color: #212529;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .comment-stars {
-            color: #ffc107;
-            font-size: 1rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .no-comments {
-            background: #f8f9fa;
-            padding: 40px;
-            border-radius: 16px;
-            text-align: center;
-            color: #6c757d;
+            .main-image {
+                height: 350px;
+            }
         }
     </style>
 </th:block>
 
-
 <!-- =========================== PAGE CONTENT =========================== -->
 <th:block th:fragment="content">
 
-    <main class="container py-5">
+    <main class="container-fluid px-0">
 
-        <div class="row g-4">
-            <!-- ========== HÌNH ẢNH (CAROUSEL + THUMBNAIL) ========== -->
-            <div class="col-md-5">
+        <div class="elegant-container">
 
-                <!-- CAROUSEL -->
-                <div id="carouselMonAn" class="carousel slide shadow-lg mb-3" data-bs-ride="carousel">
-                    <div class="carousel-inner">
+            <!-- Gallery & Details Section -->
+            <div class="row g-0">
 
-                        <!-- Ảnh lớn -->
-                        <div th:each="img, iStat : ${monAn.hinhAnh}"
-                             th:class="'carousel-item' + (${iStat.index} == 0 ? ' active' : '')">
-                            <img th:src="${img}"
-                                 class="d-block w-100 large-image"
-                                 style="height: 400px; object-fit: cover; cursor: zoom-in;">
+                <!-- ========== HÌNH ẢNH (GALLERY) ========== -->
+                <div class="col-lg-6">
+                    <div class="gallery-section">
+                        <div class="main-image-frame">
+                            <img th:src="${monAn.hinhAnh != null && !monAn.hinhAnh.isEmpty() ? monAn.hinhAnh.get(0) : '/images/no-image.png'}"
+                                 class="main-image"
+                                 id="mainImage"
+                                 alt="Món ăn cao cấp">
                         </div>
 
-                        <!-- Không có ảnh -->
-                        <div th:if="${#lists.isEmpty(monAn.hinhAnh)}" class="carousel-item active">
-                            <img src="/images/no-image.png"
-                                 class="d-block w-100 large-image"
-                                 style="height: 400px; object-fit: cover; cursor: zoom-in;">
+                        <!-- THUMBNAIL -->
+                        <div class="thumbnail-gallery" th:if="${monAn.hinhAnh != null && !monAn.hinhAnh.isEmpty()}">
+                            <div th:each="img, iStat : ${monAn.hinhAnh}"
+                                 class="thumbnail-frame"
+                                 th:classappend="${iStat.index == 0 ? 'active' : ''}"
+                                 th:attr="data-image=${img}"
+                                 onclick="changeImage(this)">
+                                <img th:src="${img}" alt="Thumbnail">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== THÔNG TIN MÓN ĂN ========== -->
+                <div class="col-lg-6">
+                    <div class="details-section">
+
+                        <div class="product-category"
+                             th:text="${monAn.theLoai != null ? monAn.theLoai.tenTheLoai + ' · Cao Cấp' : 'Món Đặc Biệt'}">
+                        </div>
+
+                        <h1 class="product-name" th:text="${monAn.ten}">Tên món ăn</h1>
+
+                        <div class="rating-display">
+                            <div class="stars-visual">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <span th:if="${avgRating != null && i <= avgRating}">★</span>
+                                    <span th:if="${avgRating == null || i > avgRating}">☆</span>
+                                </span>
+                            </div>
+                            <div class="rating-text">
+                                <span th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '0.0'}">0.0</span>/5.0 ·
+                                Dựa trên <span th:text="${tongDanhGia}">0</span> đánh giá
+                            </div>
+                        </div>
+
+                        <div class="price-section">
+                            <div class="price-label">Giá</div>
+                            <div>
+                                <span class="price-amount" th:text="${#numbers.formatDecimal(monAn.gia,0,'POINT',0,'COMMA')}">0</span>
+                                <span class="price-currency">VNĐ</span>
+                            </div>
+                        </div>
+
+                        <div class="description-section">
+                            <p th:text="${monAn.moTa != null && !monAn.moTa.isEmpty() ? monAn.moTa : 'Một kiệt tác ẩm thực được chế biến từ những nguyên liệu tươi ngon nhất, mang đến trải nghiệm vị giác đặc biệt và tinh tế. Món ăn được chuẩn bị bởi đội ngũ đầu bếp giàu kinh nghiệm với sự tận tâm trong từng chi tiết.'}">
+                            </p>
+                        </div>
+
+                        <div class="action-buttons">
+                            <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
+                               class="btn-elegant btn-primary-elegant">
+                                Thêm vào giỏ
+                            </a>
+                            <a th:href="${nguoiDung == null ? '/login' : '/cart/buy-now/' + monAn.id}"
+                               class="btn-elegant btn-secondary-elegant">
+                                Đặt hàng ngay
+                            </a>
+                            <a href="/mon-an" class="btn-elegant btn-outline-elegant">
+                                Quay lại
+                            </a>
                         </div>
 
                     </div>
-
-                    <!-- Nút chuyển ảnh -->
-                    <button class="carousel-control-prev" type="button"
-                            data-bs-target="#carouselMonAn" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-
-                    <button class="carousel-control-next" type="button"
-                            data-bs-target="#carouselMonAn" data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
                 </div>
-
-                <!-- THUMBNAIL -->
-                <div class="d-flex justify-content-center gap-2 flex-wrap">
-
-                    <div th:each="img, iStat : ${monAn.hinhAnh}"
-                         class="thumbnail-item"
-                         style="cursor:pointer;">
-
-                        <img th:src="${img}"
-                             th:attr="data-index=${iStat.index}"
-                             style="width:90px; height:90px; object-fit:cover; border:3px solid #e9ecef; border-radius:12px;"
-                             class="thumb-img">
-                    </div>
-
-                </div>
-
             </div>
 
+            <div class="elegant-divider"></div>
 
-            <!-- ========== THÔNG TIN MÓN ĂN ========== -->
-            <div class="col-md-7">
-
-                <h1 class="product-title" th:text="${monAn.ten}"></h1>
-
-                <div class="mb-3">
-                    <span class="rating-badge">
-                        <i class="bi bi-star-fill"></i>
-                        <span th:text="${avgRating != null ? avgRating : 0}"></span>/5
-                        <span class="ms-2">(<span th:text="${tongDanhGia}"></span> đánh giá)</span>
-                    </span>
+            <!-- ========== GỢI Ý MÓN ĂN LIÊN QUAN ========== -->
+            <div class="related-section" th:if="${monAnList != null && !monAnList.isEmpty()}">
+                <div class="section-header">
+                    <h2 class="section-title">Bộ Sưu Tập Liên Quan</h2>
+                    <div class="section-subtitle">Những Lựa Chọn Tinh Tế Dành Cho Bạn</div>
                 </div>
 
-                <div class="mb-4">
-                    <span class="price-tag">
-                        <span th:text="${#numbers.formatDecimal(monAn.gia,0,'POINT',0,'COMMA')} + ' VNĐ'"></span>
-                    </span>
-                </div>
-
-                <div class="mb-3">
-                    <span class="info-label"><i class="bi bi-tag-fill"></i> Thể loại:</span>
-                    <span class="info-value ms-2" th:text="${monAn.theLoai != null ? monAn.theLoai.tenTheLoai : 'Không có'}"></span>
-                </div>
-
-                <div class="mb-4">
-                    <p class="info-label"><i class="bi bi-card-text"></i> Mô tả:</p>
-                    <div class="description-box" th:text="${monAn.moTa != null ? monAn.moTa : 'Chưa có mô tả'}"></div>
-                </div>
-
-                <!-- BUTTONS -->
-                <div class="d-flex flex-wrap gap-3">
-
-                    <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
-                       class="action-btn btn-add-cart">
-                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                <div class="related-grid">
+                    <a th:each="m : ${monAnList}"
+                       th:href="@{'/mon-an/' + ${m.id}}"
+                       class="product-card">
+                        <img th:src="${m.hinhAnh != null && !m.hinhAnh.isEmpty() ? m.hinhAnh.get(0) : '/images/no-image.png'}"
+                             class="product-card-image"
+                             alt="Related Product">
+                        <div class="product-card-body">
+                            <h3 class="product-card-title" th:text="${m.ten}">Tên món</h3>
+                            <div class="product-card-price"
+                                 th:text="${#numbers.formatDecimal(m.gia,0,'POINT',0,'COMMA')} + ' VNĐ'">
+                                0 VNĐ
+                            </div>
+                        </div>
                     </a>
-
-                    <a th:href="${nguoiDung == null ? '/login' : '/cart/buy-now/' + monAn.id}"
-                       class="action-btn btn-buy-now">
-                        <i class="bi bi-lightning-fill"></i> Mua ngay
-                    </a>
-
-                    <a href="/mon-an" class="action-btn btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
-
-                </div>
-            </div>
-        </div>
-
-        <hr class="my-5" style="border-top: 2px solid #e9ecef;">
-
-        <!-- =========================== GỢI Ý =========================== -->
-        <h3 class="section-title"><i class="bi bi-fire"></i> Những món ăn liên quan</h3>
-
-        <div class="row g-4 mb-5">
-            <div class="col-lg-3 col-md-4 col-sm-6" th:each="m : ${monAnList}">
-                <a th:href="@{'/mon-an/' + ${m.id}}" class="text-decoration-none text-dark">
-
-                    <div class="card related-card shadow-sm h-100">
-
-                        <div class="ratio ratio-4x3" style="overflow: hidden; border-radius: 16px 16px 0 0;">
-                            <img th:src="${
-                            m.hinhAnh != null && m.hinhAnh.size() > 0
-                                ? m.hinhAnh.get(0)
-                                : '/images/no-image.png'
-                        }"
-                                 class="card-img-top"
-                                 style="object-fit: cover;">
-                        </div>
-
-                        <div class="card-body p-3">
-                            <h6 class="fw-bold mb-2" th:text="${m.ten}" style="color: #2c3e50;"></h6>
-                            <p class="text-danger fw-bold mb-0" style="font-size: 1.1rem;"
-                               th:text="${#numbers.formatDecimal(m.gia,0,'POINT',0,'COMMA')} + ' VNĐ'"></p>
-                        </div>
-
-                    </div>
-
-                </a>
-            </div>
-        </div>
-
-        <hr class="my-5" style="border-top: 2px solid #e9ecef;">
-
-        <!-- =========================== BÌNH LUẬN =========================== -->
-        <h3 class="section-title" id="binh-luan">
-            <i class="bi bi-chat-left-text-fill"></i> Đánh giá & Bình luận
-        </h3>
-
-        <div th:if="${nguoiDung != null}" class="mb-5">
-            <div class="comment-form">
-                <form method="post" th:action="@{/mon-an/binh-luan/add}">
-                    <input type="hidden" name="monAnId" th:value="${monAn.id}">
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nội dung bình luận</label>
-                        <textarea class="form-control" name="noiDung" rows="4"
-                                  placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Đánh giá của bạn</label>
-                        <div class="star-rating">
-                            <input type="radio" id="star5" name="danhGia" value="5" required>
-                            <label for="star5">⭐</label>
-
-                            <input type="radio" id="star4" name="danhGia" value="4">
-                            <label for="star4">⭐</label>
-
-                            <input type="radio" id="star3" name="danhGia" value="3">
-                            <label for="star3">⭐</label>
-
-                            <input type="radio" id="star2" name="danhGia" value="2">
-                            <label for="star2">⭐</label>
-
-                            <input type="radio" id="star1" name="danhGia" value="1">
-                            <label for="star1">⭐</label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn submit-review-btn">
-                        Gửi đánh giá
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div th:if="${nguoiDung == null}" class="alert alert-info">
-            Bạn cần <a href="/login" class="fw-bold">đăng nhập</a> để đánh giá và bình luận.
-        </div>
-
-        <!-- LIST BÌNH LUẬN -->
-        <div class="mt-4">
-
-            <div th:if="${#lists.isEmpty(dsBinhLuan)}" class="no-comments">
-                <i class="bi bi-chat-quote" style="font-size: 3rem; color: #dee2e6;"></i>
-                <p class="mt-3 mb-0" style="font-size: 1.1rem;">Chưa có bình luận nào. Hãy là người đầu tiên đánh giá!</p>
-            </div>
-
-            <div th:each="bl : ${dsBinhLuan}" class="card comment-card shadow-sm mb-3">
-                <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="comment-author mb-0">
-                            <i class="bi bi-person-circle"></i>
-                            <span th:text="${bl.nguoiDung != null ? bl.nguoiDung.ten : 'Người dùng'}"></span>
-                        </h6>
-                        <small class="text-muted">
-                            <i class="bi bi-clock"></i>
-                            <span th:text="${#temporals.format(bl.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
-                        </small>
-                    </div>
-
-                    <div class="comment-stars mb-2">
-                        <span th:each="i : ${#numbers.sequence(1, bl.danhGia)}">⭐</span>
-                        <span class="text-muted ms-1">(<span th:text="${bl.danhGia}"></span>/5)</span>
-                    </div>
-
-                    <p class="mb-0" style="line-height: 1.7; color: #495057;" th:text="${bl.noiDung}"></p>
-
                 </div>
             </div>
 
+            <div class="elegant-divider"></div>
+
+            <!-- ========== ĐÁNH GIÁ & BÌNH LUẬN ========== -->
+            <div class="reviews-section" id="binh-luan">
+                <div class="section-header">
+                    <h2 class="section-title">Đánh Giá Của Khách Hàng</h2>
+                    <div class="section-subtitle">Chia Sẻ Trải Nghiệm Của Bạn</div>
+                </div>
+
+                <!-- FORM ĐÁNH GIÁ (Chỉ hiện khi đã đăng nhập) -->
+                <div th:if="${nguoiDung != null}" class="review-form-container">
+                    <form method="post" th:action="@{/mon-an/binh-luan/add}">
+                        <input type="hidden" name="monAnId" th:value="${monAn.id}">
+
+                        <div class="form-group-elegant">
+                            <label class="form-label-elegant">Đánh giá của bạn</label>
+                            <div class="star-rating-elegant">
+                                <input type="radio" id="star5" name="danhGia" value="5" required>
+                                <label for="star5">★</label>
+                                <input type="radio" id="star4" name="danhGia" value="4">
+                                <label for="star4">★</label>
+                                <input type="radio" id="star3" name="danhGia" value="3">
+                                <label for="star3">★</label>
+                                <input type="radio" id="star2" name="danhGia" value="2">
+                                <label for="star2">★</label>
+                                <input type="radio" id="star1" name="danhGia" value="1">
+                                <label for="star1">★</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group-elegant">
+                            <label class="form-label-elegant" for="noiDung">Nhận xét của bạn</label>
+                            <textarea class="form-control-elegant"
+                                      id="noiDung"
+                                      name="noiDung"
+                                      rows="6"
+                                      placeholder="Chia sẻ trải nghiệm của bạn về món ăn này..."
+                                      required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit-elegant">Gửi Đánh Giá</button>
+                    </form>
+                </div>
+
+                <!-- THÔNG BÁO ĐĂNG NHẬP -->
+                <div th:if="${nguoiDung == null}" class="alert-elegant">
+                    Bạn cần <a href="/login">đăng nhập</a> để đánh giá và bình luận về món ăn này.
+                </div>
+
+                <!-- DANH SÁCH BÌNH LUẬN -->
+                <div class="mt-5">
+
+                    <!-- Không có bình luận -->
+                    <div th:if="${dsBinhLuan == null || dsBinhLuan.isEmpty()}" class="no-reviews">
+                        <i class="bi bi-chat-quote"></i>
+                        <p>Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ trải nghiệm của bạn!</p>
+                    </div>
+
+                    <!-- Có bình luận -->
+                    <div th:if="${dsBinhLuan != null && !dsBinhLuan.isEmpty()}">
+                        <div th:each="bl : ${dsBinhLuan}" class="review-card">
+                            <div class="review-header">
+                                <div class="reviewer-name">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span th:text="${bl.nguoiDung != null ? bl.nguoiDung.ten : 'Người dùng'}">Người dùng</span>
+                                </div>
+                                <div class="review-date">
+                                    <i class="bi bi-clock"></i>
+                                    <span th:text="${#temporals.format(bl.ngayTao, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                                </div>
+                            </div>
+
+                            <div class="review-stars">
+                                <span th:each="i : ${#numbers.sequence(1, bl.danhGia)}">★</span>
+                                <span th:each="i : ${#numbers.sequence(bl.danhGia + 1, 5)}">☆</span>
+                            </div>
+
+                            <div class="review-content" th:text="${bl.noiDung}">
+                                Nội dung bình luận
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
     </main>
 
 
-    <!-- =========================== LIGHTBOX POPUP =========================== -->
-    <div id="imageLightbox">
-        <div class="lightbox-wrapper">
-            <img id="lightboxImg" src="" alt="Lightbox">
+    <!-- ========== LIGHTBOX POPUP ========== -->
+    <div class="lightbox-overlay" id="lightbox">
+        <div class="lightbox-content">
+            <img src="" id="lightboxImage" class="lightbox-image" alt="Lightbox">
         </div>
     </div>
 
@@ -541,37 +780,75 @@
 <!-- =========================== SCRIPTS =========================== -->
 <th:block th:fragment="scripts">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
 
-            /* ========== Thumbnail → đổi ảnh lớn ========== */
-            const carousel = new bootstrap.Carousel(document.getElementById("carouselMonAn"));
-
-            document.querySelectorAll(".thumb-img").forEach(img => {
-                img.addEventListener("click", () => {
-                    carousel.to(parseInt(img.dataset.index));
-
-                    document.querySelectorAll(".thumb-img")
-                        .forEach(t => t.classList.remove("active-thumb"));
-
-                    img.classList.add("active-thumb");
+            // ========== THUMBNAIL CLICK ==========
+            function changeImage(thumbnail) {
+                // Remove active class from all thumbnails
+                document.querySelectorAll('.thumbnail-frame').forEach(frame => {
+                    frame.classList.remove('active');
                 });
-            });
 
-            /* ========== LIGHTBOX xem ảnh lớn ========== */
-            const lightbox = document.getElementById("imageLightbox");
-            const lightboxImg = document.getElementById("lightboxImg");
+                // Add active class to clicked thumbnail
+                thumbnail.classList.add('active');
 
-            document.querySelectorAll(".large-image").forEach(img => {
-                img.style.cursor = "zoom-in";
-                img.addEventListener("click", () => {
-                    lightboxImg.src = img.src;
-                    lightbox.style.display = "flex";
+                // Change main image
+                const imageSrc = thumbnail.getAttribute('data-image');
+                document.getElementById('mainImage').src = imageSrc;
+            }
+
+            // Make function global
+            window.changeImage = changeImage;
+
+            // ========== LIGHTBOX ==========
+            const mainImage = document.getElementById('mainImage');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+
+            if (mainImage) {
+                mainImage.addEventListener('click', function() {
+                    lightboxImage.src = this.src;
+                    lightbox.style.display = 'flex';
                 });
-            });
+            }
 
-            lightbox.addEventListener("click", () => {
-                lightbox.style.display = "none";
-            });
+            if (lightbox) {
+                lightbox.addEventListener('click', function() {
+                    this.style.display = 'none';
+                });
+            }
+
+            // ========== STAR RATING HOVER EFFECT ==========
+            const starLabels = document.querySelectorAll('.star-rating-elegant label');
+            const starRatingContainer = document.querySelector('.star-rating-elegant');
+
+            if (starLabels.length > 0 && starRatingContainer) {
+                starLabels.forEach((label, index) => {
+                    label.addEventListener('mouseenter', function() {
+                        highlightStars(starLabels.length - index);
+                    });
+                });
+
+                starRatingContainer.addEventListener('mouseleave', function() {
+                    const checked = document.querySelector('.star-rating-elegant input:checked');
+                    if (checked) {
+                        const value = parseInt(checked.value);
+                        highlightStars(value);
+                    } else {
+                        highlightStars(0);
+                    }
+                });
+
+                function highlightStars(count) {
+                    starLabels.forEach((label, index) => {
+                        if (starLabels.length - index <= count) {
+                            label.style.color = 'var(--elegant-gold)';
+                        } else {
+                            label.style.color = '#ddd';
+                        }
+                    });
+                }
+            }
 
         });
     </script>

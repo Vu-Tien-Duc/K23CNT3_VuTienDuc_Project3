@@ -50,7 +50,7 @@ public class NguoiDungAdminController {
     @PostMapping("/create")
     public String createUser(@ModelAttribute("user") NguoiDung user) {
         nguoiDungService.createUser(user);
-        return "redirect:/admin/nguoi-dung?success=created";
+        return "redirect:/admin/nguoi-dung?success.html=created";
     }
 
     // ====================== SHOW FORM EDIT ======================
@@ -67,13 +67,13 @@ public class NguoiDungAdminController {
     @PostMapping("/edit")
     public String updateUser(@ModelAttribute("user") NguoiDung user) {
         nguoiDungService.updateUserByAdmin(user);
-        return "redirect:/admin/nguoi-dung?success=updated";
+        return "redirect:/admin/nguoi-dung?success.html=updated";
     }
 
     // ====================== DELETE USER ======================
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         nguoiDungService.deleteUser(id);
-        return "redirect:/admin/nguoi-dung?success=deleted";
+        return "redirect:/admin/nguoi-dung?success.html=deleted";
     }
 }

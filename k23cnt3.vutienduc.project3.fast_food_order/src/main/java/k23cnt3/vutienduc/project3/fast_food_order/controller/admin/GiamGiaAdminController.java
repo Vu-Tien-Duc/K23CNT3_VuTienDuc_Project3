@@ -35,7 +35,7 @@ public class GiamGiaAdminController {
     @PostMapping("/create")
     public String createGiamGia(@ModelAttribute("giamGia") GiamGia giamGia) {
         giamGiaService.create(giamGia);
-        return "redirect:/admin/giam-gia?success=created";
+        return "redirect:/admin/giam-gia?success.html=created";
     }
 
     // ====================== SHOW EDIT FORM ======================
@@ -62,13 +62,13 @@ public class GiamGiaAdminController {
         if (giamGia.getNgayKetThuc() == null) giamGia.setNgayKetThuc(existing.getNgayKetThuc());
 
         giamGiaService.update(giamGia.getId(), giamGia);
-        return "redirect:/admin/giam-gia?success=updated";
+        return "redirect:/admin/giam-gia?success.html=updated";
     }
 
     // ====================== DELETE ======================
     @GetMapping("/delete/{id}")
     public String deleteGiamGia(@PathVariable Long id) {
         giamGiaService.delete(id);
-        return "redirect:/admin/giam-gia?success=deleted";
+        return "redirect:/admin/giam-gia?success.html=deleted";
     }
 }

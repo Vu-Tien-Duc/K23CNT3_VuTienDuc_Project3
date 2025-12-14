@@ -4,5 +4,5 @@ public enum TrangThaiDonHang {
     CHO_XU_LY,
     DANG_XU_LY,
     DANG_GIAO,
-    DA_GIAO
+    DA_GIAO,
 }

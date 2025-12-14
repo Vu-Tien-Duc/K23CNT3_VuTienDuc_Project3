@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +73,13 @@ public class MonAnService {
 
         // Mặc định lấy tất cả
         return monAnRepository.findAll(pageable);
+    }
+    /**
+     * Lấy món ăn theo ID (Optional).
+     * Dùng cho giỏ hàng để tránh lỗi khi món bị xóa.
+     */
+    public Optional<MonAn> findById(Long id) {
+        return monAnRepository.findById(id);
     }
 
     /**

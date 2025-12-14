@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Thanh toán Online',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
+
+<th:block th:fragment="content">
+    <div class="container py-5 text-center">
+        <h3 class="mb-4"><i class="bi bi-qr-code-scan"></i> Thanh toán Online</h3>
+        <p>Quét mã QR dưới đây để thanh toán cho đơn hàng #<strong th:text="${donHang.id}"></strong></p>
+        <img th:src="${qrCodeUrl}" alt="QR Code Thanh Toán" class="img-thumbnail mb-3"/>
+        <p>Quét QR để điền thông tin chuyển khoản tự động. Sau đó bấm "Đã thanh toán" nếu đã thanh toán.</p>
+
+        <form th:action="@{/payment-online/{donHangId}/success(donHangId=${donHang.id})}" method="post">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle-fill"></i> Đã thanh toán
+            </button>
+        </form>
+    </div>
+</th:block>
+<th:block th:fragment="customStyles"></th:block>
+<th:block th:fragment="customScripts"></th:block>
+</html>
