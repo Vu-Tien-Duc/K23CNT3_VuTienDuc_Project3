@@ -1,133 +1,710 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi"
       th:replace="~{fragments/_LayoutUser :: layout(
-            title='Thanh toán',
+            title='Đơn hàng của tôi',
             content=~{::content},
             customStyles=~{::customStyles},
             customScripts=~{::customScripts}
       )}">
 
-<!-- =========================== CUSTOM STYLES =========================== -->
+<!-- ================== CONTENT ================== -->
+<th:block th:fragment="content">
+    <div class="orders-container">
+        <div class="container py-5">
+
+            <!-- HEADER -->
+            <div class="orders-header">
+                <div class="header-content">
+                    <h2 class="page-title">
+                        <span class="title-icon">📦</span>
+                        Đơn hàng của tôi
+                    </h2>
+                    <p class="page-subtitle">Theo dõi và quản lý đơn hàng của bạn</p>
+                </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div th:if="${#lists.isEmpty(donHangs)}" class="empty-state">
+                <div class="empty-icon">🛒</div>
+                <h4>Chưa có đơn hàng nào</h4>
+                <p>Bạn chưa đặt hàng lần nào. Hãy khám phá menu và đặt món yêu thích nhé!</p>
+                <a href="/" class="btn-primary-action">
+                    <span>🍔</span> Đặt hàng ngay
+                </a>
+            </div>
+
+            <!-- ORDERS LIST -->
+            <div th:if="${!#lists.isEmpty(donHangs)}" class="orders-grid">
+                <div th:each="dh : ${donHangs}" class="order-card">
+
+                    <!-- CARD HEADER -->
+                    <div class="card-header-order">
+                        <div class="header-left">
+                            <span class="order-id">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 3H4C3.44772 3 3 3.44772 3 4V9C3 9.55228 3.44772 10 4 10H9C9.55228 10 10 9.55228 10 9V4C10 3.44772 9.55228 3 9 3Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M20 3H15C14.4477 3 14 3.44772 14 4V9C14 9.55228 14.4477 10 15 10H20C20.5523 10 21 9.55228 21 9V4C21 3.44772 20.5523 3 20 3Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M9 14H4C3.44772 14 3 14.4477 3 15V20C3 20.5523 3.44772 21 4 21H9C9.55228 21 10 20.5523 10 20V15C10 14.4477 9.55228 14 9 14Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M20 14H15C14.4477 14 14 14.4477 14 15V20C14 20.5523 14.4477 21 15 21H20C20.5523 21 21 20.5523 21 20V15C21 14.4477 20.5523 14 20 14Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Đơn #<span th:text="${dh.id}"></span>
+                            </span>
+                            <span class="order-date">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                <span th:text="${#temporals.format(dh.ngayDat, 'dd/MM/yyyy HH:mm')}"></span>
+                            </span>
+                        </div>
+
+                        <!-- STATUS BADGE -->
+                        <div class="header-right">
+                            <span class="status-badge status-waiting"
+                                  th:if="${dh.trangThai.name() == 'CHO_XU_LY'}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Chờ xử lý
+                            </span>
+
+                            <span class="status-badge status-handling"
+                                  th:if="${dh.trangThai.name() == 'DANG_XU_LY'}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                               Đang xử lý
+                            </span>
+
+                            <span class="status-badge status-processing"
+                                  th:if="${dh.trangThai.name() == 'DANG_GIAO'}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <path d="M13 16V6C13 5.44772 12.5523 5 12 5H4C3.44772 5 3 5.44772 3 6V16C3 16.5523 3.44772 17 4 17H12C12.5523 17 13 16.5523 13 16Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M13 11H17L21 15V16C21 16.5523 20.5523 17 20 17H13" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="6" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="18" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Đang giao
+                            </span>
+                            <span class="status-badge status-completed"
+                                  th:if="${dh.trangThai.name() == 'DA_GIAO'}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Đã giao
+                            </span>
+                            <span class="status-badge status-cancelled"
+                                  th:if="${dh.trangThai.name() == 'DA_HUY'}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Đã hủy
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CARD BODY -->
+                    <div class="card-body-order">
+
+                        <!-- PAYMENT STATUS -->
+                        <div class="payment-status-row">
+                            <span class="payment-label">Thanh toán:</span>
+                            <span class="payment-status unpaid"
+                                  th:if="${dh.thanhToan.trangThai == 'CHUA_THANH_TOAN'}">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                                </svg>
+                                Chưa thanh toán
+                            </span>
+                            <span class="payment-status paid"
+                                  th:if="${dh.thanhToan.trangThai == 'DA_THANH_TOAN'}">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                                    <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Đã thanh toán
+                            </span>
+                        </div>
+
+                        <!-- ORDER ITEMS PREVIEW -->
+                        <div class="order-items-preview" th:if="${dh.chiTietDonHangs != null && !#lists.isEmpty(dh.chiTietDonHangs)}">
+                            <div class="items-list">
+                                <div class="item-preview" th:each="ct, iterStat : ${dh.chiTietDonHangs}" th:if="${iterStat.index < 3}">
+                                    <img th:src="${ct.monAn.hinhAnh != null && ct.monAn.hinhAnh.size() > 0 ? ct.monAn.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'}"
+                                         alt="food"
+                                         class="item-thumb">
+                                    <div class="item-info">
+                                        <span class="item-name" th:text="${ct.monAn.ten}"></span>
+                                        <span class="item-qty">x<span th:text="${ct.soLuong}"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="more-items" th:if="${#lists.size(dh.chiTietDonHangs) > 3}">
+                                +<span th:text="${#lists.size(dh.chiTietDonHangs) - 3}"></span> món khác
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- CARD FOOTER -->
+                    <div class="card-footer-order">
+                        <div class="total-amount">
+                            <span class="total-label">Tổng tiền:</span>
+                            <span class="total-value">
+                                <span th:text="${#numbers.formatDecimal(dh.thanhToan.soTien, 0, 'COMMA', 0, 'POINT')}"></span>₫
+                            </span>
+                        </div>
+
+                        <div class="action-buttons">
+                            <a th:href="@{/orders/{id}(id=${dh.id})}"
+                               class="btn-detail">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Chi tiết
+                            </a>
+
+                            <form th:if="${dh.trangThai.name() == 'CHO_XU_LY'}"
+                                  th:action="@{/orders/{id}/cancel(id=${dh.id})}"
+                                  method="post"
+                                  class="cancel-form"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                <button type="submit" class="btn-cancel">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Hủy đơn
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+
+<!-- ================== STYLES ================== -->
 <th:block th:fragment="customStyles">
     <style>
+        :root {
+            --primary-color: #ff6b35;
+            --primary-dark: #e55a2b;
+            --secondary-color: #ffa500;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --bg-light: #f8f9fa;
+            --border-color: #e9ecef;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .orders-container {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* ========== HEADER ========== */
+        .orders-header {
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .title-icon {
+            font-size: 3rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .empty-icon {
+            font-size: 6rem;
+            margin-bottom: 24px;
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-state h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        .btn-primary-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        /* ========== ORDERS GRID ========== */
+        .orders-grid {
+            display: grid;
+            gap: 24px;
+            animation: fadeIn 0.6s ease;
+        }
+
         .order-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            transition: all 0.2s ease;
-            background: #fff;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideInUp 0.5s ease;
         }
 
         .order-card:hover {
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
         }
 
-        .order-header {
+        /* ========== CARD HEADER ========== */
+        .card-header-order {
+            background: linear-gradient(135deg, #fff9f0, #ffffff);
+            padding: 20px 24px;
+            border-bottom: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .order-meta {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .order-footer {
+        .header-left {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .order-total {
-            font-size: 18px;
+        .order-id {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .order-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* ========== STATUS BADGES ========== */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #dc2626;
+            white-space: nowrap;
+        }
+
+        .status-waiting {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        /* Đang xử lý (cam) */
+        .status-handling {
+            background: #ffe5d0;
+            color: #a84300;
+            border: 2px solid #fd7e14; /* cam bootstrap */
+        }
+
+        .status-processing {
+            background: #cfe2ff;
+            color: #084298;
+            border: 2px solid #0d6efd;
+        }
+
+        .status-completed {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 2px solid #198754;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #842029;
+            border: 2px solid #dc3545;
+        }
+
+        /* ========== CARD BODY ========== */
+        .card-body-order {
+            padding: 24px;
+        }
+
+        .payment-status-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 12px;
+        }
+
+        .payment-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .payment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .payment-status.unpaid {
+            background: #fee;
+            color: var(--danger-color);
+        }
+
+        .payment-status.paid {
+            background: #d4edda;
+            color: var(--success-color);
+        }
+
+        /* ========== ORDER ITEMS PREVIEW ========== */
+        .order-items-preview {
+            margin-top: 16px;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .item-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        .item-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .item-qty {
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .more-items {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* ========== CARD FOOTER ========== */
+        .card-footer-order {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #fff9f0, #ffffff);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .total-amount {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        /* ========== ACTION BUTTONS ========== */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-detail,
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-detail {
+            background: white;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-detail:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-cancel {
+            background: white;
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-cancel:hover {
+            background: var(--danger-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .cancel-form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .title-icon {
+                font-size: 2.5rem;
+            }
+
+            .card-header-order,
+            .card-footer-order {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                width: 100%;
+            }
+
+            .status-badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .total-amount {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .btn-detail,
+            .btn-cancel {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.6rem;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .card-body-order,
+            .card-footer-order,
+            .card-header-order {
+                padding: 16px;
+            }
+
+            .item-name {
+                font-size: 0.85rem;
+            }
+
+            .total-value {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </th:block>
 
-
-<!-- =========================== CONTENT =========================== -->
-<th:block th:fragment="content">
-    <div class="container py-4">
-        <h3 class="mb-4">📦 Đơn hàng của tôi</h3>
-
-        <div th:if="${#lists.isEmpty(donHangs)}" class="alert alert-info">
-            Bạn chưa có đơn hàng nào.
-        </div>
-
-        <div th:each="dh : ${donHangs}" class="order-card">
-
-            <!-- HEADER -->
-            <div class="order-header">
-                <div>
-                    <strong>Đơn hàng #<span th:text="${dh.id}"></span></strong>
-                    <div class="order-meta"
-                         th:text="${#temporals.format(dh.ngayDat, 'dd/MM/yyyy HH:mm')}">
-                    </div>
-                </div>
-
-                <!-- TRẠNG THÁI ĐƠN -->
-                <div>
-                    <span class="badge bg-warning text-dark"
-                          th:if="${dh.trangThai.name() == 'CHO_XU_LY'}">Chờ xử lý</span>
-                    <span class="badge bg-primary"
-                          th:if="${dh.trangThai.name() == 'DANG_GIAO'}">Đang giao</span>
-                    <span class="badge bg-success"
-                          th:if="${dh.trangThai.name() == 'DA_GIAO'}">Đã giao</span>
-                    <span class="badge bg-danger"
-                          th:if="${dh.trangThai.name() == 'DA_HUY'}">Đã hủy</span>
-                </div>
-            </div>
-
-            <!-- BODY -->
-            <div class="d-flex gap-2 mb-2">
-                <!-- TRẠNG THÁI THANH TOÁN -->
-                <span class="badge bg-danger"
-                      th:if="${dh.thanhToan.trangThai == 'CHUA_THANH_TOAN'}">
-                    Chưa thanh toán
-                </span>
-                <span class="badge bg-success"
-                      th:if="${dh.thanhToan.trangThai == 'DA_THANH_TOAN'}">
-                    Đã thanh toán
-                </span>
-            </div>
-
-            <!-- FOOTER -->
-            <div class="order-footer">
-                <div class="order-total"
-                     th:text="${#numbers.formatDecimal(dh.thanhToan.soTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
-                </div>
-
-                <div class="d-flex gap-2">
-                    <!-- ✅ CHI TIẾT ĐƠN -->
-                    <a th:href="@{/orders/{id}(id=${dh.id})}"
-                       class="btn btn-outline-primary btn-sm">
-                        Chi tiết
-                    </a>
-
-                    <!-- ❌ NÚT HỦY ĐƠN -->
-                    <form th:if="${dh.trangThai.name() == 'CHO_XU_LY'}"
-                          th:action="@{/orders/{id}/cancel(id=${dh.id})}"
-                          method="post"
-                          onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
-                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                            Hủy đơn
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-            <!-- =========================== CUSTOM SCRIPTS =========================== -->
+<!-- ================== SCRIPTS ================== -->
 <th:block th:fragment="customScripts">
-    <!-- Hiện tại chưa cần JS riêng -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.order-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
 </th:block>
 
 </html>

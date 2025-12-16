@@ -632,11 +632,11 @@
                         </div>
 
                         <div class="action-buttons">
-                            <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
+                            <a th:href="${loggedUser == null ? '/login' : '/cart/add/' + monAn.id}"
                                class="btn-elegant btn-primary-elegant">
                                 Thêm vào giỏ
                             </a>
-                            <a th:href="${nguoiDung == null ? '/login' : '/cart/buy-now/' + monAn.id}"
+                            <a th:href="${loggedUser == null ? '/login' : '/cart/buy-now/' + monAn.id}"
                                class="btn-elegant btn-secondary-elegant">
                                 Đặt hàng ngay
                             </a>
@@ -686,7 +686,7 @@
                 </div>
 
                 <!-- FORM ĐÁNH GIÁ (Chỉ hiện khi đã đăng nhập) -->
-                <div th:if="${nguoiDung != null}" class="review-form-container">
+                <div th:if="${loggedUser != null}" class="review-form-container">
                     <form method="post" th:action="@{/mon-an/binh-luan/add}">
                         <input type="hidden" name="monAnId" th:value="${monAn.id}">
 
@@ -721,7 +721,7 @@
                 </div>
 
                 <!-- THÔNG BÁO ĐĂNG NHẬP -->
-                <div th:if="${nguoiDung == null}" class="alert-elegant">
+                <div th:if="${loggedUser == null}" class="alert-elegant">
                     Bạn cần <a href="/login">đăng nhập</a> để đánh giá và bình luận về món ăn này.
                 </div>
 

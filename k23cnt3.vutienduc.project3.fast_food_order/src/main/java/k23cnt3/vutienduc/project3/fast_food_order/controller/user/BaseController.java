@@ -21,9 +21,9 @@ public abstract class BaseController {
             NguoiDung user = nguoiDungRepository
                     .findByEmail(principal.getName())
                     .orElse(null);
-            model.addAttribute("nguoiDung", user);
+            model.addAttribute("loggedUser", user); // ✅ ĐỔI TÊN
         } else {
-            model.addAttribute("nguoiDung", null);
+            model.addAttribute("loggedUser", null);
         }
     }
 

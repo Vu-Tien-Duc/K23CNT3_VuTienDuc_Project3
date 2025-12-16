@@ -17,8 +17,8 @@ public class PaymentQRUtil {
         // Nội dung QR, mỗi dòng 1 thông tin
         String payload = "STK:" + account + "\n" +
                 "Tên:" + name + "\n" +
-                "Số tiền:" + String.format("%.0f", amount) + "\n" +
-                "Nội dung:" + memo;
+                "So Tien:" + String.format("%.0f", amount) + "\n" +
+                "Noi dung:" + memo;
 
         // Encode QR
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

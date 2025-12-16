@@ -10,11 +10,11 @@
 <head>
     <th:block th:fragment="customStyles">
         <style>
-            /* Hero Section */
+            /* Hero Section - Modern Wave Design */
             .hero-section {
-                background: linear-gradient(135deg, var(--dark-bg) 0%, #2d2d2d 100%);
+                background: linear-gradient(165deg, #FF6B35 0%, #FF8C42 50%, #FFA351 100%);
                 color: white;
-                padding: 100px 0;
+                padding: 120px 0 80px;
                 position: relative;
                 overflow: hidden;
             }
@@ -22,211 +22,329 @@
             .hero-section::before {
                 content: '';
                 position: absolute;
-                top: -50%;
-                right: -10%;
-                width: 600px;
-                height: 600px;
-                background: var(--primary-color);
-                border-radius: 50%;
-                opacity: 0.1;
-                animation: float 6s ease-in-out infinite;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 150px;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23f8f9fa' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+                background-size: cover;
             }
 
-            @keyframes float {
-                0%, 100% { transform: translateY(0px); }
-                50% { transform: translateY(-30px); }
+            .hero-section::after {
+                content: '';
+                position: absolute;
+                top: -100px;
+                right: -100px;
+                width: 400px;
+                height: 400px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: pulse-circle 4s ease-in-out infinite;
+            }
+
+            @keyframes pulse-circle {
+                0%, 100% { transform: scale(1); opacity: 0.1; }
+                50% { transform: scale(1.1); opacity: 0.15; }
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2;
             }
 
             .hero-content h1 {
-                font-size: 3.5rem;
-                font-weight: bold;
-                margin-bottom: 20px;
-                animation: fadeInUp 1s ease;
+                font-size: 4rem;
+                font-weight: 800;
+                margin-bottom: 25px;
+                line-height: 1.2;
+                text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+                animation: slideInLeft 0.8s ease;
+            }
+
+            @keyframes slideInLeft {
+                from { opacity: 0; transform: translateX(-50px); }
+                to { opacity: 1; transform: translateX(0); }
             }
 
             .hero-content .highlight {
-                color: var(--primary-color);
+                color: #FFF5E1;
+                position: relative;
+                display: inline-block;
+            }
+
+            .hero-content .highlight::after {
+                content: '';
+                position: absolute;
+                bottom: 5px;
+                left: 0;
+                right: 0;
+                height: 15px;
+                background: rgba(255, 255, 255, 0.3);
+                z-index: -1;
+                border-radius: 5px;
             }
 
             .hero-content p {
-                font-size: 1.2rem;
-                margin-bottom: 30px;
-                opacity: 0.9;
-                animation: fadeInUp 1s ease 0.2s backwards;
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                font-size: 1.3rem;
+                margin-bottom: 35px;
+                opacity: 0.95;
+                font-weight: 300;
+                animation: slideInLeft 0.8s ease 0.2s backwards;
             }
 
             .hero-image {
                 position: relative;
                 z-index: 2;
-                animation: fadeInRight 1s ease;
+                animation: slideInRight 0.8s ease;
             }
 
-            @keyframes fadeInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(50px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
+            @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(50px); }
+                to { opacity: 1; transform: translateX(0); }
             }
 
             .hero-image img {
                 width: 100%;
-                max-width: 500px;
-                filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-                animation: bounce-img 3s ease-in-out infinite;
+                max-width: 550px;
+                filter: drop-shadow(0 25px 50px rgba(0,0,0,0.3));
+                animation: float-smooth 4s ease-in-out infinite;
             }
 
-            @keyframes bounce-img {
-                0%, 100% { transform: translateY(0px); }
-                50% { transform: translateY(-20px); }
+            @keyframes float-smooth {
+                0%, 100% { transform: translateY(0) rotate(-2deg); }
+                50% { transform: translateY(-25px) rotate(2deg); }
             }
 
-            /* Category Section */
+            /* Category Section - Card Grid Style */
             .category-section {
-                padding: 80px 0;
+                padding: 100px 0;
                 background: #f8f9fa;
+                position: relative;
             }
 
             .section-title {
                 text-align: center;
-                margin-bottom: 50px;
+                margin-bottom: 60px;
+                animation: fadeInUp 0.8s ease;
             }
 
             .section-title h2 {
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: var(--dark-bg);
-                margin-bottom: 10px;
+                font-size: 3rem;
+                font-weight: 800;
+                color: #2C3E50;
+                margin-bottom: 15px;
+                position: relative;
+                display: inline-block;
             }
 
             .section-title .highlight {
-                color: var(--primary-color);
+                color: #FF6B35;
+                position: relative;
+            }
+
+            .section-title .highlight::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: #FF6B35;
+                border-radius: 2px;
             }
 
             .section-title p {
-                color: #666;
-                font-size: 1.1rem;
+                color: #7F8C8D;
+                font-size: 1.2rem;
+                font-weight: 300;
             }
 
             .category-card {
                 background: white;
-                border-radius: 15px;
-                padding: 30px;
+                border-radius: 25px;
+                padding: 45px 30px;
                 text-align: center;
-                transition: all 0.3s;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.08);
                 cursor: pointer;
                 margin-bottom: 30px;
                 height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .category-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: linear-gradient(90deg, #FF6B35, #FF8C42);
+                transform: scaleX(0);
+                transition: transform 0.4s ease;
+            }
+
+            .category-card:hover::before {
+                transform: scaleX(1);
             }
 
             .category-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+                transform: translateY(-15px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(255, 107, 53, 0.25);
             }
 
             .category-card i {
-                font-size: 3rem;
-                color: var(--primary-color);
-                margin-bottom: 15px;
+                font-size: 4rem;
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 20px;
+                transition: transform 0.4s ease;
+            }
+
+            .category-card:hover i {
+                transform: scale(1.2) rotate(10deg);
             }
 
             .category-card h5 {
-                font-weight: bold;
-                color: var(--dark-bg);
-                margin-bottom: 10px;
+                font-weight: 700;
+                color: #2C3E50;
+                margin-bottom: 12px;
+                font-size: 1.4rem;
             }
 
             .category-card p {
-                color: #666;
+                color: #7F8C8D;
                 margin: 0;
+                font-size: 0.95rem;
             }
 
-            /* Best Selling Items */
+            /* Best Selling Items - Modern Grid với khoảng cách đều */
             .best-selling {
-                padding: 80px 0;
+                padding: 100px 0;
                 background: white;
+                position: relative;
+            }
+
+            .best-selling::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 300px;
+                background: linear-gradient(180deg, #f8f9fa 0%, white 100%);
+                z-index: 0;
+            }
+
+            .best-selling .container {
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Container cho cards với gap đều */
+            .best-selling .row {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 -15px;
+            }
+
+            .best-selling .row > div {
+                padding: 0 15px;
+                margin-bottom: 30px;
             }
 
             .food-card {
                 background: white;
-                border-radius: 20px;
+                border-radius: 30px;
                 overflow: hidden;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-                transition: all 0.3s;
-                margin-bottom: 30px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 height: 100%;
                 display: flex;
                 flex-direction: column;
+                border: 2px solid transparent;
             }
 
             .food-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+                transform: translateY(-15px);
+                box-shadow: 0 25px 50px rgba(255, 107, 53, 0.2);
+                border-color: #FF6B35;
             }
 
             .food-image {
                 position: relative;
                 overflow: hidden;
-                height: 250px;
+                height: 280px;
+                background: #f8f9fa;
             }
 
             .food-image img {
                 width: 100%;
-                height: 100%;
+                height: 280px;
                 object-fit: cover;
-                transition: transform 0.5s;
+                transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
 
             .food-card:hover .food-image img {
-                transform: scale(1.1);
+                transform: scale(1.15) rotate(2deg);
             }
 
             .food-badge {
                 position: absolute;
-                top: 15px;
-                right: 15px;
-                background: var(--primary-color);
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
                 color: white;
-                padding: 5px 15px;
-                border-radius: 20px;
+                padding: 8px 20px;
+                border-radius: 30px;
                 font-size: 0.85rem;
-                font-weight: bold;
+                font-weight: 700;
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+                animation: bounce-badge 2s ease-in-out infinite;
+            }
+
+            @keyframes bounce-badge {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-5px); }
             }
 
             .food-content {
-                padding: 20px;
+                padding: 25px;
                 flex: 1;
                 display: flex;
                 flex-direction: column;
             }
 
             .food-title {
-                font-size: 1.3rem;
-                font-weight: bold;
-                color: var(--dark-bg);
-                margin-bottom: 10px;
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #2C3E50;
+                margin-bottom: 12px;
+                transition: color 0.3s ease;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
+            .food-card:hover .food-title {
+                color: #FF6B35;
+            }
+
+            /* Mô tả với giới hạn hiển thị */
             .food-desc {
-                color: #666;
-                font-size: 0.9rem;
-                margin-bottom: 15px;
+                color: #7F8C8D;
+                font-size: 0.95rem;
+                margin-bottom: 20px;
                 flex: 1;
+                line-height: 1.6;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-height: 3.2em;
             }
 
             .food-footer {
@@ -234,74 +352,171 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-top: auto;
+                padding-top: 15px;
+                border-top: 2px solid #f8f9fa;
+            }
+
+            /* Giá với giá cũ */
+            .food-price-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .food-price-old {
+                font-size: 1rem;
+                color: #95a5a6;
+                text-decoration: line-through;
+                font-weight: 500;
             }
 
             .food-price {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: var(--primary-color);
+                font-size: 1.8rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
 
             .btn-add-cart {
-                background: var(--primary-color);
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
                 color: white;
                 border: none;
-                padding: 10px 20px;
-                border-radius: 25px;
-                font-weight: bold;
-                transition: all 0.3s;
+                padding: 12px 25px;
+                border-radius: 30px;
+                font-weight: 700;
+                transition: all 0.3s ease;
                 cursor: pointer;
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
             }
 
             .btn-add-cart:hover {
-                background: var(--secondary-color);
-                transform: scale(1.05);
+                transform: scale(1.1);
+                box-shadow: 0 8px 20px rgba(255, 107, 53, 0.5);
             }
 
-            /* Features Section */
+            /* Features Section - Clean Minimal */
             .features-section {
-                padding: 80px 0;
-                background: linear-gradient(135deg, var(--dark-bg) 0%, #2d2d2d 100%);
+                padding: 100px 0;
+                background: linear-gradient(165deg, #2C3E50 0%, #34495E 100%);
                 color: white;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .features-section::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -10%;
+                width: 500px;
+                height: 500px;
+                background: rgba(255, 107, 53, 0.1);
+                border-radius: 50%;
+                animation: float-feature 8s ease-in-out infinite;
+            }
+
+            @keyframes float-feature {
+                0%, 100% { transform: translate(0, 0); }
+                50% { transform: translate(30px, -30px); }
             }
 
             .feature-box {
                 text-align: center;
-                padding: 30px;
+                padding: 40px 30px;
+                position: relative;
+                z-index: 1;
+                transition: transform 0.3s ease;
+            }
+
+            .feature-box:hover {
+                transform: translateY(-10px);
             }
 
             .feature-box i {
-                font-size: 3.5rem;
-                color: var(--primary-color);
-                margin-bottom: 20px;
+                font-size: 4.5rem;
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 25px;
+                transition: transform 0.3s ease;
+            }
+
+            .feature-box:hover i {
+                transform: scale(1.2);
             }
 
             .feature-box h4 {
-                font-weight: bold;
-                margin-bottom: 15px;
+                font-weight: 700;
+                margin-bottom: 18px;
+                font-size: 1.5rem;
             }
 
             .feature-box p {
-                opacity: 0.8;
+                opacity: 0.9;
                 margin: 0;
+                line-height: 1.7;
+                font-size: 1.05rem;
+            }
+
+            /* Buttons */
+            .btn-order {
+                background: linear-gradient(135deg, #FF6B35, #FF8C42);
+                color: white;
+                border: none;
+                padding: 15px 40px;
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn-order:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 12px 30px rgba(255, 107, 53, 0.5);
+                color: white;
             }
 
             /* Responsive */
             @media (max-width: 768px) {
                 .hero-content h1 {
-                    font-size: 2rem;
+                    font-size: 2.5rem;
                 }
 
                 .hero-section {
-                    padding: 60px 0;
+                    padding: 80px 0 60px;
                 }
 
                 .section-title h2 {
-                    font-size: 1.8rem;
+                    font-size: 2rem;
                 }
 
                 .hero-image img {
-                    max-width: 300px;
+                    max-width: 350px;
+                    margin-top: 30px;
+                }
+
+                .category-card {
+                    padding: 35px 25px;
+                }
+
+                .food-image {
+                    height: 220px;
+                }
+
+                .food-image img {
+                    height: 220px;
+                }
+
+                .food-price {
+                    font-size: 1.5rem;
+                }
+
+                .food-price-old {
+                    font-size: 0.9rem;
                 }
             }
         </style>
@@ -412,24 +627,30 @@
                                     Tên món ăn
                                 </h5>
 
-                                <!-- MÔ TẢ -->
+                                <!-- MÔ TẢ với giới hạn -->
                                 <p class="food-desc" th:text="${monAn.moTa}">
-                                    Mô tả món ăn
+                                    Mô tả món ăn có thể dài nhưng sẽ được giới hạn hiển thị chỉ 2 dòng với dấu ba chấm ở cuối nếu vượt quá
                                 </p>
 
                                 <div class="food-footer">
-                                    <!-- GIÁ -->
-                                    <span class="food-price"
-                                          th:text="${#numbers.formatDecimal(monAn.gia, 0, 'COMMA', 0, 'POINT')} + '₫'">
-                                        50.000₫
-                                    </span>
+                                    <!-- GIÁ CŨ VÀ GIÁ MỚI -->
+                                    <div class="food-price-wrapper">
+                                        <!-- Giá cũ (nếu có) -->
+                                        <span class="food-price-old" th:if="${monAn.giaCu != null && monAn.giaCu > 0}"
+                                              th:text="${#numbers.formatDecimal(monAn.giaCu, 0, 'COMMA', 0, 'POINT')} + '₫'">
+                                            80.000₫
+                                        </span>
+                                        <!-- Giá hiện tại -->
+                                        <span class="food-price"
+                                              th:text="${#numbers.formatDecimal(monAn.gia, 0, 'COMMA', 0, 'POINT')} + '₫'">
+                                            50.000₫
+                                        </span>
+                                    </div>
                                     <!-- Add to cart -->
-                                    <a th:href="${nguoiDung == null ? '/login' : '/cart/add/' + monAn.id}"
+                                    <a th:href="${loggedUser  == null ? '/login' : '/cart/add/' + monAn.id}"
                                        class="btn-add-cart action-btn">
                                         <i class="bi bi-cart-plus-fill"></i>
                                     </a>
-
-
                                 </div>
                             </div>
                         </div>
@@ -475,8 +696,6 @@
         </div>
     </section>
 </th:block>
-
-
 
 </body>
 </html>

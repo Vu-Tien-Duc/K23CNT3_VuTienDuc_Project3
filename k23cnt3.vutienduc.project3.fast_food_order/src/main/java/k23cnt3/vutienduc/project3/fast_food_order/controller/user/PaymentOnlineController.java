@@ -5,7 +5,6 @@ import k23cnt3.vutienduc.project3.fast_food_order.entity.DonHang;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.TrangThaiDonHang;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.DonHangRepository;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.NguoiDungRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,30 +13,35 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("/payment-online")
-@RequiredArgsConstructor
-public class PaymentOnlineController {
+public class PaymentOnlineController extends BaseController {
 
     private final DonHangRepository donHangRepository;
-    private final NguoiDungRepository nguoiDungRepository;
 
-    // ================== Hiển thị trang thanh toán Online với QR ==================
-    @GetMapping("/{donHangId}")
-    public String paymentOnline(@PathVariable Long donHangId,
-                                Model model,
-                                Principal principal) throws Exception {
+    public PaymentOnlineController(
+            NguoiDungRepository nguoiDungRepository,
+            DonHangRepository donHangRepository
+    ) {
+        super(nguoiDungRepository);
+        this.donHangRepository = donHangRepository;
+    }
 
-        // Kiểm tra và add user login
+    @GetMapping("/{id}")
+    public String paymentOnline(
+            @PathVariable Long id,
+            Model model,
+            Principal principal
+    ) throws Exception {
+
         addLoggedUser(model, principal);
 
-        DonHang donHang = donHangRepository.findById(donHangId)
-                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
+        DonHang donHang = donHangRepository.findById(id)
+                .orElseThrow();
 
-        // Sinh QR Base64 với số tiền động từ đơn hàng
         String qrBase64 = PaymentQRUtil.generateQR(
-                "970422",                        // BIN ngân hàng (MB Bank)
-                "0345578911111",                 // STK
-                donHang.getThanhToan().getSoTien(),  // Số tiền
-                "Thanh toán đơn #" + donHang.getId() // Nội dung thanh toán
+                "Vu Tien Duc",
+                "0345578911111",
+                donHang.getThanhToan().getSoTien(),
+                "Thanh toan don #" + donHang.getId()
         );
 
         model.addAttribute("donHang", donHang);
@@ -46,35 +50,17 @@ public class PaymentOnlineController {
         return "user/payment/online";
     }
 
-    // ================== Xử lý khi user xác nhận đã thanh toán ==================
-    @PostMapping("/{donHangId}/success")
-    public String paymentSuccess(@PathVariable Long donHangId,
-                                 Principal principal) {
+    @PostMapping("/{id}/success")
+    public String paymentSuccess(@PathVariable Long id) {
 
-        // Kiểm tra user login
-        if (principal == null) {
-            return "redirect:/login";
-        }
+        DonHang donHang = donHangRepository.findById(id)
+                .orElseThrow();
 
-        DonHang donHang = donHangRepository.findById(donHangId)
-                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
-
-        // Cập nhật trạng thái thanh toán
         donHang.getThanhToan().setTrangThai("DA_THANH_TOAN");
-
-        // DonHang vẫn ở trạng thái CHO_XU_LY, chưa giao
         donHang.setTrangThai(TrangThaiDonHang.CHO_XU_LY);
 
         donHangRepository.save(donHang);
 
         return "redirect:/checkout/success";
-    }
-
-    // ================== Phương thức add user login vào model ==================
-    private void addLoggedUser(Model model, Principal principal) {
-        if (principal != null) {
-            nguoiDungRepository.findByEmail(principal.getName())
-                    .ifPresent(user -> model.addAttribute("nguoiDung", user));
-        }
     }
 }

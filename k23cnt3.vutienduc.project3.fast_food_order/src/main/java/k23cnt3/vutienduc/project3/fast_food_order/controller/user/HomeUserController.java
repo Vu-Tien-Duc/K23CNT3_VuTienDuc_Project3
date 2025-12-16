@@ -47,7 +47,7 @@ public class HomeUserController extends BaseController {
         List<MonAn> dsMonAn = monAnRepository.findAll();
         model.addAttribute(
                 "monAnList",
-                dsMonAn.subList(0, Math.min(5, dsMonAn.size()))
+                dsMonAn.subList(0, Math.min(12, dsMonAn.size()))
         );
 
         return "user/index";

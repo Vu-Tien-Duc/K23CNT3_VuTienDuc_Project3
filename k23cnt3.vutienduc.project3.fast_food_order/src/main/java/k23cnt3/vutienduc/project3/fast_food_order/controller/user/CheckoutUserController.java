@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import k23cnt3.vutienduc.project3.fast_food_order.entity.*;
 import k23cnt3.vutienduc.project3.fast_food_order.repository.*;
 import k23cnt3.vutienduc.project3.fast_food_order.service.MonAnService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,27 +14,38 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/checkout")
-@RequiredArgsConstructor
-public class CheckoutUserController {
+public class CheckoutUserController extends BaseController {
 
     private final MonAnService monAnService;
-    private final NguoiDungRepository nguoiDungRepository;
     private final DonHangRepository donHangRepository;
     private final GiamGiaRepository giamGiaRepository;
 
-    // ================== HIỂN THỊ TRANG CHECKOUT ==================
+    public CheckoutUserController(
+            NguoiDungRepository nguoiDungRepository,
+            MonAnService monAnService,
+            DonHangRepository donHangRepository,
+            GiamGiaRepository giamGiaRepository
+    ) {
+        super(nguoiDungRepository);
+        this.monAnService = monAnService;
+        this.donHangRepository = donHangRepository;
+        this.giamGiaRepository = giamGiaRepository;
+    }
+
+    /* ================== HIỂN THỊ CHECKOUT ================== */
     @GetMapping
-    public String checkoutPage(HttpSession session,
-                               Model model,
-                               Principal principal) {
+    public String checkoutPage(
+            HttpSession session,
+            Model model,
+            Principal principal
+    ) {
 
         if (principal == null) {
             return "redirect:/login";
         }
 
-        NguoiDung nguoiDung = nguoiDungRepository
-                .findByEmail(principal.getName())
-                .orElse(null);
+        addLoggedUser(model, principal);
+        addCartCount(model, session);
 
         Map<Long, Integer> cart =
                 (Map<Long, Integer>) session.getAttribute("CART");
@@ -46,7 +56,6 @@ public class CheckoutUserController {
 
         Map<MonAn, Integer> cartItems = new LinkedHashMap<>();
         double tongTien = 0;
-        int cartCount = 0;
 
         for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             MonAn monAn = monAnService.getById(entry.getKey());
@@ -54,26 +63,81 @@ public class CheckoutUserController {
 
             cartItems.put(monAn, soLuong);
             tongTien += monAn.getGia() * soLuong;
-            cartCount += soLuong;
         }
 
-        model.addAttribute("nguoiDung", nguoiDung);
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("tongTien", tongTien);
-        model.addAttribute("cartCount", cartCount);
 
         return "user/checkout/index";
     }
 
-    // ================== XỬ LÝ ĐẶT HÀNG ==================
+    /* ================== CHECK MÃ GIẢM GIÁ (AJAX) ================== */
+    @GetMapping("/check-promo")
+    @ResponseBody
+    public Map<String, Object> checkPromo(
+            @RequestParam String maGiamGia,
+            HttpSession session
+    ) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        Optional<GiamGia> opt = giamGiaRepository.findByMaGiamGia(maGiamGia.trim());
+        if (opt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Mã giảm giá không tồn tại!");
+            return response;
+        }
+
+        GiamGia giamGia = opt.get();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (giamGia.getNgayBatDau().isAfter(now)
+                || giamGia.getNgayKetThuc().isBefore(now)) {
+
+            response.put("success", false);
+            response.put("message", "Mã giảm giá đã hết hạn!");
+            return response;
+        }
+
+        Map<Long, Integer> cart =
+                (Map<Long, Integer>) session.getAttribute("CART");
+
+        if (cart == null || cart.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Giỏ hàng trống!");
+            return response;
+        }
+
+        double tongTien = 0;
+        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
+            MonAn monAn = monAnService.getById(entry.getKey());
+            tongTien += monAn.getGia() * entry.getValue();
+        }
+
+        double giam = giamGia.isLaPhanTram()
+                ? tongTien * giamGia.getGiaTri() / 100
+                : giamGia.getGiaTri();
+
+        double tongTienSauGiam = Math.max(tongTien - giam, 0);
+
+        // ✅ FIX LỖI UNDEFINED
+        response.put("success", true);
+        response.put("message", "Áp dụng mã giảm giá thành công");
+        response.put("tongTienSauGiam", tongTienSauGiam);
+
+        return response;
+    }
+
+    /* ================== ĐẶT HÀNG ================== */
     @PostMapping
-    public String placeOrder(@RequestParam String diaChi,
-                             @RequestParam String sdt,
-                             @RequestParam String phuongThuc,
-                             @RequestParam(required = false) String maGiamGia,
-                             HttpSession session,
-                             Principal principal,
-                             Model model) {
+    public String placeOrder(
+            @RequestParam String diaChi,
+            @RequestParam String sdt,
+            @RequestParam String phuongThuc,
+            @RequestParam(required = false) String maGiamGia,
+            HttpSession session,
+            Principal principal
+    ) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -81,7 +145,7 @@ public class CheckoutUserController {
 
         NguoiDung nguoiDung = nguoiDungRepository
                 .findByEmail(principal.getName())
-                .orElse(null);
+                .orElseThrow();
 
         Map<Long, Integer> cart =
                 (Map<Long, Integer>) session.getAttribute("CART");
@@ -90,7 +154,6 @@ public class CheckoutUserController {
             return "redirect:/cart";
         }
 
-        // ================== TẠO ĐƠN HÀNG ==================
         DonHang donHang = DonHang.builder()
                 .nguoiDung(nguoiDung)
                 .ngayDat(LocalDateTime.now())
@@ -99,102 +162,53 @@ public class CheckoutUserController {
                 .trangThai(TrangThaiDonHang.CHO_XU_LY)
                 .build();
 
-        // ================== KIỂM TRA MÃ GIẢM GIÁ ==================
-        GiamGia giamGia = null;
-
-        if (maGiamGia != null && !maGiamGia.trim().isEmpty()) {
-            Optional<GiamGia> opt = giamGiaRepository.findByMaGiamGia(maGiamGia.trim());
-
-            if (opt.isEmpty()) {
-                model.addAttribute("error", "Mã giảm giá không tồn tại!");
-                return checkoutPage(session, model, principal);
-            }
-
-            giamGia = opt.get();
-
-            LocalDateTime now = LocalDateTime.now();
-            if (giamGia.getNgayBatDau().isAfter(now) || giamGia.getNgayKetThuc().isBefore(now)) {
-                model.addAttribute("error", "Mã giảm giá đã hết hạn!");
-                return checkoutPage(session, model, principal);
-            }
-
-            donHang.setGiamGia(giamGia);
-        }
-
-        // ================== TẠO CHI TIẾT ĐƠN HÀNG ==================
-        List<ChiTietDonHang> chiTietDonHangs = new ArrayList<>();
+        List<ChiTietDonHang> chiTietList = new ArrayList<>();
         double tongTien = 0;
 
         for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             MonAn monAn = monAnService.getById(entry.getKey());
-            int soLuong = entry.getValue();
 
             ChiTietDonHang ct = ChiTietDonHang.builder()
                     .donHang(donHang)
                     .monAn(monAn)
-                    .soLuong(soLuong)
+                    .soLuong(entry.getValue())
                     .build();
 
-            chiTietDonHangs.add(ct);
-            tongTien += monAn.getGia() * soLuong;
+            chiTietList.add(ct);
+            tongTien += monAn.getGia() * entry.getValue();
         }
 
-        donHang.setChiTietDonHangs(chiTietDonHangs);
+        donHang.setChiTietDonHangs(chiTietList);
 
-        // ================== TÍNH TIỀN SAU GIẢM GIÁ ==================
-        if (giamGia != null) {
-            if (giamGia.isLaPhanTram()) {
-                tongTien -= tongTien * giamGia.getGiaTri() / 100;
-            } else {
-                tongTien -= giamGia.getGiaTri();
-            }
-            if (tongTien < 0) tongTien = 0;
-        }
-
-        // ================== TẠO THANH TOÁN ==================
         ThanhToan thanhToan = ThanhToan.builder()
                 .donHang(donHang)
                 .soTien(tongTien)
                 .phuongThuc(phuongThuc)
                 .ngayThanhToan(LocalDateTime.now())
-                .trangThai(
-                        phuongThuc.equalsIgnoreCase("COD")
-                                ? "CHUA_THANH_TOAN"
-                                : "CHUA_THANH_TOAN" // Online chưa thanh toán thực tế
-                )
+                .trangThai("CHUA_THANH_TOAN")
                 .build();
 
         donHang.setThanhToan(thanhToan);
-
-        // ================== LƯU ==================
         donHangRepository.save(donHang);
 
-        // ================== CLEAR CART ==================
         session.removeAttribute("CART");
 
-        // ================== CHUYỂN HƯỚNG THEO PHƯƠNG THỨC ==================
-        if (phuongThuc.equalsIgnoreCase("ONLINE")) {
+        if ("ONLINE".equalsIgnoreCase(phuongThuc)) {
             return "redirect:/payment-online/" + donHang.getId();
-        } else {
-            return "redirect:/checkout/success";
         }
+
+        return "redirect:/checkout/success";
     }
 
-    // ================== TRANG THÀNH CÔNG ==================
-    // ================== TRANG THÀNH CÔNG ==================
+    /* ================== THÀNH CÔNG ================== */
     @GetMapping("/success")
-    public String successPage(HttpSession session,
-                              Model model,
-                              Principal principal) {
-
-        if (principal != null) {
-            NguoiDung nguoiDung = nguoiDungRepository
-                    .findByEmail(principal.getName())
-                    .orElse(null);
-            model.addAttribute("nguoiDung", nguoiDung);
-        }
-
+    public String success(
+            Model model,
+            Principal principal,
+            HttpSession session
+    ) {
+        addLoggedUser(model, principal);
+        addCartCount(model, session);
         return "user/checkout/success";
     }
-
 }

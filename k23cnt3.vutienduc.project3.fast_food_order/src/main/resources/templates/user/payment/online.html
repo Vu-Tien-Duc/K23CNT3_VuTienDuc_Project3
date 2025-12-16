@@ -7,20 +7,163 @@
             customScripts=~{::customScripts}
       )}">
 
+<!-- ================= CONTENT ================= -->
 <th:block th:fragment="content">
-    <div class="container py-5 text-center">
-        <h3 class="mb-4"><i class="bi bi-qr-code-scan"></i> Thanh toán Online</h3>
-        <p>Quét mã QR dưới đây để thanh toán cho đơn hàng #<strong th:text="${donHang.id}"></strong></p>
-        <img th:src="${qrCodeUrl}" alt="QR Code Thanh Toán" class="img-thumbnail mb-3"/>
-        <p>Quét QR để điền thông tin chuyển khoản tự động. Sau đó bấm "Đã thanh toán" nếu đã thanh toán.</p>
+    <div class="container py-5">
+        <div class="online-payment-wrapper">
 
-        <form th:action="@{/payment-online/{donHangId}/success(donHangId=${donHang.id})}" method="post">
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-check-circle-fill"></i> Đã thanh toán
-            </button>
-        </form>
+            <!-- HEADER -->
+            <div class="payment-header text-center">
+                <div class="payment-icon">
+                    <i class="bi bi-qr-code-scan"></i>
+                </div>
+                <h3>Thanh toán Online</h3>
+                <p>
+                    Đơn hàng #
+                    <strong th:text="${donHang.id}"></strong>
+                </p>
+            </div>
+
+            <!-- QR CARD -->
+            <div class="qr-card">
+                <p class="qr-instruction">
+                    Quét mã QR bên dưới để chuyển khoản tự động.
+                    Sau khi thanh toán thành công, vui lòng nhấn <strong>“Đã thanh toán”</strong>.
+                </p>
+
+                <img th:src="${qrCodeUrl}"
+                     alt="QR Code Thanh Toán"
+                     class="qr-image"/>
+
+                <div class="qr-note">
+                    <i class="bi bi-info-circle"></i>
+                    Hệ thống sẽ xử lý đơn hàng ngay sau khi xác nhận thanh toán.
+                </div>
+            </div>
+
+            <!-- CONFIRM BUTTON -->
+            <form th:action="@{/payment-online/{donHangId}/success(donHangId=${donHang.id})}" method="post">
+                <button type="submit" class="btn-confirm-payment">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Đã thanh toán</span>
+                </button>
+            </form>
+
+        </div>
     </div>
 </th:block>
-<th:block th:fragment="customStyles"></th:block>
-<th:block th:fragment="customScripts"></th:block>
+
+<!-- ================= STYLES ================= -->
+<th:block th:fragment="customStyles">
+    <style>
+        .online-payment-wrapper {
+            max-width: 520px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        .payment-header {
+            margin-bottom: 24px;
+        }
+
+        .payment-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 28px;
+        }
+
+        .payment-header h3 {
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .payment-header p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* QR CARD */
+        .qr-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .qr-instruction {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 16px;
+        }
+
+        .qr-image {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+
+        .qr-note {
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* CONFIRM BUTTON */
+        .confirm-form {
+            text-align: center;
+        }
+
+        .btn-confirm-payment {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-confirm-payment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.35);
+        }
+
+        /* MOBILE */
+        @media (max-width: 576px) {
+            .qr-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</th:block>
+
+<!-- ================= SCRIPTS ================= -->
+<th:block th:fragment="customScripts">
+    <script>
+        // Có thể thêm loading / disable button nếu cần
+    </script>
+</th:block>
+
 </html>

@@ -8,31 +8,154 @@
 
 <th:block th:fragment="styles">
     <style>
-        .food-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            border-radius: 12px;
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(165deg, #FF6B35 0%, #FF8C42 50%, #FFA351 100%);
+            padding: 80px 0 120px;
+            position: relative;
             overflow: hidden;
+            margin-bottom: -60px;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+            background-size: cover;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulse-circle 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-circle {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.3rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search Section */
+        .search-section {
+            position: relative;
+            z-index: 2;
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-bottom: 60px;
+        }
+
+        .search-input {
+            border-radius: 50px;
+            padding: 16px 28px;
+            border: 2px solid #f0f0f0;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+            outline: none;
+        }
+
+        .category-select {
+            border-radius: 50px;
+            padding: 16px 28px;
+            border: 2px solid #f0f0f0;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .category-select:focus {
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+            outline: none;
+        }
+
+        .search-btn {
+            border-radius: 50px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Food Cards */
+        .food-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .food-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
-        }
-
-        .food-card img {
-            transition: transform 0.3s ease;
-        }
-
-        .food-card:hover img {
-            transform: scale(1.1);
+            transform: translateY(-12px);
+            box-shadow: 0 20px 45px rgba(255, 107, 53, 0.2);
+            border-color: #FF6B35;
         }
 
         .card-img-wrapper {
-            overflow: hidden;
-            height: 220px;
             position: relative;
+            overflow: hidden;
+            height: 280px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .food-card:hover .card-img-wrapper img {
+            transform: scale(1.15) rotate(2deg);
         }
 
         .card-img-wrapper::after {
@@ -42,149 +165,285 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 100%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
         }
 
         .food-card:hover .card-img-wrapper::after {
             opacity: 1;
         }
 
-        .price-tag {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: inline-block;
-        }
-
         .category-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255,255,255,0.95);
-            padding: 6px 14px;
-            border-radius: 20px;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             z-index: 1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
         }
 
-        .search-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 0;
-            border-radius: 16px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        .card-body {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .search-input {
-            border-radius: 50px;
-            padding: 14px 24px;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .card-title {
+            color: #2C3E50;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
 
-        .search-input:focus {
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        .food-card:hover .card-title {
+            color: #FF6B35;
         }
 
-        .category-select {
-            border-radius: 50px;
-            padding: 14px 24px;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
+        .price-tag {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
+            font-size: 1.2rem;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
         }
 
-        .page-subtitle {
-            color: #6c757d;
-            font-size: 1.1rem;
+        .card-text {
+            color: #7F8C8D;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 15px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 3em;
         }
 
-        .suggestion-section {
-            background: #f8f9fa;
-            padding: 40px 0;
-            border-radius: 16px;
-            margin-top: 60px;
-        }
-
-        .suggestion-card {
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            border-radius: 12px;
-            border: none;
-        }
-
-        .suggestion-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        }
-
-        .pagination .page-link {
-            border-radius: 8px;
-            margin: 0 4px;
-            padding: 10px 16px;
-            border: none;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-        }
-
-        .pagination .page-link:hover {
-            background: #f0f0f0;
-            color: #667eea;
-        }
-
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
         .empty-state img {
-            max-width: 200px;
-            opacity: 0.6;
+            max-width: 250px;
+            opacity: 0.5;
+            filter: grayscale(20%);
         }
+
+        .empty-state h3 {
+            color: #2C3E50;
+            margin-top: 30px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            gap: 8px;
+        }
+
+        .pagination .page-link {
+            border-radius: 12px;
+            padding: 12px 20px;
+            border: 2px solid #f0f0f0;
+            color: #2C3E50;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .pagination .page-link:hover:not(.active) {
+            background: #FFF5E1;
+            border-color: #FF6B35;
+            color: #FF6B35;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Suggestion Section */
+        .suggestion-section {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            padding: 80px 0;
+            border-radius: 30px;
+            margin-top: 80px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        .suggestion-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .suggestion-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #FF8C42);
+            border-radius: 2px;
+        }
+
+        .suggestion-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            height: 100%;
+            border: 2px solid transparent;
+        }
+
+        .suggestion-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.2);
+            border-color: #FF6B35;
+        }
+
+        .suggestion-card img {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .suggestion-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .suggestion-card .card-body {
+            padding: 15px;
+        }
+
+        .suggestion-card .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion-card .price {
+            color: #FF6B35;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 60px 0 100px;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .search-section {
+                padding: 25px;
+            }
+
+            .card-img-wrapper {
+                height: 200px;
+            }
+
+            .suggestion-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .food-card {
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .food-card:nth-child(1) { animation-delay: 0.1s; }
+        .food-card:nth-child(2) { animation-delay: 0.2s; }
+        .food-card:nth-child(3) { animation-delay: 0.3s; }
+        .food-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </th:block>
 
 <th:block th:fragment="content">
-    <main class="container py-5">
-
-        <!-- TIÊU ĐỀ -->
-        <div class="text-center mb-5">
-            <h1 class="page-title">Thực đơn đa dạng</h1>
-            <p class="page-subtitle">Khám phá hương vị tuyệt vời từ các món ăn nhanh</p>
+    <main>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="container">
+                <div class="text-center">
+                    <h1 class="page-title">Thực đơn đa dạng</h1>
+                    <p class="page-subtitle">Khám phá hương vị tuyệt vời từ các món ăn nhanh</p>
+                </div>
+            </div>
         </div>
 
-        <!-- FORM TÌM KIẾM + THỂ LOẠI -->
-        <div class="search-section">
-            <div class="container">
-                <form method="get" class="row g-3">
-                    <div class="col-md-6">
+        <div class="container">
+            <!-- Search Section -->
+            <div class="search-section">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-lg-5 col-md-12">
                         <input type="text" name="search" class="form-control search-input"
                                placeholder="🔍 Tìm kiếm món ăn yêu thích..." th:value="${search}">
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-lg-5 col-md-12">
                         <select name="theLoaiId" class="form-select category-select" onchange="this.form.submit()">
                             <option value="" th:selected="${theLoaiId == null}">🍽️ Tất cả thể loại</option>
                             <option th:each="tl : ${dsTheLoai}" th:value="${tl.id}" th:text="${tl.tenTheLoai}"
@@ -192,118 +451,123 @@
                             </option>
                         </select>
                     </div>
+
+                    <div class="col-lg-2 col-md-12">
+                        <button type="submit" class="btn search-btn w-100">
+                            <i class="bi bi-search"></i> Tìm kiếm
+                        </button>
+                    </div>
                 </form>
             </div>
-        </div>
 
-        <!-- DANH SÁCH MÓN ĂN -->
-        <div class="row g-4" th:if="${pageData.content != null and !pageData.content.isEmpty()}">
-            <div class="col-lg-3 col-md-4 col-sm-6" th:each="m : ${pageData.content}">
-                <a th:href="@{|/mon-an/${m.id}|}" class="text-decoration-none">
-                    <div class="card food-card h-100 shadow">
-
-                        <!-- HÌNH ẢNH -->
-                        <div class="card-img-wrapper">
-                            <img th:src="${(m.hinhAnh != null and !m.hinhAnh.isEmpty())
-                                    ? m.hinhAnh.get(0)
-                                    : 'https://img.icons8.com/?size=512&id=111517&format=png'}"
-                                 class="card-img-top" alt="image"
-                                 style="height: 100%; width: 100%; object-fit: cover;">
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold mb-3" th:text="${m.ten}"
-                                style="color: #2c3e50; font-size: 1.1rem;"></h5>
-
-                            <div class="mb-2">
-                                <span class="price-tag"
-                                      th:text="${#numbers.formatDecimal(m.gia,0,'COMMA',0,'POINT')} + ' đ'"></span>
+            <!-- Food List -->
+            <div class="row g-4 mb-5" th:if="${pageData.content != null and !pageData.content.isEmpty()}">
+                <div class="col-lg-3 col-md-4 col-sm-6" th:each="m : ${pageData.content}">
+                    <a th:href="@{|/mon-an/${m.id}|}" class="text-decoration-none">
+                        <div class="card food-card">
+                            <!-- Image -->
+                            <div class="card-img-wrapper">
+                                <img th:src="${(m.hinhAnh != null and !m.hinhAnh.isEmpty())
+                                        ? m.hinhAnh.get(0)
+                                        : 'https://img.icons8.com/?size=512&id=111517&format=png'}"
+                                     alt="image">
+                                <span class="category-badge">🔥 Hot</span>
                             </div>
 
-                            <p class="card-text text-muted mt-2"
-                               style="font-size: 0.9rem; line-height: 1.5;"
-                               th:text="${#strings.abbreviate(m.moTa, 80)}"></p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${m.ten}">Tên món ăn</h5>
 
-        <!-- TRẠNG THÁI TRỐNG -->
-        <div class="empty-state" th:if="${pageData.content == null or pageData.content.isEmpty()}">
-            <img src="https://img.icons8.com/?size=200&id=59806&format=png" alt="Không có kết quả">
-            <h3 class="mt-4 text-muted">Không tìm thấy món ăn phù hợp</h3>
-            <p class="text-muted">Hãy thử tìm kiếm với từ khóa khác hoặc chọn thể loại khác</p>
-        </div>
-
-        <!-- PHÂN TRANG -->
-        <nav class="mt-5" th:if="${pageData.totalPages > 1}">
-            <ul class="pagination justify-content-center">
-
-                <!-- Previous -->
-                <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{|/mon-an?page=${pageData.number - 1}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
-                        ‹ Trước
-                    </a>
-                </li>
-
-                <!-- Page Numbers -->
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}"
-                    th:classappend="${i == pageData.number} ? 'active'">
-                    <a class="page-link"
-                       th:text="${i + 1}"
-                       th:href="@{|/mon-an?page=${i}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
-                    </a>
-                </li>
-
-                <!-- Next -->
-                <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{|/mon-an?page=${pageData.number + 1}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
-                        Sau ›
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
-
-        <!-- DANH SÁCH GỢI Ý -->
-        <section class="suggestion-section" th:if="${monAnList != null and !monAnList.isEmpty()}">
-            <div class="container">
-                <h3 class="fw-bold mb-4 text-center">🔥 Gợi ý dành cho bạn</h3>
-
-                <div class="row g-3">
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:each="m : ${monAnList}">
-                        <a th:href="@{|/mon-an/${m.id}|}" class="text-decoration-none">
-                            <div class="card shadow-sm h-100 suggestion-card">
-
-                                <!-- ẢNH ĐẠI DIỆN (lấy ảnh đầu tiên) -->
-                                <img th:src="${(m.hinhAnh != null and !m.hinhAnh.isEmpty())
-                            ? m.hinhAnh.get(0)
-                            : '/images/no-image.png'}"
-                                     class="card-img-top"
-                                     alt="Ảnh món ăn"
-                                     style="height: 140px; object-fit: cover;">
-
-                                <!-- THÔNG TIN -->
-                                <div class="card-body p-2">
-                                    <p class="small fw-bold mb-1 text-dark"
-                                       th:text="${#strings.abbreviate(m.ten, 25)}"></p>
-
-                                    <p class="text-danger small fw-bold mb-0"
-                                       th:text="${#numbers.formatDecimal(m.gia,0,'POINT',0,'COMMA') + ' VNĐ'}"></p>
+                                <div class="mb-2">
+                                    <span class="price-tag"
+                                          th:text="${#numbers.formatDecimal(m.gia,0,'COMMA',0,'POINT')} + '₫'">
+                                        50.000₫
+                                    </span>
                                 </div>
 
+                                <p class="card-text" th:text="${m.moTa}">
+                                    Mô tả món ăn ngắn gọn
+                                </p>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
             </div>
-        </section>
 
+            <!-- Empty State -->
+            <div class="empty-state" th:if="${pageData.content == null or pageData.content.isEmpty()}">
+                <img src="https://img.icons8.com/?size=200&id=59806&format=png" alt="Không có kết quả">
+                <h3 class="mt-4">Không tìm thấy món ăn phù hợp</h3>
+                <p>Hãy thử tìm kiếm với từ khóa khác hoặc chọn thể loại khác</p>
+            </div>
 
+            <!-- Pagination -->
+            <nav class="mt-5" th:if="${pageData.totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{|/mon-an?page=${pageData.number - 1}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
+                            <i class="bi bi-chevron-left"></i> Trước
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}"
+                        th:classappend="${i == pageData.number} ? 'active'">
+                        <a class="page-link"
+                           th:text="${i + 1}"
+                           th:href="@{|/mon-an?page=${i}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
+                        </a>
+                    </li>
+
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{|/mon-an?page=${pageData.number + 1}&size=${pageData.size}&search=${search ?: ''}&theLoaiId=${theLoaiId ?: ''}|}">
+                            Sau <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Suggestion Section -->
+            <section class="suggestion-section" th:if="${monAnList != null and !monAnList.isEmpty()}">
+                <div class="container">
+                    <h3 class="suggestion-title">
+                        <i class="bi bi-fire" style="color: #FF6B35;"></i> Gợi ý dành cho bạn
+                    </h3>
+
+                    <div class="row g-4">
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:each="m : ${monAnList}">
+                            <a th:href="@{|/mon-an/${m.id}|}" class="text-decoration-none">
+                                <div class="card suggestion-card">
+                                    <div style="overflow: hidden;">
+                                        <img th:src="${(m.hinhAnh != null and !m.hinhAnh.isEmpty())
+                                                    ? m.hinhAnh.get(0)
+                                                    : '/images/no-image.png'}"
+                                             class="card-img-top"
+                                             alt="Ảnh món ăn">
+                                    </div>
+
+                                    <div class="card-body">
+                                        <p class="card-title mb-1"
+                                           th:text="${m.ten}">
+                                            Tên món
+                                        </p>
+
+                                        <p class="price mb-0"
+                                           th:text="${#numbers.formatDecimal(m.gia,0,'COMMA',0,'POINT') + '₫'}">
+                                            50.000₫
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 </th:block>
 
@@ -313,10 +577,23 @@
         document.addEventListener('DOMContentLoaded', function() {
             const paginationLinks = document.querySelectorAll('.pagination .page-link');
             paginationLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                link.addEventListener('click', function(e) {
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
                 });
             });
+
+            // Add loading animation for search
+            const searchForm = document.querySelector('form');
+            const searchBtn = document.querySelector('.search-btn');
+
+            if (searchForm && searchBtn) {
+                searchForm.addEventListener('submit', function() {
+                    searchBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang tìm...';
+                    searchBtn.disabled = true;
+                });
+            }
         });
     </script>
 </th:block>
