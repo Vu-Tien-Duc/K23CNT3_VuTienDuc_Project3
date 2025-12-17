@@ -636,10 +636,20 @@
                                class="btn-elegant btn-primary-elegant">
                                 Thêm vào giỏ
                             </a>
-                            <a th:href="${loggedUser == null ? '/login' : '/cart/buy-now/' + monAn.id}"
-                               class="btn-elegant btn-secondary-elegant">
-                                Đặt hàng ngay
-                            </a>
+
+                            <!-- MUA NGAY -->
+                            <form th:action="${loggedUser == null ? '/login' : '/checkout/buy-now'}"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <input type="hidden" name="monAnId" th:value="${monAn.id}">
+                                <input type="hidden" name="soLuong" value="1">
+
+                                <button type="submit"
+                                        class="btn-elegant btn-secondary-elegant">
+                                    Đặt hàng ngay
+                                </button>
+                            </form>
                             <a href="/mon-an" class="btn-elegant btn-outline-elegant">
                                 Quay lại
                             </a>

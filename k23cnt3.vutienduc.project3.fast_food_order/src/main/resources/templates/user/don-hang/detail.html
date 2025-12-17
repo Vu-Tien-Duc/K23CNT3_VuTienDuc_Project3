@@ -9,16 +9,14 @@
 
 <!-- ================== CONTENT ================== -->
 <th:block th:fragment="content">
-    <div class="order-detail-container">
+    <div class="order-detail-wrapper">
         <div class="container py-5">
 
             <!-- BACK BUTTON -->
             <div class="back-section">
                 <a th:href="@{/orders}" class="btn-back">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Quay lại
+                    <i class="bi bi-arrow-left"></i>
+                    Quay lại danh sách
                 </a>
             </div>
 
@@ -27,99 +25,98 @@
 
                 <!-- HEADER -->
                 <div class="detail-header">
-                    <div class="header-content">
-                        <h2 class="order-title">
-                            <span class="title-icon">📦</span>
-                            Đơn hàng #<span th:text="${donHang.id}"></span>
-                        </h2>
-                        <p class="order-date">
-                            Đặt lúc: <strong th:text="${#temporals.format(donHang.ngayDat,'dd/MM/yyyy HH:mm')}"></strong>
-                        </p>
+                    <div class="header-left">
+                        <div class="order-number">
+                            <i class="bi bi-box-seam"></i>
+                            <div>
+                                <h2>Đơn hàng #<span th:text="${donHang.id}"></span></h2>
+                                <p class="order-date">
+                                    <i class="bi bi-clock"></i>
+                                    <span th:text="${#temporals.format(donHang.ngayDat,'dd/MM/yyyy HH:mm')}"></span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- STATUS -->
-                    <div class="status-section">
-                        <span class="status-badge-large status-waiting"
+                    <div class="header-right">
+                        <span class="status-badge status-waiting"
                               th:if="${donHang.trangThai.name() == 'CHO_XU_LY'}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
+                            <i class="bi bi-clock-history"></i>
                             Chờ xử lý
                         </span>
-                        <span class="status-badge-large status-handling"
+                        <span class="status-badge status-handling"
                               th:if="${donHang.trangThai.name() == 'DANG_XU_LY'}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M13 16V6C13 5.44772 12.5523 5 12 5H4C3.44772 5 3 5.44772 3 6V16C3 16.5523 3.44772 17 4 17H12C12.5523 17 13 16.5523 13 16Z" stroke="currentColor" stroke-width="2"/>
-                                <path d="M13 11H17L21 15V16C21 16.5523 20.5523 17 20 17H13" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="6" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="18" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
-                            </svg>
+                            <i class="bi bi-gear-fill"></i>
                             Đang xử lý
                         </span>
-                        <span class="status-badge-large status-processing"
+                        <span class="status-badge status-processing"
                               th:if="${donHang.trangThai.name() == 'DANG_GIAO'}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M13 16V6C13 5.44772 12.5523 5 12 5H4C3.44772 5 3 5.44772 3 6V16C3 16.5523 3.44772 17 4 17H12C12.5523 17 13 16.5523 13 16Z" stroke="currentColor" stroke-width="2"/>
-                                <path d="M13 11H17L21 15V16C21 16.5523 20.5523 17 20 17H13" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="6" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="18" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
-                            </svg>
+                            <i class="bi bi-truck"></i>
                             Đang giao hàng
                         </span>
-                        <span class="status-badge-large status-completed"
+                        <span class="status-badge status-completed"
                               th:if="${donHang.trangThai.name() == 'DA_GIAO'}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Đã giao thành công
+                            <i class="bi bi-check-circle-fill"></i>
+                            Đã giao
                         </span>
-                        <span class="status-badge-large status-cancelled"
+                        <span class="status-badge status-cancelled"
                               th:if="${donHang.trangThai.name() == 'DA_HUY'}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
+                            <i class="bi bi-x-circle-fill"></i>
                             Đã hủy
                         </span>
                     </div>
                 </div>
 
                 <!-- INFO GRID -->
-                <div class="info-grid">
-                    <div class="info-box">
-                        <div class="info-icon">📱</div>
-                        <div class="info-content">
-                            <span class="info-label">Số điện thoại</span>
-                            <span class="info-value" th:text="${donHang.sdt != null ? donHang.sdt : 'Chưa cập nhật'}"></span>
-                        </div>
-                    </div>
+                <div class="info-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Thông tin đơn hàng
+                    </h5>
 
-                    <div class="info-box">
-                        <div class="info-icon">📍</div>
-                        <div class="info-content">
-                            <span class="info-label">Địa chỉ giao hàng</span>
-                            <span class="info-value" th:text="${donHang.diaChiGiao != null ? donHang.diaChiGiao : 'Chưa cập nhật'}"></span>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="bi bi-telephone-fill"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Số điện thoại</span>
+                                <span class="info-value" th:text="${donHang.sdt != null ? donHang.sdt : 'Chưa cập nhật'}"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="info-box">
-                        <div class="info-icon">💳</div>
-                        <div class="info-content">
-                            <span class="info-label">Trạng thái thanh toán</span>
-                            <span class="info-value payment-status"
-                                  th:classappend="${donHang.thanhToan != null && donHang.thanhToan.trangThai == 'DA_THANH_TOAN' ? 'paid' : 'unpaid'}"
-                                  th:text="${donHang.thanhToan != null && donHang.thanhToan.trangThai == 'DA_THANH_TOAN' ? 'Đã thanh toán' : 'Chưa thanh toán'}">
-                            </span>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Địa chỉ giao hàng</span>
+                                <span class="info-value" th:text="${donHang.diaChiGiao != null ? donHang.diaChiGiao : 'Chưa cập nhật'}"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="info-box">
-                        <div class="info-icon">🏦</div>
-                        <div class="info-content">
-                            <span class="info-label">Phương thức</span>
-                            <span class="info-value" th:text="${donHang.thanhToan != null ? donHang.thanhToan.phuongThuc : 'COD'}"></span>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="bi bi-credit-card-fill"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Thanh toán</span>
+                                <span class="info-value payment-status"
+                                      th:classappend="${donHang.thanhToan != null && donHang.thanhToan.trangThai == 'DA_THANH_TOAN' ? 'paid' : 'unpaid'}"
+                                      th:text="${donHang.thanhToan != null && donHang.thanhToan.trangThai == 'DA_THANH_TOAN' ? '✓ Đã thanh toán' : '✗ Chưa thanh toán'}">
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Phương thức</span>
+                                <span class="info-value" th:text="${donHang.thanhToan != null ? donHang.thanhToan.phuongThuc : 'COD'}"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,42 +124,31 @@
                 <!-- ORDER ITEMS -->
                 <div class="items-section">
                     <h5 class="section-title">
-                        <span class="section-icon">🍔</span>
-                        Món ăn trong đơn
+                        <i class="bi bi-basket-fill"></i>
+                        Món ăn đã đặt
                     </h5>
 
-                    <div class="items-table-wrapper">
-                        <table class="items-table">
-                            <thead>
-                            <tr>
-                                <th>Món ăn</th>
-                                <th class="text-center">Số lượng</th>
-                                <th class="text-end">Đơn giá</th>
-                                <th class="text-end">Thành tiền</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="ct : ${donHang.chiTietDonHangs}">
-                                <td>
-                                    <div class="item-cell">
-                                        <img class="item-image"
-                                             th:src="${ct.monAn.hinhAnh != null && ct.monAn.hinhAnh.size() > 0 ? ct.monAn.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'}"
-                                             th:alt="${ct.monAn.ten}">
-                                        <span class="item-name" th:text="${ct.monAn.ten}"></span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="qty-badge" th:text="${ct.soLuong}"></span>
-                                </td>
-                                <td class="text-end item-price">
-                                    <span th:text="${#numbers.formatDecimal(ct.monAn.gia,0,'COMMA',0,'POINT')}"></span>₫
-                                </td>
-                                <td class="text-end item-total">
-                                    <span th:text="${#numbers.formatDecimal(ct.monAn.gia * ct.soLuong,0,'COMMA',0,'POINT')}"></span>₫
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="items-list">
+                        <div class="item-row" th:each="ct : ${donHang.chiTietDonHangs}">
+                            <div class="item-info">
+                                <img class="item-image"
+                                     th:src="${ct.monAn.hinhAnh != null && ct.monAn.hinhAnh.size() > 0 ? ct.monAn.hinhAnh[0] : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'}"
+                                     th:alt="${ct.monAn.ten}">
+                                <div class="item-details">
+                                    <h6 class="item-name" th:text="${ct.monAn.ten}"></h6>
+                                    <p class="item-price">
+                                        <span th:text="${#numbers.formatDecimal(ct.monAn.gia,0,'COMMA',0,'POINT')}"></span>₫
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="item-quantity">
+                                <span class="qty-label">Số lượng:</span>
+                                <span class="qty-value" th:text="${ct.soLuong}"></span>
+                            </div>
+                            <div class="item-total">
+                                <span th:text="${#numbers.formatDecimal(ct.monAn.gia * ct.soLuong,0,'COMMA',0,'POINT')}"></span>₫
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -176,31 +162,31 @@
                     </div>
                     <div class="total-row">
                         <span class="total-label">Phí vận chuyển</span>
-                        <span class="total-value text-success">Miễn phí</span>
+                        <span class="total-value shipping-free">
+                            <i class="bi bi-gift-fill"></i> Miễn phí
+                        </span>
                     </div>
                     <div class="divider"></div>
                     <div class="total-row grand">
-                        <span class="total-label">Tổng thanh toán</span>
-                        <span class="total-value">
+                        <span class="grand-label">Tổng thanh toán</span>
+                        <span class="grand-value">
                             <span th:text="${donHang.thanhToan != null ? #numbers.formatDecimal(donHang.thanhToan.soTien,0,'COMMA',0,'POINT') : #numbers.formatDecimal(donHang.tongTien,0,'COMMA',0,'POINT')}"></span>₫
                         </span>
                     </div>
                 </div>
 
                 <!-- CANCEL BUTTON -->
-                <form th:if="${donHang.trangThai == T(k23cnt3.vutienduc.project3.fast_food_order.entity.TrangThaiDonHang).CHO_XU_LY}"
-                      th:action="@{/orders/{id}/cancel(id=${donHang.id})}"
-                      method="post"
-                      class="cancel-form"
-                      onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
-                    <button type="submit" class="btn-cancel-order">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                            <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Hủy đơn hàng
-                    </button>
-                </form>
+                <div class="action-section"
+                     th:if="${donHang.trangThai == T(k23cnt3.vutienduc.project3.fast_food_order.entity.TrangThaiDonHang).CHO_XU_LY}">
+                    <form th:action="@{/orders/{id}/cancel(id=${donHang.id})}"
+                          method="post"
+                          onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                        <button type="submit" class="btn-cancel">
+                            <i class="bi bi-x-circle"></i>
+                            Hủy đơn hàng
+                        </button>
+                    </form>
+                </div>
 
             </div>
 
@@ -211,379 +197,59 @@
 <!-- ================== STYLES ================== -->
 <th:block th:fragment="customStyles">
     <style>
-        :root {
-            --primary-color: #ff6b35;
-            --primary-dark: #e55a2b;
-            --secondary-color: #ffa500;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --text-dark: #2d3436;
-            --text-light: #636e72;
-            --bg-light: #f8f9fa;
-            --border-color: #e9ecef;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-        }
-
-        .order-detail-container {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+        .order-detail-wrapper {
+            background: linear-gradient(135deg, #fff5eb 0%, #ffffff 50%, #fff5eb 100%);
             min-height: 100vh;
-            padding-bottom: 60px;
+            padding: 2rem 0;
         }
 
         /* ========== BACK BUTTON ========== */
         .back-section {
-            margin-bottom: 24px;
-            animation: fadeInDown 0.6s ease;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease;
         }
 
         .btn-back {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
             background: white;
-            color: var(--text-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 50px;
+            color: #1f2937;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .btn-back:hover {
-            background: var(--primary-color);
+            background: #f59e0b;
             color: white;
-            border-color: var(--primary-color);
+            border-color: #f59e0b;
             transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-back i {
+            font-size: 1.2rem;
         }
 
         /* ========== DETAIL CARD ========== */
         .detail-card {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
             border-radius: 24px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             overflow: hidden;
-            animation: slideUp 0.8s ease;
+            animation: slideUp 0.6s ease;
         }
 
-        /* ========== HEADER ========== */
-        .detail-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 32px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .order-title {
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0 0 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .title-icon {
-            font-size: 2.5rem;
-        }
-
-        .order-date {
-            margin: 0;
-            font-size: 1.05rem;
-            opacity: 0.95;
-        }
-
-        /* ========== STATUS BADGE ========== */
-        .status-badge-large {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            background: white;
-            border: 3px solid;
-        }
-
-        .status-badge-large.status-waiting {
-            color: #856404;
-            border-color: #ffc107;
-        }
-
-
-        .status-badge-large.status-handling {
-            background: #ffe5d0;
-            color: #a84300;
-            border: 2px solid #fd7e14; /* cam bootstrap */
-        }
-
-        .status-badge-large.status-processing {
-            color: #084298;
-            border-color: #0d6efd;
-        }
-
-        .status-badge-large.status-completed {
-            color: #0f5132;
-            border-color: #198754;
-        }
-
-        .status-badge-large.status-cancelled {
-            color: #842029;
-            border-color: #dc3545;
-        }
-
-        /* ========== INFO GRID ========== */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 32px 40px;
-        }
-
-        .info-box {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 20px;
-            background: linear-gradient(135deg, #fff9f0, #ffffff);
-            border-radius: 16px;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .info-box:hover {
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-sm);
-            transform: translateY(-2px);
-        }
-
-        .info-icon {
-            font-size: 2rem;
-            flex-shrink: 0;
-        }
-
-        .info-content {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .info-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            word-break: break-word;
-        }
-
-        .info-value.payment-status.paid {
-            color: var(--success-color);
-        }
-
-        .info-value.payment-status.unpaid {
-            color: var(--danger-color);
-        }
-
-        /* ========== ITEMS SECTION ========== */
-        .items-section {
-            padding: 0 40px 32px;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 24px;
-        }
-
-        .section-icon {
-            font-size: 1.8rem;
-        }
-
-        .items-table-wrapper {
-            overflow-x: auto;
-            border-radius: 16px;
-            border: 2px solid var(--border-color);
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .items-table thead {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        }
-
-        .items-table th {
-            padding: 16px;
-            color: white;
-            font-weight: 700;
-            font-size: 0.95rem;
-            text-align: left;
-        }
-
-        .items-table td {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .items-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .items-table tbody tr:hover {
-            background: var(--bg-light);
-        }
-
-        .item-cell {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .item-image {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid var(--border-color);
-        }
-
-        .item-name {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 1rem;
-        }
-
-        .qty-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-
-        .item-price,
-        .item-total {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .item-total {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.05rem;
-        }
-
-        /* ========== TOTAL SECTION ========== */
-        .total-section {
-            padding: 32px 40px;
-            background: linear-gradient(135deg, #fff9f0, #ffffff);
-            border-top: 3px solid var(--border-color);
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            font-size: 1.05rem;
-        }
-
-        .total-label {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .total-value {
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .divider {
-            height: 2px;
-            background: var(--border-color);
-            margin: 16px 0;
-        }
-
-        .total-row.grand {
-            padding: 20px;
-            background: white;
-            border-radius: 16px;
-            border: 3px solid var(--primary-color);
-            margin-top: 16px;
-        }
-
-        .total-row.grand .total-label {
-            font-size: 1.3rem;
-        }
-
-        .total-row.grand .total-value {
-            font-size: 1.8rem;
-            color: var(--primary-color);
-        }
-
-        /* ========== CANCEL BUTTON ========== */
-        .cancel-form {
-            padding: 0 40px 32px;
-            text-align: center;
-        }
-
-        .btn-cancel-order {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
-            background: white;
-            color: var(--danger-color);
-            border: 2px solid var(--danger-color);
-            border-radius: 50px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-cancel-order:hover {
-            background: var(--danger-color);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
-        }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes slideUp {
@@ -597,82 +263,484 @@
             }
         }
 
+        /* ========== HEADER ========== */
+        .detail-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            padding: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .order-number {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            color: white;
+        }
+
+        .order-number > i {
+            font-size: 3.5rem;
+            opacity: 0.95;
+        }
+
+        .order-number h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            color: white;
+        }
+
+        .order-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.95);
+            font-weight: 500;
+        }
+
+        .order-date i {
+            font-size: 1.1rem;
+        }
+
+        /* ========== STATUS BADGE ========== */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.75rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: white;
+            border: 3px solid;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .status-badge i {
+            font-size: 1.4rem;
+        }
+
+        .status-badge.status-waiting {
+            color: #92400e;
+            border-color: #fbbf24;
+            background: #fef3c7;
+        }
+
+        .status-badge.status-handling {
+            color: #9a3412;
+            border-color: #fb923c;
+            background: #ffedd5;
+        }
+
+        .status-badge.status-processing {
+            color: #1e3a8a;
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .status-badge.status-completed {
+            color: #14532d;
+            border-color: #22c55e;
+            background: #dcfce7;
+        }
+
+        .status-badge.status-cancelled {
+            color: #991b1b;
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* ========== INFO SECTION ========== */
+        .info-section {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+            border-bottom: 3px solid #fef3c7;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .section-title i {
+            font-size: 1.75rem;
+            color: #f59e0b;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .info-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 2px solid #f3f4f6;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-icon i {
+            font-size: 1.5rem;
+            color: #f59e0b;
+        }
+
+        .info-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1f2937;
+            word-break: break-word;
+        }
+
+        .info-value.payment-status.paid {
+            color: #16a34a;
+        }
+
+        .info-value.payment-status.unpaid {
+            color: #dc2626;
+        }
+
+        /* ========== ITEMS SECTION ========== */
+        .items-section {
+            padding: 2.5rem;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+            border-radius: 16px;
+            border: 2px solid #fef3c7;
+            transition: all 0.3s ease;
+        }
+
+        .item-row:hover {
+            border-color: #fbbf24;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+            transform: translateX(5px);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 3px solid #fbbf24;
+            flex-shrink: 0;
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-price {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: white;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+        }
+
+        .qty-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .qty-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #f59e0b;
+        }
+
+        .item-total {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #f59e0b;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        /* ========== TOTAL SECTION ========== */
+        .total-section {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-top: 3px solid #fbbf24;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .total-label {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .total-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .shipping-free {
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .divider {
+            height: 2px;
+            background: #fbbf24;
+            margin: 1.25rem 0;
+        }
+
+        .total-row.grand {
+            padding: 1.75rem;
+            background: white;
+            border-radius: 16px;
+            border: 3px solid #f59e0b;
+            margin-top: 1rem;
+        }
+
+        .grand-label {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .grand-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #f59e0b;
+        }
+
+        /* ========== ACTION SECTION ========== */
+        .action-section {
+            padding: 2rem 2.5rem;
+            text-align: center;
+            background: white;
+        }
+
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: #dc2626;
+            border: 3px solid #dc2626;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #dc2626;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-cancel i {
+            font-size: 1.3rem;
+        }
+
         /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
+            .order-detail-wrapper {
+                padding: 1rem 0;
+            }
+
             .detail-header {
-                padding: 24px;
+                padding: 2rem 1.5rem;
                 flex-direction: column;
                 text-align: center;
             }
 
-            .order-title {
+            .order-number {
                 flex-direction: column;
-                font-size: 1.6rem;
+                text-align: center;
+            }
+
+            .order-number h2 {
+                font-size: 1.5rem;
+            }
+
+            .status-badge {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .info-section,
+            .items-section,
+            .total-section,
+            .action-section {
+                padding: 1.5rem;
             }
 
             .info-grid {
                 grid-template-columns: 1fr;
-                padding: 24px;
             }
 
-            .items-section,
-            .total-section,
-            .cancel-form {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-
-            .section-title {
-                font-size: 1.2rem;
-            }
-
-            .items-table th,
-            .items-table td {
-                padding: 12px 8px;
-                font-size: 0.9rem;
-            }
-
-            .item-image {
-                width: 50px;
-                height: 50px;
-            }
-
-            .item-name {
-                font-size: 0.9rem;
-            }
-
-            .total-row.grand .total-label {
-                font-size: 1.1rem;
-            }
-
-            .total-row.grand .total-value {
-                font-size: 1.4rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .title-icon,
-            .section-icon {
-                font-size: 1.5rem;
-            }
-
-            .order-title {
-                font-size: 1.3rem;
-            }
-
-            .status-badge-large {
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-
-            .item-cell {
+            .item-row {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .items-table th:nth-child(3),
-            .items-table td:nth-child(3) {
-                display: none;
+            .item-info {
+                width: 100%;
+            }
+
+            .item-quantity,
+            .item-total {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .item-total {
+                text-align: left;
+                padding: 1rem;
+                background: white;
+                border-radius: 12px;
+                border: 2px solid #fbbf24;
+            }
+
+            .grand-label {
+                font-size: 1.2rem;
+            }
+
+            .grand-value {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .order-number > i {
+                font-size: 2.5rem;
+            }
+
+            .order-number h2 {
+                font-size: 1.3rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .item-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .item-name {
+                font-size: 1rem;
+            }
+
+            .btn-cancel {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -682,27 +750,27 @@
 <th:block th:fragment="customScripts">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Animate on load
-            const card = document.querySelector('.detail-card');
-            if (card) {
+            // Animate info cards
+            const infoCards = document.querySelectorAll('.info-card');
+            infoCards.forEach((card, index) => {
                 card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
+                card.style.transform = 'translateY(20px)';
                 setTimeout(() => {
-                    card.style.transition = 'all 0.8s ease';
+                    card.style.transition = 'all 0.5s ease';
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
-                }, 100);
-            }
+                }, 100 + (index * 100));
+            });
 
-            // Animate info boxes
-            const infoBoxes = document.querySelectorAll('.info-box');
-            infoBoxes.forEach((box, index) => {
-                box.style.opacity = '0';
-                box.style.transform = 'translateY(20px)';
+            // Animate item rows
+            const itemRows = document.querySelectorAll('.item-row');
+            itemRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-20px)';
                 setTimeout(() => {
-                    box.style.transition = 'all 0.5s ease';
-                    box.style.opacity = '1';
-                    box.style.transform = 'translateY(0)';
+                    row.style.transition = 'all 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateX(0)';
                 }, 200 + (index * 100));
             });
         });

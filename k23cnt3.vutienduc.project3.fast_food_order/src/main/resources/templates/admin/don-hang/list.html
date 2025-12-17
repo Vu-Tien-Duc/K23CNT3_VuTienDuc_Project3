@@ -16,7 +16,7 @@
                 color: #333;
             }
 
-            /* Card Container */
+            /* ========== CARD CONTAINER ========== */
             .card {
                 border-radius: 20px;
                 border: none;
@@ -29,7 +29,7 @@
                 padding: 2rem;
             }
 
-            /* Header Section */
+            /* ========== HEADER SECTION ========== */
             .page-header {
                 background: linear-gradient(135deg, #FF6B35, #F7931E);
                 padding: 1.5rem 2rem;
@@ -52,7 +52,7 @@
                 opacity: 0.95;
             }
 
-            /* Filter Section */
+            /* ========== FILTER SECTION ========== */
             .filter-section {
                 background: #FFF7ED;
                 padding: 1.5rem;
@@ -69,7 +69,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Form Controls */
+            /* ========== FORM CONTROLS ========== */
             .form-select {
                 border-radius: 12px !important;
                 padding: 12px 16px;
@@ -85,7 +85,7 @@
                 outline: none;
             }
 
-            /* Table Styling */
+            /* ========== TABLE STYLING ========== */
             .table-container {
                 border-radius: 12px;
                 overflow: hidden;
@@ -128,34 +128,54 @@
                 border-bottom: none;
             }
 
-            /* Status Badge */
-            .badge {
-                font-weight: 600;
-                padding: 0.5rem 1rem;
+            /* ========== STATUS BADGES ========== */
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 16px;
                 border-radius: 20px;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                white-space: nowrap;
             }
 
-            .badge.bg-warning {
-                background: linear-gradient(135deg, #FFC107, #FFB300) !important;
-                color: #000;
+            /* Chờ xác nhận (vàng) */
+            .status-waiting {
+                background: #fff3cd;
+                color: #856404;
+                border: 2px solid #ffc107;
             }
 
-            .badge.bg-success {
-                background: linear-gradient(135deg, #10B981, #059669) !important;
+            /* Đang xử lý (cam) */
+            .status-handling {
+                background: #ffe5d0;
+                color: #a84300;
+                border: 2px solid #fd7e14;
             }
 
-            .badge.bg-danger {
-                background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+            /* Đang giao (xanh dương) */
+            .status-processing {
+                background: #cfe2ff;
+                color: #084298;
+                border: 2px solid #0d6efd;
             }
 
-            .badge.bg-info {
-                background: linear-gradient(135deg, #3B82F6, #2563EB) !important;
+            /* Đã giao (xanh lá) */
+            .status-completed {
+                background: #d1e7dd;
+                color: #0f5132;
+                border: 2px solid #198754;
             }
 
-            /* Action Buttons */
+            /* Đã hủy (đỏ) */
+            .status-cancelled {
+                background: #f8d7da;
+                color: #842029;
+                border: 2px solid #dc3545;
+            }
+
+            /* ========== ACTION BUTTONS ========== */
             .btn {
                 border-radius: 10px !important;
                 font-weight: 600;
@@ -207,7 +227,7 @@
                 transform: translateY(-2px);
             }
 
-            /* Order ID Badge */
+            /* ========== ORDER ID BADGE ========== */
             .order-id {
                 background: linear-gradient(135deg, #FF6B35, #F7931E);
                 color: white;
@@ -218,7 +238,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Customer Info */
+            /* ========== CUSTOMER INFO ========== */
             .customer-name {
                 font-weight: 600;
                 color: #333;
@@ -232,7 +252,7 @@
                 font-size: 1.2rem;
             }
 
-            /* Date styling */
+            /* ========== DATE & CONTACT STYLING ========== */
             .date-text {
                 color: #6C757D;
                 font-size: 0.9rem;
@@ -242,12 +262,10 @@
                 content: "📅 ";
             }
 
-            /* Phone styling */
             .phone-text::before {
                 content: "📱 ";
             }
 
-            /* Address styling */
             .address-text {
                 max-width: 200px;
                 overflow: hidden;
@@ -259,7 +277,7 @@
                 content: "📍 ";
             }
 
-            /* Empty State */
+            /* ========== EMPTY STATE ========== */
             .empty-state {
                 text-align: center;
                 padding: 3rem;
@@ -274,14 +292,14 @@
                 opacity: 0.5;
             }
 
-            /* Action buttons container */
+            /* ========== ACTION BUTTONS CONTAINER ========== */
             .action-buttons {
                 display: flex;
                 gap: 0.5rem;
                 justify-content: center;
             }
 
-            /* Responsive */
+            /* ========== RESPONSIVE ========== */
             @media (max-width: 768px) {
                 .page-header {
                     flex-direction: column;
@@ -376,8 +394,11 @@
                             <span class="address-text" th:text="${o.diaChiGiao}" th:title="${o.diaChiGiao}"></span>
                         </td>
                         <td>
-                            <span class="badge"
-                                  th:classappend="${o.trangThai == 'Đã giao' ? 'bg-success' : (o.trangThai == 'Đang giao' ? 'bg-info' : (o.trangThai == 'Đã hủy' ? 'bg-danger' : 'bg-warning'))}"
+                            <span class="status-badge"
+                                  th:classappend="${o.trangThai.name() == 'DA_GIAO' ? 'status-completed' :
+                                                   (o.trangThai.name() == 'DANG_GIAO' ? 'status-processing' :
+                                                   (o.trangThai.name() == 'DA_HUY' ? 'status-cancelled' :
+                                                   (o.trangThai.name() == 'DANG_XU_LY' ? 'status-handling' : 'status-waiting')))}"
                                   th:text="${o.trangThai}"></span>
                         </td>
                         <td>

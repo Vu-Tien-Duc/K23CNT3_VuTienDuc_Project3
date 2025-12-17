@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,44 +17,78 @@ public class ThanhToanService {
 
     private final ThanhToanRepository thanhToanRepository;
 
-    // ===== METHOD MỚI CHO EDIT FORM =====
+    // ===== DETAIL =====
     @Transactional(readOnly = true)
     public Map<String, Object> getThanhToanForEdit(Long id) {
         return thanhToanRepository.findByIdForEdit(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thanh toán #" + id));
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy thanh toán #" + id)
+                );
     }
 
-    // ===== CÁC METHOD CŨ =====
+    // ===== FILTER (🔥 GIỮ NGUYÊN LOGIC ĐÚNG CỦA BẠN) =====
     @Transactional(readOnly = true)
-    public Optional<ThanhToan> findById(Long id) {
-        return thanhToanRepository.findById(id);
+    public List<ThanhToan> filterThanhToan(
+            String phuongThuc,
+            String trangThai,
+            LocalDate fromDate
+    ) {
+
+        // Fix empty string
+        if (phuongThuc != null && phuongThuc.isBlank()) {
+            phuongThuc = null;
+        }
+        if (trangThai != null && trangThai.isBlank()) {
+            trangThai = null;
+        }
+
+        // Fix & validate trạng thái
+        if (trangThai != null) {
+            trangThai = trangThai.trim().toUpperCase();
+            if (!List.of(
+                    "DA_THANH_TOAN",
+                    "CHUA_THANH_TOAN",
+                    "HOAN_TIEN"
+            ).contains(trangThai)) {
+                trangThai = null;
+            }
+        }
+
+        // Fix phương thức
+        if (phuongThuc != null) {
+            phuongThuc = phuongThuc.trim().toUpperCase();
+        }
+
+        LocalDateTime fromDateTime =
+                fromDate != null ? fromDate.atStartOfDay() : null;
+
+        return thanhToanRepository.filterThanhToan(
+                phuongThuc,
+                trangThai,
+                fromDateTime
+        );
     }
 
-    @Transactional
-    public ThanhToan save(ThanhToan thanhToan) {
-        return thanhToanRepository.save(thanhToan);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        thanhToanRepository.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ThanhToan> filterThanhToan(String phuongThuc, String trangThai, LocalDateTime fromDate) {
-        // Implementation của bạn...
-        return thanhToanRepository.findAll(); // Placeholder
-    }
-
+    // ===== TỔNG DOANH THU (CHỈ ĐÃ THANH TOÁN) =====
     @Transactional(readOnly = true)
     public Double getTotalRevenue() {
-        // Implementation của bạn...
-        return 0.0; // Placeholder
+        return thanhToanRepository.sumRevenueDaThanhToan();
     }
 
+    // ===== ĐẾM COD / ONLINE (CHỈ ĐÃ THANH TOÁN) =====
     @Transactional(readOnly = true)
     public long countByMethod(String method) {
-        // Implementation của bạn...
-        return 0L; // Placeholder
+        return thanhToanRepository.countByMethodDaThanhToan(
+                method.toUpperCase()
+        );
+    }
+
+    // ===== DELETE (🔥 BỔ SUNG DUY NHẤT ĐỂ KHỚP CONTROLLER) =====
+    @Transactional
+    public void deleteById(Long id) {
+        if (!thanhToanRepository.existsById(id)) {
+            throw new RuntimeException("Thanh toán #" + id + " không tồn tại");
+        }
+        thanhToanRepository.deleteById(id);
     }
 }

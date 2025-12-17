@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
             title='Thanh toán',
@@ -13,535 +14,195 @@
         <style>
             body {
                 background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-                color: #333;
             }
-
-            /* Card Container */
             .card {
                 border-radius: 20px;
                 border: none;
-                background: white;
                 box-shadow: 0 10px 40px rgba(245, 158, 11, 0.15);
             }
-
-            .card-body { padding: 2rem; }
-
-            /* Page Header */
             .page-header {
                 background: linear-gradient(135deg, #F59E0B, #FBBF24);
                 padding: 1.5rem 2rem;
                 margin: -2rem -2rem 2rem -2rem;
                 color: white;
-                border-radius: 20px 20px 0 0;
             }
-
-            .header-content {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .page-header h5 {
-                margin: 0;
-                font-size: 1.6rem;
-                font-weight: 700;
-                color: white;
-            }
-
-            .stats-row {
-                display: flex;
-                gap: 2rem;
-                margin-top: 1rem;
-            }
-
-            .stat-item {
-                font-size: 0.9rem;
-                opacity: 0.95;
-            }
-
-            .stat-item strong {
-                font-size: 1.2rem;
-                display: block;
-                margin-top: 0.25rem;
-            }
-
-            /* Summary Cards */
-            .summary-cards {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
-            }
-
-            .summary-card {
-                background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-                padding: 1.5rem;
-                border-radius: 12px;
-                border: 2px solid #FBBF24;
-                text-align: center;
-            }
-
-            .summary-icon {
-                font-size: 2.5rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .summary-value {
-                font-size: 1.8rem;
-                font-weight: 700;
-                color: #D97706;
-                margin: 0.5rem 0;
-            }
-
-            .summary-label {
-                color: #92400E;
-                font-weight: 600;
-                font-size: 0.9rem;
-            }
-
-            /* Filter Section */
             .filter-section {
                 background: #FFFBEB;
                 padding: 1.5rem;
-                border-radius: 12px;
+                border-radius: 14px;
                 margin-bottom: 1.5rem;
                 border: 2px solid #FEF3C7;
             }
-
-            .filter-label {
-                font-weight: 600;
-                color: #F59E0B;
-                margin-bottom: 0.5rem;
-                display: block;
-                font-size: 0.9rem;
-            }
-
-            .form-control, .form-select {
-                border-radius: 12px !important;
-                padding: 12px 16px;
-                border: 2px solid #FEF3C7;
-                background-color: white;
-                transition: all 0.3s;
-                font-weight: 500;
-            }
-
-            .form-control:focus, .form-select:focus {
-                border-color: #F59E0B;
-                box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
-                outline: none;
-            }
-
-            /* Table Container */
-            .table-container {
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            }
-
-            table.table {
-                background: white;
-                margin-bottom: 0;
-            }
-
             table th {
                 background: linear-gradient(135deg, #F59E0B, #FBBF24);
                 color: white;
-                font-weight: 600;
-                padding: 1rem;
-                font-size: 0.9rem;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
-                border: none;
+                font-size: 0.85rem;
             }
-
-            table td {
-                padding: 1rem;
-                vertical-align: middle;
-                border-bottom: 1px solid #f0f0f0;
-            }
-
-            table tbody tr {
-                transition: all 0.3s;
-            }
-
-            table tbody tr:hover {
-                background-color: #FFFBEB;
-                transform: scale(1.005);
-            }
-
-            table tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-            /* Payment ID */
             .payment-id {
-                background: linear-gradient(135deg, #F59E0B, #FBBF24);
-                color: white;
-                padding: 0.4rem 0.8rem;
-                border-radius: 10px;
-                font-weight: 700;
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-
-            /* Order ID Link */
-            .order-link {
-                background: #3B82F6;
+                background: #F59E0B;
                 color: white;
                 padding: 0.3rem 0.7rem;
                 border-radius: 8px;
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 0.9rem;
-                display: inline-block;
-                transition: all 0.3s;
-            }
-
-            .order-link:hover {
-                background: #2563EB;
-                transform: translateY(-2px);
-                color: white;
-            }
-
-            /* Amount Display */
-            .amount-display {
-                font-size: 1.2rem;
                 font-weight: 700;
-                color: #F59E0B;
             }
 
-            .amount-display::before {
-                content: "💰 ";
-            }
-
-            /* Payment Method Badge */
-            .method-badge {
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                font-weight: 600;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                display: inline-block;
-            }
-
-            .method-online {
-                background: linear-gradient(135deg, #3B82F6, #60A5FA);
-                color: white;
-            }
-
-            .method-cod {
+        /* ===== METHOD ===== */
+        .method-online {
                 background: linear-gradient(135deg, #10B981, #34D399);
-                color: white;
-            }
+            color: white;
+        }
+        .method-cod {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
 
-            /* Status Badge */
-            .status-badge {
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                font-weight: 600;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                display: inline-block;
-            }
+        /* ===== STATUS (FIX ĐÚNG LOGIC) ===== */
+        .status-paid {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
+        .status-unpaid {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+        .status-refund {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
 
-            .status-completed {
-                background: linear-gradient(135deg, #10B981, #34D399);
-                color: white;
-            }
-
-            .status-pending {
-                background: linear-gradient(135deg, #F59E0B, #FBBF24);
-                color: white;
-            }
-
-            .status-failed {
-                background: linear-gradient(135deg, #EF4444, #DC2626);
-                color: white;
-            }
-
-            /* Date Display */
-            .date-display {
-                color: #6B7280;
-                font-size: 0.9rem;
-            }
-
-            .date-display::before {
-                content: "📅 ";
-            }
-
-            /* Action Buttons */
-            .btn {
-                border-radius: 10px !important;
-                font-weight: 600;
-                padding: 0.5rem 1rem;
-                transition: all 0.3s;
-                border: none;
-                font-size: 0.85rem;
-            }
-
-            .btn-detail {
-                background: linear-gradient(135deg, #3B82F6, #60A5FA);
-                color: white;
-            }
-
-            .btn-detail:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-            }
-
-            .btn-edit {
-                background: linear-gradient(135deg, #8B5CF6, #A78BFA);
-                color: white;
-            }
-
-            .btn-edit:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-            }
-
-            .btn-delete {
-                background: linear-gradient(135deg, #EF4444, #DC2626);
-                color: white;
-            }
-
-            .btn-delete:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-            }
-
-            .btn-reset {
-                background: #6C757D;
-                color: white;
-            }
-
-            .btn-reset:hover {
-                background: #5A6268;
-                transform: translateY(-2px);
-            }
-
-            .action-buttons {
-                display: flex;
-                gap: 0.5rem;
-                justify-content: center;
-            }
-
-            /* Empty State */
-            .empty-state {
-                text-align: center;
-                padding: 3rem;
-                color: #6B7280;
-            }
-
-            .empty-state::before {
-                content: "💳";
-                font-size: 4rem;
-                display: block;
-                margin-bottom: 1rem;
-                opacity: 0.5;
-            }
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                .header-content {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-
-                .stats-row {
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-
-                .summary-cards {
-                    grid-template-columns: 1fr;
-                }
-
-                .action-buttons {
-                    flex-direction: column;
-                }
-            }
+        .badge {
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
         </style>
     </th:block>
+
 </head>
 
 <body>
 <section th:fragment="content">
     <div class="card">
         <div class="card-body">
-
-            <!-- Page Header -->
+            <!-- HEADER -->
             <div class="page-header">
-                <div class="header-content">
-                    <div>
-                        <h5>💳 Quản lý Thanh Toán</h5>
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                Tổng giao dịch: <strong th:text="${thanhToans != null ? thanhToans.size() : 0}">0</strong>
-                            </div>
-                            <div class="stat-item">
-                                Tổng doanh thu: <strong th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</strong>
-                            </div>
-                        </div>
-                    </div>
+                <h5>💳 Quản lý Thanh Toán</h5>
+                <div>
+                    Tổng giao dịch:
+                    <strong th:text="${thanhToans != null ? thanhToans.size() : 0}">0</strong>
+                    |
+                    Tổng doanh thu:
+                    <strong th:text="${#numbers.formatInteger(totalRevenue,0,'COMMA')} + ' đ'">0 đ</strong>
                 </div>
             </div>
 
-            <!-- Summary Cards -->
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <div class="summary-icon">💰</div>
-                    <div class="summary-value" th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') : '0'}">0</div>
-                    <div class="summary-label">Tổng doanh thu (VNĐ)</div>
-                </div>
-
-                <div class="summary-card">
-                    <div class="summary-icon">💳</div>
-                    <div class="summary-value" th:text="${onlinePayments != null ? onlinePayments : 0}">0</div>
-                    <div class="summary-label">Thanh toán Online</div>
-                </div>
-
-                <div class="summary-card">
-                    <div class="summary-icon">💵</div>
-                    <div class="summary-value" th:text="${codPayments != null ? codPayments : 0}">0</div>
-                    <div class="summary-label">Thanh toán COD</div>
-                </div>
-            </div>
-
-            <!-- Filter Section -->
+            <!-- FILTER -->
             <div class="filter-section">
                 <form method="get" th:action="@{/admin/thanh-toan}" class="row g-3">
+
+                    <!-- PHƯƠNG THỨC -->
                     <div class="col-md-3">
-                        <label class="filter-label">💳 Phương thức thanh toán</label>
+                        <label>Phương thức</label>
                         <select name="phuongThuc" class="form-select" onchange="this.form.submit()">
-                            <option value="">Tất cả phương thức</option>
-                            <option value="ONLINE" th:selected="${phuongThuc == 'ONLINE'}">Online Banking</option>
-                            <option value="COD" th:selected="${phuongThuc == 'COD'}">COD (Tiền mặt)</option>
+                            <option value="">Tất cả</option>
+                            <option value="ONLINE" th:selected="${phuongThuc=='ONLINE'}">Online</option>
+                            <option value="COD" th:selected="${phuongThuc=='COD'}">COD</option>
                         </select>
                     </div>
+
+                    <!-- TRẠNG THÁI (FIX GIÁ TRỊ) -->
                     <div class="col-md-3">
-                        <label class="filter-label">📊 Trạng thái thanh toán</label>
+                        <label>Trạng thái</label>
                         <select name="trangThai" class="form-select" onchange="this.form.submit()">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="Đã thanh toán" th:selected="${trangThai == 'Đã thanh toán'}">Đã thanh toán</option>
-                            <option value="Chờ thanh toán" th:selected="${trangThai == 'Chờ thanh toán'}">Chờ thanh toán</option>
-                            <option value="Thất bại" th:selected="${trangThai == 'Thất bại'}">Thất bại</option>
+                            <option value="">Tất cả</option>
+                            <option value="DA_THANH_TOAN" th:selected="${trangThai=='DA_THANH_TOAN'}">
+                                Đã thanh toán
+                            </option>
+                            <option value="CHUA_THANH_TOAN" th:selected="${trangThai=='CHUA_THANH_TOAN'}">
+                                Chưa thanh toán
+                            </option>
+                            <option value="HOAN_TIEN" th:selected="${trangThai=='HOAN_TIEN'}">
+                                Hoàn tiền
+                            </option>
                         </select>
                     </div>
+
+                    <!-- TỪ NGÀY -->
                     <div class="col-md-3">
-                        <label class="filter-label">📅 Từ ngày</label>
-                        <input type="date" name="fromDate" th:value="${fromDate}" class="form-control"/>
+                        <label>Từ ngày</label>
+                        <input type="date"
+                               name="fromDate"
+                               th:value="${fromDate}"
+                               class="form-control"
+                               onchange="this.form.submit()"/>
                     </div>
+
+                    <!-- RESET -->
                     <div class="col-md-3 d-flex align-items-end">
-                        <a href="/admin/thanh-toan" class="btn btn-reset w-100">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset
-                        </a>
+                        <a href="/admin/thanh-toan" class="btn btn-secondary w-100">Reset</a>
                     </div>
                 </form>
             </div>
 
-            <!-- Table -->
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Mã TT</th>
-                        <th>Mã đơn hàng</th>
-                        <th>Số tiền</th>
-                        <th>Phương thức</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày thanh toán</th>
-                        <th class="text-center">Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="tt : ${thanhToans}">
-                        <td>
-                            <span class="payment-id" th:text="'#TT' + ${tt.id}"></span>
-                        </td>
-                        <td>
-                            <a th:href="@{'/admin/don-hang/detail/' + ${tt.donHang.id}}" class="order-link">
-                                #ĐH<span th:text="${tt.donHang.id}"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <span class="amount-display" th:text="${#numbers.formatDecimal(tt.soTien, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                        </td>
-                        <td>
-                            <span class="method-badge"
-                                  th:classappend="${tt.phuongThuc == 'ONLINE' ? 'method-online' : 'method-cod'}"
-                                  th:text="${tt.phuongThuc == 'ONLINE' ? '💳 Online' : '💵 COD'}"></span>
-                        </td>
-                        <td>
-                            <span class="status-badge"
-                                  th:classappend="${tt.trangThai == 'Đã thanh toán' ? 'status-completed' : (tt.trangThai == 'Chờ thanh toán' ? 'status-pending' : 'status-failed')}"
-                                  th:text="${tt.trangThai}"></span>
-                        </td>
-                        <td>
-                            <span class="date-display"
-                                  th:text="${tt.ngayThanhToan != null ? #temporals.format(tt.ngayThanhToan, 'dd/MM/yyyy HH:mm') : '-'}"></span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <a th:href="@{'/admin/thanh-toan/detail/' + ${tt.id}}" class="btn btn-detail btn-sm">
-                                    <i class="bi bi-eye-fill"></i> Chi tiết
-                                </a>
-                                <a th:href="@{'/admin/thanh-toan/delete/' + ${tt.id}}" class="btn btn-delete btn-sm"
-                                   onclick="return confirm('⚠️ Bạn có chắc muốn xóa giao dịch này?')">
-                                    <i class="bi bi-trash-fill"></i> Xóa
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${thanhToans == null or thanhToans.size() == 0}">
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <strong>Chưa có giao dịch nào</strong>
-                                <p>Chưa có giao dịch thanh toán trong hệ thống</p>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- TABLE -->
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Mã TT</th>
+                    <th>Đơn hàng</th>
+                    <th>Số tiền</th>
+                    <th>Phương thức</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tt : ${thanhToans}">
+                    <td><span class="payment-id" th:text="'#TT'+${tt.id}"></span></td>
+                    <td>#ĐH<span th:text="${tt.donHang.id}"></span></td>
+                    <td th:text="${#numbers.formatInteger(tt.soTien,0,'COMMA')} + ' đ'"></td>
+
+                    <td>
+                    <span class="badge"
+                          th:classappend="${tt.phuongThuc=='ONLINE'?'method-online':'method-cod'}"
+                          th:text="${tt.phuongThuc}">
+                    </span>
+                    </td>
+
+                    <td>
+                    <span class="badge"
+                          th:classappend="
+                            ${tt.trangThai=='DA_THANH_TOAN' ? 'status-paid' :
+                              (tt.trangThai=='CHUA_THANH_TOAN' ? 'status-unpaid' : 'status-refund')}"
+                          th:text="
+                            ${tt.trangThai=='DA_THANH_TOAN' ? 'Đã thanh toán' :
+                              (tt.trangThai=='CHUA_THANH_TOAN' ? 'Chưa thanh toán' : 'Hoàn tiền')}">
+                    </span>
+                    </td>
+
+                    <td th:text="${#temporals.format(tt.ngayThanhToan,'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <a th:href="@{'/admin/thanh-toan/detail/'+${tt.id}}"
+                           class="btn btn-sm btn-primary">Chi tiết</a>
+                    </td>
+                </tr>
+
+                <tr th:if="${thanhToans == null or thanhToans.size() == 0}">
+                    <td colspan="7" class="text-center text-muted">Chưa có giao dịch</td>
+                </tr>
+                </tbody>
+            </table>
 
         </div>
     </div>
+
 </section>
 
-<th:block th:fragment="scripts">
-    <script>
-        console.log("💳 Loaded: Quản lý thanh toán");
-
-        // Animation khi load
-        document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach((row, index) => {
-                setTimeout(() => {
-                    row.style.opacity = '0';
-                    row.style.transform = 'translateY(20px)';
-                    row.style.transition = 'all 0.3s ease';
-                    setTimeout(() => {
-                        row.style.opacity = '1';
-                        row.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 50);
-            });
-
-            // Animation cho summary cards
-            const cards = document.querySelectorAll('.summary-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.9)';
-                    card.style.transition = 'all 0.4s ease';
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'scale(1)';
-                    }, 50);
-                }, index * 100);
-            });
-        });
-    </script>
+<th:block th:fragment="scripts"> <script>console.log("Thanh toán list loaded");</script>
 </th:block>
+
 </body>
 </html>

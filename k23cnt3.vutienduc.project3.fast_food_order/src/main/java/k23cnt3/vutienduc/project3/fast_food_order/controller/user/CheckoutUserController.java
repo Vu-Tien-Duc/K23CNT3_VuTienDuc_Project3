@@ -199,6 +199,28 @@ public class CheckoutUserController extends BaseController {
 
         return "redirect:/checkout/success";
     }
+    @PostMapping("/buy-now")
+    public String buyNow(
+            @RequestParam Long monAnId,
+            @RequestParam(defaultValue = "1") int soLuong,
+            HttpSession session,
+            Principal principal
+    ) {
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        // Tạo giỏ hàng tạm chỉ chứa 1 món
+        Map<Long, Integer> cart = new HashMap<>();
+        cart.put(monAnId, soLuong);
+
+        // Ghi đè CART hiện tại
+        session.setAttribute("CART", cart);
+
+        return "redirect:/checkout";
+    }
+
 
     /* ================== THÀNH CÔNG ================== */
     @GetMapping("/success")

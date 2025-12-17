@@ -7,53 +7,293 @@
             customScripts=~{::scripts}
       )}">
 
+<th:block th:fragment="styles">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .profile-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-avatar i {
+            font-size: 3rem;
+        }
+
+        .profile-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .profile-body {
+            padding: 2.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control[readonly] {
+            background-color: #f7fafc;
+            cursor: not-allowed;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .input-group-icon .form-control {
+            padding-left: 2.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 1rem;
+            }
+
+            .profile-body {
+                padding: 1.5rem;
+            }
+
+            .btn-action-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</th:block>
+
 <th:block th:fragment="content">
     <div class="container py-5">
-        <div class="card shadow-sm p-4" style="max-width:800px;margin:auto">
-
-            <h4 class="mb-4 text-center">
-                <i class="bi bi-person-circle"></i> Thông Tin Cá Nhân
-            </h4>
-
-            <form th:action="@{/nguoi-dung/profile/update}"
-                  th:object="${profileUser}"
-                  method="post">
-
-                <div class="mb-3">
-                    <label class="form-label">Tên</label>
-                    <input type="text" class="form-control"
-                           th:field="*{ten}" required>
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <h4>Thông Tin Cá Nhân</h4>
+                    <p style="margin:0; opacity:0.9; font-size:0.95rem;">Quản lý thông tin của bạn</p>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control"
-                           th:value="${profileUser.email}" readonly>
-                </div>
+                <div class="profile-body">
+                    <!-- Thông báo -->
+                    <div th:if="${success}" class="alert alert-success">
+                        <i class="bi bi-check-circle-fill" style="font-size:1.25rem;"></i>
+                        <span th:text="${success}"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control"
-                           th:field="*{sdt}">
-                </div>
+                    <div th:if="${error}" class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size:1.25rem;"></i>
+                        <span th:text="${error}"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Địa chỉ</label>
-                    <textarea class="form-control"
-                              th:field="*{diaChi}"></textarea>
-                </div>
+                    <form th:action="@{/nguoi-dung/profile/update}"
+                          th:object="${profileUser}"
+                          method="post">
 
-                <div class="d-flex justify-content-between">
-                    <a th:href="@{/nguoi-dung/change-password}"
-                       class="btn btn-warning">
-                        Đổi mật khẩu
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        Lưu thay đổi
-                    </button>
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-person"></i> Họ và tên
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-person-fill"></i>
+                                <input type="text" class="form-control"
+                                       th:field="*{ten}"
+                                       required
+                                       placeholder="Nhập họ và tên của bạn">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-envelope-fill"></i>
+                                <input type="email" class="form-control"
+                                       th:value="${profileUser.email}"
+                                       readonly>
+                            </div>
+                            <small class="text-muted">Email không thể thay đổi</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-telephone"></i> Số điện thoại
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-telephone-fill"></i>
+                                <input type="text" class="form-control"
+                                       th:field="*{sdt}"
+                                       placeholder="Nhập số điện thoại">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-geo-alt"></i> Địa chỉ
+                            </label>
+                            <textarea class="form-control"
+                                      th:field="*{diaChi}"
+                                      placeholder="Nhập địa chỉ của bạn"></textarea>
+                        </div>
+
+                        <div class="btn-action-group">
+                            <a th:href="@{/nguoi-dung/change-password}"
+                               class="btn btn-warning">
+                                <i class="bi bi-shield-lock"></i>
+                                Đổi mật khẩu
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i>
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </th:block>
+
+<th:block th:fragment="scripts">
+    <script>
+        // Tự động ẩn thông báo sau 5 giây
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.animation = 'slideDown 0.4s ease reverse';
+                setTimeout(() => alert.remove(), 400);
+            });
+        }, 5000);
+    </script>
+</th:block>
+
 </html>

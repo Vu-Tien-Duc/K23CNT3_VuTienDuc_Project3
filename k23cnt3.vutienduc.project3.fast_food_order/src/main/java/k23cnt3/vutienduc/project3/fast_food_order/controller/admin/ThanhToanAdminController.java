@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -20,24 +20,23 @@ public class ThanhToanAdminController {
 
     private final ThanhToanService thanhToanService;
 
-    // ===== DANH SÁCH THANH TOÁN =====
+    // ===== DANH SÁCH =====
     @GetMapping
     public String list(
             @RequestParam(required = false) String phuongThuc,
             @RequestParam(required = false) String trangThai,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fromDate,
             Model model
     ) {
-        List<ThanhToan> thanhToans = thanhToanService.filterThanhToan(phuongThuc, trangThai, fromDate);
-
-        Double totalRevenue = thanhToanService.getTotalRevenue();
-        long onlinePayments = thanhToanService.countByMethod("ONLINE");
-        long codPayments = thanhToanService.countByMethod("COD");
+        List<ThanhToan> thanhToans =
+                thanhToanService.filterThanhToan(phuongThuc, trangThai, fromDate);
 
         model.addAttribute("thanhToans", thanhToans);
-        model.addAttribute("totalRevenue", totalRevenue);
-        model.addAttribute("onlinePayments", onlinePayments);
-        model.addAttribute("codPayments", codPayments);
+        model.addAttribute("totalRevenue", thanhToanService.getTotalRevenue());
+        model.addAttribute("onlinePayments", thanhToanService.countByMethod("ONLINE"));
+        model.addAttribute("codPayments", thanhToanService.countByMethod("COD"));
         model.addAttribute("phuongThuc", phuongThuc);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("fromDate", fromDate);
@@ -46,11 +45,11 @@ public class ThanhToanAdminController {
         return "admin/thanh-toan/list";
     }
 
-    // ===== CHI TIẾT THANH TOÁN - DÙNG QUERY CUSTOM =====
+    // ===== CHI TIẾT =====
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
-        // ✅ Dùng query custom để tránh lazy loading
-        Map<String, Object> thanhToan = thanhToanService.getThanhToanForEdit(id);
+        Map<String, Object> thanhToan =
+                thanhToanService.getThanhToanForEdit(id);
 
         model.addAttribute("thanhToan", thanhToan);
         model.addAttribute("activePage", "thanh-toan");
@@ -58,14 +57,18 @@ public class ThanhToanAdminController {
         return "admin/thanh-toan/detail";
     }
 
-    // ===== XÓA THANH TOÁN =====
+    // ===== XÓA =====
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             thanhToanService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Xóa thanh toán #" + id + " thành công!");
+            redirectAttributes.addFlashAttribute(
+                    "successMessage", "Xóa thanh toán #" + id + " thành công!"
+            );
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa: " + e.getMessage());
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage", "Không thể xóa: " + e.getMessage()
+            );
         }
         return "redirect:/admin/thanh-toan";
     }
