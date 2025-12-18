@@ -18,7 +18,7 @@ public class BinhLuanAdminController {
     private final BinhLuanService binhLuanService;
     private final MonAnService monAnService;
 
-    // ===== DANH SÁCH BÌNH LUẬN =====
+    // ===== DANH SÁCH + FILTER =====
     @GetMapping
     public String list(
             @RequestParam(required = false) Long monAnId,
@@ -30,29 +30,30 @@ public class BinhLuanAdminController {
         Double avgRating = binhLuanService.getAverageRating();
 
         model.addAttribute("binhLuans", binhLuans);
-        model.addAttribute("avgRating", avgRating);
+        model.addAttribute("avgRating", avgRating != null ? avgRating : 0.0);
         model.addAttribute("monAns", monAnService.findAll());
+
         model.addAttribute("monAnId", monAnId);
         model.addAttribute("rating", rating);
         model.addAttribute("keyword", keyword);
 
-        return "admin/binh-luan/list"; // index.html
+        return "admin/binh-luan/list";
     }
 
-    // ===== CHI TIẾT BÌNH LUẬN =====
+    // ===== CHI TIẾT =====
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
         BinhLuan binhLuan = binhLuanService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy bình luận"));
 
         model.addAttribute("binhLuan", binhLuan);
-        return "admin/binh-luan/detail"; // detail.html
+        return "admin/binh-luan/detail";
     }
 
     // ===== XÓA =====
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         binhLuanService.deleteById(id);
-        return "redirect:/admin/binh-luan?success.html=deleted";
+        return "redirect:/admin/binh-luan?success=deleted";
     }
 }

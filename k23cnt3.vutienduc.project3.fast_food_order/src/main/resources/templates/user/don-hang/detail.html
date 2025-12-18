@@ -168,6 +168,18 @@
                     </div>
                     <div class="divider"></div>
                     <div class="total-row grand">
+                        <div class="total-row">
+                            <span>Giảm giá:</span>
+                            <span th:text="${donHang.giamGia != null
+        ? donHang.giamGia.maGiamGia + ' ('
+          + (donHang.giamGia.laPhanTram
+              ? donHang.giamGia.giaTri + '%'
+              : #numbers.formatInteger(donHang.giamGia.giaTri, 0, 'COMMA') + ' đ')
+          + ')'
+        : 'Không'}">
+    </span>
+                        </div>
+
                         <span class="grand-label">Tổng thanh toán</span>
                         <span class="grand-value">
                             <span th:text="${donHang.thanhToan != null ? #numbers.formatDecimal(donHang.thanhToan.soTien,0,'COMMA',0,'POINT') : #numbers.formatDecimal(donHang.tongTien,0,'COMMA',0,'POINT')}"></span>₫

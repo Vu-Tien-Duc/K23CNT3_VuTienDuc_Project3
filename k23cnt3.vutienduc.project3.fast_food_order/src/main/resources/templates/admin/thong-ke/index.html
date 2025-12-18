@@ -1,48 +1,692 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/_LayoutAdmin :: layout(
-        title='Thống kê',
-        headerTitle='Thống kê hệ thống',
-        content=~{::content}
+            title='Thống kê',
+            headerTitle='Bảng điều khiển thống kê',
+            content=~{::content},
+            customStyles=~{::styles},
+            customScripts=~{::scripts}
       )}">
 
-<body>
+<!-- ================= STYLES ================= -->
 
-<section th:fragment="content">
+<th:block th:fragment="styles">
+    <style>
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-yellow: #FFA500;
+            --light-orange: #FFE5DB;
+            --dark-orange: #E85D2C;
+            --accent-gold: #FFD700;
+            --success-green: #28A745;
+            --info-blue: #17A2B8;
+            --purple: #6F42C1;
+        }
 
-    <div class="row g-4 mb-4">
+        body {
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFE8DD 100%);
+        }
 
-        <div class="col-md-3">
-            <div class="stats-card text-center">
-                <h6>Tổng đơn hàng</h6>
-                <div class="stats-value" th:text="${tongDonHang}">0</div>
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--secondary-yellow));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.25);
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.orange .stat-icon {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-yellow));
+            color: white;
+        }
+
+        .stat-card.green .stat-icon {
+            background: linear-gradient(135deg, #28A745, #20C997);
+            color: white;
+        }
+
+        .stat-card.blue .stat-icon {
+            background: linear-gradient(135deg, #17A2B8, #007BFF);
+            color: white;
+        }
+
+        .stat-card.purple .stat-icon {
+            background: linear-gradient(135deg, #6F42C1, #9B59B6);
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6C757D;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-green);
+        }
+
+        /* Revenue Cards */
+        .revenue-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .revenue-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .revenue-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            transform: translate(50%, -50%);
+        }
+
+        .revenue-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-yellow));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .revenue-label {
+            font-size: 15px;
+            color: #6C757D;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .revenue-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .revenue-subtitle {
+            font-size: 13px;
+            color: #6C757D;
+        }
+
+        /* Chart Cards */
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.15);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-orange);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #212529;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chart-title i {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-yellow));
+            color: white;
+            font-size: 18px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Rating Card */
+        .rating-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.15);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        }
+
+        .rating-stars {
+            font-size: 48px;
+            color: var(--accent-gold);
+            margin-bottom: 16px;
+            text-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .rating-value {
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 8px;
+        }
+
+        .rating-label {
+            font-size: 16px;
+            color: #6C757D;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rating-bar {
+            margin-top: 24px;
+            background: var(--light-orange);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .rating-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--secondary-yellow));
+            border-radius: 6px;
+            transition: width 1s ease;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-container,
+            .revenue-container,
+            .chart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card,
+        .revenue-card,
+        .chart-card,
+        .rating-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</th:block>
+
+<!-- ================= CONTENT ================= -->
+
+<th:block th:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ===== STATS CARDS ===== -->
+        <div class="stats-container">
+            <!-- Tổng đơn hàng -->
+            <div class="stat-card orange">
+                <div class="stat-icon">
+                    <i class="bi bi-cart-check-fill"></i>
+                </div>
+                <div class="stat-label">Tổng đơn hàng</div>
+                <div class="stat-value" th:text="${#numbers.formatInteger(tongDonHang, 0, 'COMMA')}">0</div>
+                <span class="stat-change">
+                    <i class="bi bi-arrow-up"></i> Đơn hàng
+                </span>
+            </div>
+
+            <!-- Tổng người dùng -->
+            <div class="stat-card green">
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-label">Tổng người dùng</div>
+                <div class="stat-value" th:text="${#numbers.formatInteger(tongNguoiDung, 0, 'COMMA')}">0</div>
+                <span class="stat-change">
+                    <i class="bi bi-arrow-up"></i> Khách hàng
+                </span>
+            </div>
+
+            <!-- Tổng bình luận -->
+            <div class="stat-card blue">
+                <div class="stat-icon">
+                    <i class="bi bi-chat-left-text-fill"></i>
+                </div>
+                <div class="stat-label">Tổng bình luận</div>
+                <div class="stat-value" th:text="${#numbers.formatInteger(tongBinhLuan, 0, 'COMMA')}">0</div>
+                <span class="stat-change">
+                    <i class="bi bi-arrow-up"></i> Đánh giá
+                </span>
+            </div>
+
+            <!-- Tổng món ăn -->
+            <div class="stat-card purple">
+                <div class="stat-icon">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <div class="stat-label">Tổng món ăn</div>
+                <div class="stat-value" th:text="${#numbers.formatInteger(tongMonAn, 0, 'COMMA')}">0</div>
+                <span class="stat-change">
+                    <i class="bi bi-arrow-up"></i> Sản phẩm
+                </span>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="stats-card text-center">
-                <h6>Tổng người dùng</h6>
-                <div class="stats-value" th:text="${tongNguoiDung}">0</div>
+        <!-- ===== REVENUE CARDS ===== -->
+        <div class="revenue-container">
+            <!-- Tổng doanh thu -->
+            <div class="revenue-card">
+                <div class="revenue-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="revenue-label">Tổng doanh thu</div>
+                <div class="revenue-value" th:text="${#numbers.formatDecimal(tongDoanhThu, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                <div class="revenue-subtitle">Từ tất cả đơn hàng đã giao</div>
+            </div>
+
+            <!-- Doanh thu hôm nay -->
+            <div class="revenue-card">
+                <div class="revenue-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div class="revenue-label">Doanh thu hôm nay</div>
+                <div class="revenue-value" th:text="${#numbers.formatDecimal(doanhThuHomNay, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                <div class="revenue-subtitle" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}">19/12/2025</div>
+            </div>
+
+            <!-- Điểm đánh giá trung bình -->
+            <div class="rating-card">
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                <div class="rating-value" th:text="${#numbers.formatDecimal(avgRating, 1, 'POINT', 2, 'POINT')}">0.0</div>
+                <div class="rating-label">Điểm trung bình</div>
+                <div class="rating-bar">
+                    <div class="rating-fill" th:style="'width: ' + ${avgRating * 20} + '%'"></div>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="stats-card text-center">
-                <h6>Tổng món ăn</h6>
-                <div class="stats-value" th:text="${tongMonAn}">0</div>
+        <!-- ===== CHARTS ===== -->
+        <div class="chart-container">
+            <!-- Biểu đồ doanh thu -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Doanh thu theo tháng</span>
+                    </div>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Biểu đồ đơn hàng -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span>Đơn hàng theo trạng thái</span>
+                    </div>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="orderChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="stats-card text-center">
-                <h6>Doanh thu</h6>
-                <div class="stats-value" th:text="${tongDoanhThu}">0</div>
+        <!-- Biểu đồ tròn món ăn phổ biến -->
+        <div class="chart-card" style="max-width: 600px; margin: 0 auto;">
+            <div class="chart-header">
+                <div class="chart-title">
+                    <i class="bi bi-pie-chart-fill"></i>
+                    <span>Top món ăn phổ biến</span>
+                </div>
+            </div>
+            <div class="chart-canvas">
+                <canvas id="foodChart"></canvas>
             </div>
         </div>
 
     </div>
 
-</section>
+</th:block>
 
-</body>
+<!-- ================= SCRIPTS ================= -->
+
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        // Lấy dữ liệu từ Thymeleaf
+        const doanhThuTheoThangData = /*[[${doanhThuTheoThang}]]*/ [];
+        const donHangTheoTrangThaiData = /*[[${donHangTheoTrangThai}]]*/ {};
+        const topMonAnData = /*[[${topMonAnPhoBien}]]*/ {};
+
+        // Màu sắc theme
+        const colors = {
+            primary: '#FF6B35',
+            secondary: '#FFA500',
+            success: '#28A745',
+            info: '#17A2B8',
+            purple: '#6F42C1',
+            gold: '#FFD700',
+            warning: '#FFC107',
+            danger: '#DC3545'
+        };
+
+        // ===== BIỂU ĐỒ DOANH THU THEO THÁNG =====
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                datasets: [{
+                    label: 'Doanh thu (₫)',
+                    data: doanhThuTheoThangData,
+                    borderColor: colors.primary,
+                    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: colors.primary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: colors.primary,
+                        borderWidth: 2,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' ₫';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return (value / 1000000) + 'M';
+                                }
+                                return value.toLocaleString('vi-VN');
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 107, 53, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // ===== BIỂU ĐỒ ĐƠN HÀNG THEO TRẠNG THÁI =====
+        const orderCtx = document.getElementById('orderChart').getContext('2d');
+        const orderChart = new Chart(orderCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Chờ xác nhận', 'Đang xử lý', 'Đang giao', 'Đã giao', 'Đã hủy'],
+                datasets: [{
+                    label: 'Số đơn hàng',
+                    data: [
+                        donHangTheoTrangThaiData.CHO_XAC_NHAN || 0,
+                        donHangTheoTrangThaiData.DANG_XU_LY || 0,
+                        donHangTheoTrangThaiData.DANG_GIAO || 0,
+                        donHangTheoTrangThaiData.DA_GIAO || 0,
+                        donHangTheoTrangThaiData.DA_HUY || 0
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(0, 123, 255, 0.8)',
+                        'rgba(255, 107, 53, 0.8)',
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ],
+                    borderColor: [
+                        colors.warning,
+                        '#007BFF',
+                        colors.primary,
+                        colors.success,
+                        colors.danger
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderWidth: 2,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Số lượng: ' + context.parsed.y + ' đơn';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // ===== BIỂU ĐỒ TRÒN MÓN ĂN PHỔ BIẾN =====
+        const topMonAnLabels = Object.keys(topMonAnData);
+        const topMonAnValues = Object.values(topMonAnData);
+
+        const foodCtx = document.getElementById('foodChart').getContext('2d');
+        const foodChart = new Chart(foodCtx, {
+            type: 'doughnut',
+            data: {
+                labels: topMonAnLabels.length > 0 ? topMonAnLabels : ['Chưa có dữ liệu'],
+                datasets: [{
+                    data: topMonAnValues.length > 0 ? topMonAnValues : [1],
+                    backgroundColor: [
+                        colors.primary,
+                        colors.secondary,
+                        colors.success,
+                        colors.info,
+                        colors.purple
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderWidth: 2,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + ' bình luận';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        /*]]>*/
+    </script>
+</th:block>
+
 </html>

@@ -154,6 +154,7 @@ public class CheckoutUserController extends BaseController {
             return "redirect:/cart";
         }
 
+        /* ================== TẠO ĐƠN HÀNG + CHI TIẾT ================== */
         DonHang donHang = DonHang.builder()
                 .nguoiDung(nguoiDung)
                 .ngayDat(LocalDateTime.now())
@@ -163,7 +164,6 @@ public class CheckoutUserController extends BaseController {
                 .build();
 
         List<ChiTietDonHang> chiTietList = new ArrayList<>();
-        double tongTien = 0;
 
         for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             MonAn monAn = monAnService.getById(entry.getKey());
@@ -175,20 +175,51 @@ public class CheckoutUserController extends BaseController {
                     .build();
 
             chiTietList.add(ct);
-            tongTien += monAn.getGia() * entry.getValue();
         }
 
         donHang.setChiTietDonHangs(chiTietList);
 
+        /* ================== TÍNH TỔNG TIỀN GỐC ================== */
+        double tongTienGoc = donHang.getTongTien();
+
+        /* ================== XỬ LÝ GIẢM GIÁ (BACKEND) ================== */
+        double soTienGiam = 0;
+        GiamGia giamGia = null;
+
+        if (maGiamGia != null && !maGiamGia.trim().isEmpty()) {
+
+            Optional<GiamGia> opt = giamGiaRepository
+                    .findByMaGiamGia(maGiamGia.trim());
+
+            if (opt.isPresent()) {
+                giamGia = opt.get();
+                LocalDateTime now = LocalDateTime.now();
+
+                if (!giamGia.getNgayBatDau().isAfter(now)
+                        && !giamGia.getNgayKetThuc().isBefore(now)) {
+
+                    soTienGiam = giamGia.isLaPhanTram()
+                            ? tongTienGoc * giamGia.getGiaTri() / 100
+                            : giamGia.getGiaTri();
+
+                    donHang.setGiamGia(giamGia); // ✅ GẮN MÃ GIẢM GIÁ
+                }
+            }
+        }
+
+        double tongTienThanhToan = Math.max(tongTienGoc - soTienGiam, 0);
+
+        /* ================== THANH TOÁN ================== */
         ThanhToan thanhToan = ThanhToan.builder()
                 .donHang(donHang)
-                .soTien(tongTien)
+                .soTien(tongTienThanhToan) // ✅ TIỀN SAU GIẢM LƯU DB
                 .phuongThuc(phuongThuc)
                 .ngayThanhToan(LocalDateTime.now())
                 .trangThai("CHUA_THANH_TOAN")
                 .build();
 
         donHang.setThanhToan(thanhToan);
+
         donHangRepository.save(donHang);
 
         session.removeAttribute("CART");
@@ -199,6 +230,7 @@ public class CheckoutUserController extends BaseController {
 
         return "redirect:/checkout/success";
     }
+
     @PostMapping("/buy-now")
     public String buyNow(
             @RequestParam Long monAnId,

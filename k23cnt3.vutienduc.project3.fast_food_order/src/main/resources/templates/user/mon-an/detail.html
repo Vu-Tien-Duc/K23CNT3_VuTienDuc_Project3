@@ -759,9 +759,11 @@
                             </div>
 
                             <div class="review-stars">
-                                <span th:each="i : ${#numbers.sequence(1, bl.danhGia)}">★</span>
-                                <span th:each="i : ${#numbers.sequence(bl.danhGia + 1, 5)}">☆</span>
+                            <span th:each="i : ${#numbers.sequence(1,5)}"
+                                  th:text="${i <= bl.danhGia ? '★' : '☆'}">
+                            </span>
                             </div>
+
 
                             <div class="review-content" th:text="${bl.noiDung}">
                                 Nội dung bình luận

@@ -30,30 +30,39 @@ public class BinhLuanService {
         return binhLuanRepository.findByMonAnIdOrderByNgayTaoDesc(monAnId);
     }
 
-    // Lọc bình luận theo rating + keyword (tên người dùng)
     public List<BinhLuan> filterBinhLuan(Long monAnId, Integer rating, String keyword) {
 
-        // Bắt đầu từ danh sách theo món ăn
-        List<BinhLuan> result = binhLuanRepository.findByMonAnIdOrderByNgayTaoDesc(monAnId);
+        List<BinhLuan> result;
+
+        // ✅ KHÔNG chọn món → lấy tất cả
+        if (monAnId == null) {
+            result = binhLuanRepository.findAll();
+        } else {
+            result = binhLuanRepository.findByMonAnIdOrderByNgayTaoDesc(monAnId);
+        }
 
         // Lọc theo rating
         if (rating != null) {
             result = result.stream()
                     .filter(bl -> bl.getDanhGia() == rating)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
-        // Lọc theo keyword tên người dùng
+        // Lọc theo keyword (tên người dùng)
         if (keyword != null && !keyword.trim().isEmpty()) {
             String kw = keyword.toLowerCase();
             result = result.stream()
-                    .filter(bl -> bl.getNguoiDung() != null &&
-                            bl.getNguoiDung().getTen().toLowerCase().contains(kw))
-                    .collect(Collectors.toList());
+                    .filter(bl ->
+                            bl.getNguoiDung() != null &&
+                                    bl.getNguoiDung().getTen() != null &&
+                                    bl.getNguoiDung().getTen().toLowerCase().contains(kw)
+                    )
+                    .toList();
         }
 
         return result;
     }
+
 
     // Lưu
     public BinhLuan save(BinhLuan binhLuan) {
