@@ -561,11 +561,11 @@
         const orderChart = new Chart(orderCtx, {
             type: 'bar',
             data: {
-                labels: ['Chờ xác nhận', 'Đang xử lý', 'Đang giao', 'Đã giao', 'Đã hủy'],
+                labels: ['Chờ xử lý', 'Đang xử lý', 'Đang giao', 'Đã giao', 'Đã hủy'],
                 datasets: [{
                     label: 'Số đơn hàng',
                     data: [
-                        donHangTheoTrangThaiData.CHO_XAC_NHAN || 0,
+                        donHangTheoTrangThaiData.CHO_XU_LY || 0,
                         donHangTheoTrangThaiData.DANG_XU_LY || 0,
                         donHangTheoTrangThaiData.DANG_GIAO || 0,
                         donHangTheoTrangThaiData.DA_GIAO || 0,

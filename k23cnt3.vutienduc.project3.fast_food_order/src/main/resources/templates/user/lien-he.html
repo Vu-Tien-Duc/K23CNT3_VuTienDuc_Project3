@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{fragments/_LayoutUser :: layout(
+            title='Liên hệ - Food Lover',
+            content=~{::content},
+            customStyles=~{::customStyles},
+            customScripts=~{::customScripts}
+      )}">
+
+<!-- ================= STYLES ================= -->
+<th:block th:fragment="customStyles">
+    <style>
+        .contact-section {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8db 100%);
+            min-height: 100vh;
+            padding: 80px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .contact-header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #1a202c;
+            margin-bottom: 16px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #ff9a56);
+            border-radius: 2px;
+        }
+
+        .contact-header p {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin-top: 24px;
+        }
+
+        /* Form Wrapper */
+        .form-wrapper {
+            background: white;
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            border: 1px solid #f7fafc;
+        }
+
+        @media (max-width: 576px) {
+            .form-wrapper {
+                padding: 32px 24px;
+            }
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1rem;
+        }
+
+        .form-label i {
+            color: #ff6b35;
+            margin-right: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 160px;
+            font-family: inherit;
+        }
+
+        /* Success Alert */
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid #28a745;
+            border-radius: 14px;
+            padding: 18px 24px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 700;
+            color: #155724;
+            font-size: 1rem;
+        }
+
+        .alert-success::before {
+            content: '✓';
+            width: 36px;
+            height: 36px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6b35, #ff9a56);
+            color: #1a202c;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #ff9a56, #ffb380);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-wrapper {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
+</th:block>
+
+<!-- ================= CONTENT ================= -->
+<th:block th:fragment="content">
+    <div class="contact-section">
+        <div class="contact-container">
+            <!-- Header -->
+            <div class="contact-header">
+                <h1>Liên Hệ Với Chúng Tôi</h1>
+                <p>Có thắc mắc hoặc góp ý? Hãy để lại thông tin!</p>
+            </div>
+
+            <!-- Form liên hệ -->
+            <div class="form-wrapper">
+                <!-- Thông báo thành công -->
+                <div th:if="${success}" class="alert-success">
+                    [[${success}]]
+                </div>
+
+                <form th:action="@{/user/lien-he}" method="post">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-person-fill"></i> Họ và tên
+                        </label>
+                        <input type="text" name="ten" class="form-control"
+                               placeholder="Nhập họ và tên của bạn" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-envelope-fill"></i> Email
+                        </label>
+                        <input type="email" name="email" class="form-control"
+                               placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-chat-left-text-fill"></i> Nội dung liên hệ
+                        </label>
+                        <textarea name="noiDung" class="form-control" rows="6"
+                                  placeholder="Chia sẻ ý kiến, thắc mắc hoặc góp ý của bạn..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-send-fill"></i>
+                        Gửi tin nhắn
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="customScripts">
+    <script>
+        // Smooth scroll to form if there's a success message
+        window.addEventListener('DOMContentLoaded', function() {
+            const successAlert = document.querySelector('.alert-success');
+            if (successAlert) {
+                successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    successAlert.style.transition = 'opacity 0.5s ease';
+                    successAlert.style.opacity = '0';
+                    setTimeout(() => successAlert.remove(), 500);
+                }, 5000);
+            }
+        });
+
+        // Form validation feedback
+        const form = document.querySelector('form');
+        if (form) {
+            const inputs = form.querySelectorAll('input[required], textarea[required]');
+
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        this.style.borderColor = '#e53e3e';
+                    } else {
+                        this.style.borderColor = '#48bb78';
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.style.borderColor = '#e2e8f0';
+                    }
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.style.borderColor = '#e53e3e';
+                        input.focus();
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</html>

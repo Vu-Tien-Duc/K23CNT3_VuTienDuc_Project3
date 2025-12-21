@@ -65,7 +65,7 @@ public class MonAnUserController extends BaseController {
         // ⭐ Gợi ý random món ăn
         List<MonAn> all = monAnService.findAll();
         Collections.shuffle(all);
-        model.addAttribute("monAnList", all.stream().limit(8).toList());
+        model.addAttribute("monAnList", all.stream().limit(12).toList());
 
         return "user/mon-an/index";
     }

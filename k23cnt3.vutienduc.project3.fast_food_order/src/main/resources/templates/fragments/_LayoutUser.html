@@ -399,15 +399,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/about}">
+                    <a class="nav-link" th:href="@{/user/gioi-thieu}">
                         <i class="bi bi-info-circle-fill"></i> Giới thiệu
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/contact}">
+                    <a class="nav-link" th:href="@{/user/lien-he}">
                         <i class="bi bi-telephone-fill"></i> Liên hệ
                     </a>
                 </li>
+
 
                 <!-- Cart Icon (CHỈ HIỆN KHI ĐÃ LOGIN) -->
                 <li class="nav-item" th:if="${loggedUser  != null}">
@@ -442,7 +443,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li>
                             <a class="dropdown-item" th:href="@{/nguoi-dung/profile}">
-                            <i class="bi bi-person-circle"></i> Thông tin cá nhân
+                                <i class="bi bi-person-circle"></i> Thông tin cá nhân
                             </a>
                         </li>
                         <li>
@@ -509,10 +510,10 @@
             <div class="col-md-4 mb-4">
                 <h5><i class="bi bi-link-45deg"></i> Liên kết nhanh</h5>
                 <ul>
-                    <li><a th:href="@{/menu}">Thực đơn</a></li>
-                    <li><a th:href="@{/promotions}">Khuyến mãi</a></li>
-                    <li><a th:href="@{/about}">Giới thiệu</a></li>
-                    <li><a th:href="@{/contact}">Liên hệ</a></li>
+                    <li><a th:href="@{/mon-an}">Thực đơn</a></li>
+                    <li><a th:href="@{/user/percent}">Khuyến mãi</a></li>
+                    <li><a th:href="@{/user/gioi-thieu}">Giới thiệu</a></li>
+                    <li><a th:href="@{/user/lien-he}">Liên hệ</a></li>
                     <li><a th:href="@{/terms}">Điều khoản sử dụng</a></li>
                     <li><a th:href="@{/privacy}">Chính sách bảo mật</a></li>
                 </ul>
@@ -523,7 +524,7 @@
                 <h5><i class="bi bi-telephone-fill"></i> Liên hệ</h5>
                 <div class="contact-info">
                     <i class="bi bi-geo-alt-fill"></i>
-                    <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                    <span>28A - Lê Trọng Tấn, Hà Đông, Hà Nội</span>
                 </div>
                 <div class="contact-info">
                     <i class="bi bi-telephone-fill"></i>
@@ -531,7 +532,7 @@
                 </div>
                 <div class="contact-info">
                     <i class="bi bi-envelope-fill"></i>
-                    <span>support@foodlover.com</span>
+                    <span>code1den9@gmail.com</span>
                 </div>
                 <div class="contact-info">
                     <i class="bi bi-clock-fill"></i>
